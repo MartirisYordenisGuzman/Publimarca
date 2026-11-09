@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/admin", "destination": "/api/index.py" },
+    { "source": "/es/admin", "destination": "/api/index.py" },
+    { "source": "/en/admin", "destination": "/api/index.py" },
+    { "source": "/es", "destination": "/api/index.py" },
+    { "source": "/en", "destination": "/api/index.py" },
+    { "source": "/", "destination": "/api/index.py" }
+  ]
+}

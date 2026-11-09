@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    overflow-x: clip;
+  }
+
+  main > :first-child {
+    margin-top: 0 !important;
+  }
+
+  main > :last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 34s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.client-logo-img {
+  filter: grayscale(100%);
+  opacity: 0.65;
+  transition: filter 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+a[data-brand-slug]:hover .client-logo-img,
+a[data-brand-slug]:focus-visible .client-logo-img,
+.client-logo-img:hover {
+  filter: grayscale(0%) !important;
+  opacity: 1 !important;
+  transform: scale(1.06);
+}
+
+@keyframes preloader-sheen-sweep {
+  0% {
+    transform: translateX(-140%) skewX(-22deg);
+  }
+  100% {
+    transform: translateX(240%) skewX(-22deg);
+  }
+}
+
+@keyframes preloader-bar-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+.preloader-logo-img {
+  filter: grayscale(100%) contrast(0.92) brightness(0.95);
+  opacity: 0.52;
+  transform: scale(0.96);
+  transition: filter 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.preloader-light-mask {
+  -webkit-mask-image: url("/logo%202.png");
+  mask-image: url("/logo%202.png");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.preloader-light-beam {
+  width: 65%;
+  height: 180%;
+  top: -40%;
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.65) 35%,
+    rgba(255, 255, 255, 0.98) 50%,
+    rgba(48, 180, 215, 0.45) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  filter: blur(2px);
+  animation: preloader-sheen-sweep 1.25s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.preloader-ambient-beam {
+  width: 55%;
+  height: 200%;
+  top: -50%;
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.75) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: preloader-sheen-sweep 1.25s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.preloader-progress-Thumb {
+  animation: preloader-bar-sweep 1.2s ease-in-out infinite;
+}
+
+.preloader-color-active .preloader-logo-img {
+  filter: grayscale(0%) contrast(1) brightness(1);
+  opacity: 1;
+  transform: scale(1.03);
+}
+
+.preloader-color-active .preloader-progress-Thumb {
+  animation: none;
+  width: 100%;
+  transform: translateX(0);
+  background-color: #a01318;
+  transition: all 0.4s ease-out;
+}
+
+/* Stacked Testimonial Carousel Deck */
+.testimonial-deck-stage {
+  position: relative;
+  min-height: 360px;
+  perspective: 1400px;
+}
+
+@media (min-width: 768px) {
+  .testimonial-deck-stage {
+    min-height: 340px;
+  }
+}
+
+.testimonial-deck-card {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.78s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity, filter;
+}
+
+.testimonial-deck-card[data-deck-state="active"] {
+  position: relative;
+  z-index: 30;
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0px);
+  pointer-events: auto;
+}
+
+.testimonial-deck-card[data-deck-state="next"] {
+  z-index: 20;
+  opacity: 0.72;
+  transform: translate3d(0, 20px, -50px) scale(0.955);
+  filter: blur(0.4px);
+  pointer-events: none;
+}
+
+.testimonial-deck-card[data-deck-state="behind"] {
+  z-index: 10;
+  opacity: 0.38;
+  transform: translate3d(0, 38px, -100px) scale(0.91);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.testimonial-deck-card[data-deck-state="prev"] {
+  z-index: 5;
+  opacity: 0;
+  transform: translate3d(0, -26px, -60px) scale(0.95);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

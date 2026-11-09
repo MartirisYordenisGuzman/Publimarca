@@ -1,0 +1,22 @@
+# macOS & OS files
+.DS_Store
+Thumbs.db
+
+# Node & Next build artifacts
+node_modules/
+.next/
+out/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local environment secrets
+.env
+.env.local
+.env.*.local
+
+# Duplicate video inside public/ (served from root video_hero_publimarca.mp4)
+public/video_hero_publimarca.mp4

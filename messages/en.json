@@ -1,0 +1,334 @@
+{
+  "metadata": {
+    "title": "Publimarca Studio — Independent Creative Atelier | Higüey, Dominican Republic",
+    "description": "Independent creative atelier operating at the intersection of Caribbean cultural gravity and global editorial precision. Audiovisual production, brand identity, social narrative, and spatial design."
+  },
+  "topbar": {
+    "coordinates": "Higüey • Rep. Dominicana [18°37'N 68°42'W]",
+    "status": "Now Accepting Q3/Q4 Commissions",
+    "timezone": "AST / UTC-4"
+  },
+  "nav": {
+    "skipToContent": "Skip to main content",
+    "work": "Work",
+    "services": "Services",
+    "industries": "Industries",
+    "about": "About",
+    "process": "Process",
+    "cta": "Start a Project",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu",
+    "langLabel": "Switch language"
+  },
+  "hero": {
+    "badge": "Studio Dispatch",
+    "location": "Higüey, RD [18°37'N]",
+    "headlinePrefix": "We craft",
+    "headlineHighlight": "Cultural Relevance",
+    "headlineSuffix": "for ambitious brands.",
+    "subheadline": "Independent creative atelier operating at the precise friction point between Caribbean cultural gravity and global editorial precision. We engineer cinematic narratives, spatial aesthetics, and immutable graphic identities.",
+    "ctaPrimary": "Work With Us",
+    "ctaSecondary": "Explore Projects",
+    "archiveYears": "[2024–2025]",
+    "metric1Val": "04",
+    "metric1Label": "Core Disciplines",
+    "metric2Val": "35mm",
+    "metric2Label": "Native Film Pipeline",
+    "metric3Val": "100%",
+    "metric3Label": "Bespoke Production",
+    "liveStage": "Live Stage • A-Cam Roll",
+    "clientsLabel": "Companies & Brands We Work With",
+    "plateLabel": "Plate 01 // Studio Higüey",
+    "plateSpecs": "ISO 800 • T1.9",
+    "plateCaption": "Cinematography for regional heritage showcase [Concept Study].",
+    "imageAlt": "Cinematic production studio photography depicting female film director operating high-end cinema camera on an industrial soundstage with moody lighting and warm editorial tones."
+  },
+  "manifesto": {
+    "kicker": "Manifesto No. 01",
+    "code": "DO-CUR-2025",
+    "sub": "The Philosophy",
+    "body": "In an era inundated with synthetic algorithmic feeds and disposable templated imagery, Publimarca operates as a deliberate counter-movement.",
+    "quote": "“Not an agency of templates. A sanctuary of craft, strategic courage, and high-impact visual storytelling built from the cultural marrow of the Dominican Republic.”",
+    "author": "— Studio Board Directive",
+    "location": "Higüey Headquarters",
+    "revision": "Rev. 04.2"
+  },
+  "services": {
+    "kicker": "Service Directory • Section 02",
+    "title": "Disciplinary Focus",
+    "subtitle": "Structured modules tailored for luxury hospitality, disruptive ventures, and cultural conglomerates.",
+    "items": {
+      "s1": {
+        "number": "01/",
+        "capabilityKey": "Advertising & Strategic Consulting",
+        "title": "Advertising & Strategic Consulting",
+        "tags": "Brand Strategy • Market Analysis • Integrated Campaigns",
+        "description": "We design high-impact strategic roadmaps and advertising campaigns that connect brands with their ideal audience. We maximize positioning and return on investment through specialized, results-driven marketing consulting."
+      },
+      "s2": {
+        "number": "02/",
+        "capabilityKey": "Graphic Design & Printing",
+        "title": "Graphic Design & Printing",
+        "tags": "Visual Identity • Editorial Design • Print Production",
+        "description": "Visual identity systems and meticulous graphic design brought to life through high-fidelity printing services. We craft memorable physical and digital touchpoints that elevate your brand perception."
+      },
+      "s3": {
+        "number": "03/",
+        "capabilityKey": "Audiovisual Production & Photography",
+        "title": "Audiovisual Production & Photography",
+        "tags": "Art Direction • Cinematography • Commercial Photography",
+        "description": "Captivating visual narratives through video production and professional photography services. We capture the essence of your commercial or corporate project with the highest aesthetic and technical standards."
+      },
+      "s4": {
+        "number": "04/",
+        "capabilityKey": "Web Development & Digital Services",
+        "title": "Web Development & Digital Services",
+        "tags": "UI/UX Design • Bespoke Development • Digital Ecosystems",
+        "description": "Digital architecture and responsive web platform development. We translate your brand identity into exceptional user experiences, building intuitive and scalable interfaces for the modern digital landscape."
+      }
+    }
+  },
+  "industries": {
+    "label": "SOLUTIONS ACROSS INDUSTRIES",
+    "headlineMain": "Every industry has its own language.",
+    "headlineAccent": "We know how to speak it.",
+    "intro": "Every business is different. Each industry has its own challenges, audiences, and opportunities. That's why we don't believe in one-size-fits-all solutions. We develop creative strategies and communication experiences tailored to the reality of each brand.",
+    "supporting": "We bring ideas, visuals, and strategies to industries such as:",
+    "closingTitle": "Different industries. One creative vision.",
+    "closingBody": "From brand identity to audiovisual production, graphic design, and digital strategy, we put creativity to work for every business.",
+    "highlightPhrase": "Your business may be different. Our creativity knows how to adapt.",
+    "cta": "LET'S TALK ABOUT YOUR PROJECT",
+    "items": {
+      "i1": {
+        "number": "01 —",
+        "title": "Construction & Real Estate",
+        "description": "Projects, developments, and brands that need to build trust.",
+        "tag": "01 // Development & Architecture"
+      },
+      "i2": {
+        "number": "02 —",
+        "title": "Food Distribution & Wholesale",
+        "description": "Products, distributors, and businesses looking to strengthen their market presence.",
+        "tag": "02 // Commercial Supply"
+      },
+      "i3": {
+        "number": "03 —",
+        "title": "Motorcycle Financing & Financial Services",
+        "description": "Brands that need to communicate trust, accessibility, and credibility.",
+        "tag": "03 // Finance & Mobility"
+      },
+      "i4": {
+        "number": "04 —",
+        "title": "Restaurants & Hospitality",
+        "description": "Experiences, products, and spaces that deserve to be seen and remembered.",
+        "tag": "04 // Hospitality & Craft",
+        "sub": "Culinary Art Direction"
+      },
+      "i5": {
+        "number": "05 —",
+        "title": "Industrial Equipment & Supplies",
+        "description": "Specialized solutions that need clear and professional communication.",
+        "tag": "05 // Technical Precision"
+      },
+      "i6": {
+        "number": "06 —",
+        "title": "Retail & Services",
+        "description": "Businesses looking to stand out, connect with customers, and grow.",
+        "tag": "06 // Commercial Growth"
+      }
+    }
+  },
+  "works": {
+    "kicker": "Index of Works",
+    "placeholderBadge": "Concept Studies • Sample Archive",
+    "title": "Selected Projects",
+    "filterLabel": "Filter projects by discipline",
+    "filters": {
+      "all": "All",
+      "motion": "Motion",
+      "identity": "Identity",
+      "spatial": "Spatial"
+    },
+    "inspectBtn": "Inspect Case File",
+    "modalNote": "Full production dossier available upon NDA briefing.",
+    "modalCta": "Commission Similar Scope",
+    "closeModal": "Close case study dialog",
+    "projects": {
+      "p1": {
+        "badge": "Featured Film • 35mm",
+        "client": "Punta Cana Heritage [Concept Study]",
+        "meta": "2024 • Commercial / Docu",
+        "title": "The Salt & Stone Chronicle",
+        "summary": "A four-part cinematic anthology concept documenting heritage luxury resort developments, narrated through local artisan voices and framed for Kodak 35mm stock.",
+        "fullDescription": "A four-part cinematic anthology concept documenting heritage luxury resort developments across the eastern Dominican coastline, narrated through local artisan voices and designed for Kodak Vision3 35mm film stock.",
+        "specs": "Format: 35mm & ARRI Alexa Mini LF • Aspect Ratio: 2.39:1 Scope • Location: Higüey / Punta Cana • Status: Concept Study",
+        "location": "Higüey • Punta Cana",
+        "alt": "High-end fashion editorial and cinematic frame shot on location in Punta Cana Dominican Republic with minimalist tropical brutalist concrete architecture, dusk lighting, model wearing haute-couture linen."
+      },
+      "p2": {
+        "badge": "Identity System",
+        "client": "Casa Macao [Concept Study]",
+        "meta": "2024 • Spatial & Print",
+        "title": "Private Villa Architecture",
+        "summary": "Bespoke visual identity and spatial graphics package concept for an ultra-luxury eco-resort sanctuary nestled in Macao cliffs.",
+        "fullDescription": "Bespoke visual identity, custom serif ligature system, tactile blind-embossed cotton stationery, and architectural wayfinding concept for an eco-luxury sanctuary on the cliffs of Macao.",
+        "specs": "Deliverables: Brand Architecture, Custom Monogram, Architectural Signage, Tactile Print Suite • Location: Macao, RD • Status: Concept Study",
+        "location": "Macao • RD",
+        "alt": "Minimalist luxury brand identity presentation showcasing embossed letterpress stationery, black ink on warm alabaster textured paper, crisp serif typography and modern monograms."
+      },
+      "p3": {
+        "badge": "Packaging • Strategy",
+        "client": "Bávaro Coffee Co. [Concept Study]",
+        "meta": "2025 • Global Launch",
+        "title": "High-Altitude Roast Syndicate",
+        "summary": "End-to-end packaging narrative, social architecture, and digital campaign concept launching Dominican specialty coffee.",
+        "fullDescription": "End-to-end packaging narrative, matte lacquer canisters with carmine wax seals, and editorial launch strategy concept positioning Dominican single-origin mountain coffee for specialty markets.",
+        "specs": "Deliverables: Structural Packaging, Editorial Campaign, Digital Launch Strategy • Location: Bávaro, RD • Status: Concept Study",
+        "location": "Bávaro • RD",
+        "alt": "High contrast editorial packaging design for luxury Caribbean single-origin coffee brand, dark canisters with vivid typography and blind embossed carmine seals on marble counter."
+      }
+    }
+  },
+  "process": {
+    "kicker": "Our Protocol",
+    "title": "The 4-Stage Cadence",
+    "code": "[ISO-PROC-V4]",
+    "stages": {
+      "s1": {
+        "number": "01/",
+        "title": "Immersion & Strategy",
+        "description": "We deconstruct market friction, audience archetypes, and cultural resonance points through rigorous qualitative audits.",
+        "deliverable": "Deliverable: Strategic Codex"
+      },
+      "s2": {
+        "number": "02/",
+        "title": "Visual Direction",
+        "description": "Establishing stylistic tension through art direction, typography pairings, color palettes, and cinematic lighting treatises.",
+        "deliverable": "Deliverable: Art Direction Bible"
+      },
+      "s3": {
+        "number": "03/",
+        "title": "Rigorous Production",
+        "description": "Physical execution on studio stages and Caribbean locations with precision crews, high-end cine cameras, and master craftspeople.",
+        "deliverable": "Deliverable: Master Media Assets"
+      },
+      "s4": {
+        "number": "04/",
+        "title": "Cultural Launch",
+        "description": "Orchestrated public unveiling across digital nodes and spatial touchpoints, followed by real-time community sentiment tracking.",
+        "deliverable": "Deliverable: Market Deployment"
+      }
+    }
+  },
+  "testimonial": {
+    "kicker": "Editorial Perspective // Client Voices",
+    "sectionTitle": "What the brands we build with say",
+    "badge": "Sample Placement • Pending Client Verification",
+    "quote": "“Publimarca transformed our brand presence from a quiet regional luxury hotel into an international design pilgrimage. Their camera discipline and cultural instinct are peerless.”",
+    "author": "Hospitality Partner Attribution [Placeholder]",
+    "role": "Executive Leadership • Regional Luxury Hospitality Partner",
+    "location": "Santo Domingo / Higüey",
+    "items": {
+      "c1": {
+        "kicker": "Editorial Perspective // Hospitality Sector",
+        "badge": "01 / 04 • Sample Placement",
+        "quote": "“Publimarca transformed our brand presence from a quiet regional luxury hotel into an international design pilgrimage. Their camera discipline and cultural instinct are peerless.”",
+        "author": "Hospitality Partner Attribution [Placeholder]",
+        "role": "Executive Leadership • Regional Luxury Hospitality Partner",
+        "location": "Santo Domingo / Higüey"
+      },
+      "c2": {
+        "kicker": "Editorial Perspective // Real Estate & Architecture",
+        "badge": "02 / 04 • Sample Placement",
+        "quote": "“Their strategic clarity and visual direction gave our residential development an unmistakable identity. From print dossiers to architectural photography, every detail projected trust and solidity.”",
+        "author": "Construction & Real Estate Partner [Placeholder]",
+        "role": "Project Directorate • Eastern Real Estate Development Group",
+        "location": "Punta Cana / Bávaro"
+      },
+      "c3": {
+        "kicker": "Editorial Perspective // Distribution & Commerce",
+        "badge": "03 / 04 • Sample Placement",
+        "quote": "“Working with Publimarca allowed us to unify our commercial image across all our distribution points. Their ability to translate business goals into memorable graphic pieces made all the difference.”",
+        "author": "Commercial & Distribution Partner [Placeholder]",
+        "role": "General Management • Supply & Food Enterprise",
+        "location": "La Altagracia • DR"
+      },
+      "c4": {
+        "kicker": "Editorial Perspective // Financial Services & Mobility",
+        "badge": "04 / 04 • Sample Placement",
+        "quote": "“We needed a fresh, accessible, and credible communication system to connect with our community. The studio designed a campaign and digital ecosystem that immediately elevated our recognition.”",
+        "author": "Financial & Mobility Partner [Placeholder]",
+        "role": "Commercial Board • Financing & Services Division",
+        "location": "Higüey / Eastern Region"
+      }
+    }
+  },
+  "contact": {
+    "kicker": "Initiate Dialogue",
+    "title": "Commence Your Project",
+    "subtitle": "We accept a strictly limited number of commissions per quarter to ensure uncompromised devotion to each partner.",
+    "locLabel": "Studio Higüey",
+    "locValue": "Higüey, La Altagracia, Dominican Republic [Address Pending Verification]",
+    "emailLabel": "Dispatch Inbox",
+    "emailValue": "dispatch@publimarca.do",
+    "phoneLabel": "Direct Telephony",
+    "phoneValue": "+1 (809) 554-2040 [Placeholder — Pending Verification]",
+    "turnaround": "Standard briefing turnaround: 24–48 business hours. Confidentiality agreements executed on request.",
+    "form": {
+      "nameLabel": "Your Name / Title *",
+      "namePlaceholder": "e.g. Sofia Morales, Founder",
+      "companyLabel": "Corporate Entity / Venture *",
+      "companyPlaceholder": "e.g. Altagracia Living Group",
+      "emailLabel": "Direct Email *",
+      "emailPlaceholder": "smorales@company.com",
+      "phoneLabel": "Primary Telephone",
+      "phonePlaceholder": "+1 (809) 000-0000",
+      "capabilitiesLabel": "Capabilities Required",
+      "cap1": "Advertising & Consulting",
+      "cap2": "Graphic Design & Print",
+      "cap3": "Audiovisual & Photography",
+      "cap4": "Web Development",
+      "scopeLabel": "Project Context & Scope *",
+      "scopePlaceholder": "Outline your objectives, timeline considerations, and strategic aspirations...",
+      "ndaNote": "Protected by NDA Protocol",
+      "submitBtn": "Transmit Commission",
+      "submittingBtn": "Transmitting...",
+      "errors": {
+        "name": "Please enter your name and title.",
+        "company": "Please enter your company or venture name.",
+        "email": "Please enter a valid direct email address.",
+        "phone": "Please enter a valid telephone number (e.g. +1 809-000-0000).",
+        "scope": "Please provide at least 20 characters outlining your project scope."
+      },
+      "status": {
+        "confirmed": "Transmission confirmed by server. Our studio director will review your brief within 24–48 business hours.",
+        "noBackendTitle": "Backend Delivery Service Not Configured — Ready for Direct Dispatch:",
+        "noBackendBody": "The server did not record this submission because no live webhook or email API key is configured yet. You can dispatch your formatted brief directly via email or copy it below:",
+        "openMailto": "Open Pre-filled Email",
+        "copyBrief": "Copy Formatted Brief",
+        "copied": "Brief Copied to Clipboard"
+      }
+    }
+  },
+  "footer": {
+    "summary": "Modern editorial brutalism tempered by haute-couture refinement. Independent studio at the intersection of Caribbean cultural gravity and global architectural aesthetics.",
+    "coordTitle": "Studio Coordinates",
+    "coordLine1": "Higüey 23000, La Altagracia, Dominican Republic",
+    "coordLine2": "[Street Address Pending Verification]",
+    "coordGeo": "18°37'00\"N 68°42'30\"W • AST (UTC-4)",
+    "capTitle": "Core Capabilities",
+    "cap1": "Audiovisual & Cinematic Direction",
+    "cap2": "Brand Identity & Haute Graphic Design",
+    "cap3": "Cultural Editorial & Digital Strategy",
+    "cap4": "Spatial Architecture & Installation",
+    "cap5": "Social Media Architecture",
+    "indexTitle": "Index",
+    "manifesto": "Manifesto",
+    "commission": "Commission",
+    "transmissionTitle": "Transmission",
+    "phoneNote": "Tel: Pending Verification",
+    "socialPending": "[Social Handles Pending URLs]",
+    "copyright": "© 2025 Publimarca Studio. All rights reserved.",
+    "terms": "Terms & Intellectual Property"
+  }
+}

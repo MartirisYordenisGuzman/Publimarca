@@ -1,0 +1,453 @@
+{
+  "_source": "supabase",
+  "supabase": {
+    "url": "https://xdrfhluwpuavqpfbbowg.supabase.co",
+    "publishableKey": "sb_publishable_17C_Tf0kE4VVkoiqWDAbzg_pxcp7CmW",
+    "anonKey": ""
+  },
+  "section_visibility": {
+    "process": true,
+    "projects": true,
+    "services": true,
+    "manifesto": true,
+    "hero_video": true,
+    "industries": true,
+    "client_logos": true,
+    "testimonials": true
+  },
+  "site_settings": {
+    "hero_video_url": "/video_hero_publimarca.mp4",
+    "hero_live_badge_es": "Set en Vivo • Cámara A",
+    "hero_live_badge_en": "Live Stage • A-Cam Roll",
+    "hero_subheadline_es": "Atelier creativo independiente que opera en el punto exacto entre la gravedad cultural del Caribe y la precisión editorial global. Diseñamos narrativas cinematográficas, estética espacial e identidades gráficas inmutables.",
+    "hero_subheadline_en": "Independent creative atelier operating at the precise friction point between Caribbean cultural gravity and global editorial precision. We engineer cinematic narratives, spatial aesthetics, and immutable graphic identities.",
+    "manifesto_quote_es": "«No somos una agencia de plantillas. Somos un santuario de oficio, valentía estratégica y narrativa visual de alto impacto construido desde la médula cultural de la República Dominicana.»",
+    "manifesto_quote_en": "“Not an agency of templates. A sanctuary of craft, strategic courage, and high-impact visual storytelling built from the cultural marrow of the Dominican Republic.”",
+    "contact_address_es": "Higüey, La Altagracia, República Dominicana",
+    "contact_address_en": "Higüey, La Altagracia, Dominican Republic",
+    "contact_email": "martirisyordenysguzman@gmail.com",
+    "contact_phone": "+1 (809) 554-2040",
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": "465",
+    "smtp_user": "",
+    "smtp_pass": ""
+  },
+  "hero_videos": [
+    {
+      "id": "hv-1",
+      "url": "/video_hero_publimarca.mp4",
+      "title_es": "Showreel Principal Publimarca",
+      "title_en": "Publimarca Main Showreel",
+      "badge_es": "Set en Vivo • Cámara A",
+      "badge_en": "Live Stage • A-Cam Roll"
+    }
+  ],
+  "client_brands": [
+    {
+      "id": "cb-1",
+      "slug": "agmotors",
+      "name": "AGMOTORS",
+      "logo_url": "/Logos/LOGO%20AGMOTORS.png",
+      "instagram_url": "#",
+      "size": "compact"
+    },
+    {
+      "id": "cb-2",
+      "slug": "mallascontrol",
+      "name": "MALLAS CONTROL",
+      "logo_url": "/Logos/Logo%20mallas%20control.PNG",
+      "instagram_url": "#",
+      "size": "standard"
+    },
+    {
+      "id": "cb-3",
+      "slug": "cabrari",
+      "name": "CABRARI CARNES & LÁCTEOS",
+      "logo_url": "/Logos/CABRARI%20LOGO%20PNG.png",
+      "instagram_url": "#",
+      "size": "standard"
+    },
+    {
+      "id": "cb-4",
+      "slug": "inversionesabreu",
+      "name": "INVERSIONES ABREU CONTRERAS",
+      "logo_url": "/Logos/LOGO%20ABRE%20CONTRERAS.png",
+      "instagram_url": "#",
+      "size": "standard"
+    },
+    {
+      "id": "cb-5",
+      "slug": "paralelos",
+      "name": "PARALELOS INGENIEROS ARQUITECTOS",
+      "logo_url": "/Logos/logo%20paralelos.png",
+      "instagram_url": "#",
+      "size": "compact"
+    },
+    {
+      "id": "cb-6",
+      "slug": "dwillyempanadas",
+      "name": "D'WILLY EMPANADAS Y MÁS",
+      "logo_url": "/Logos/LOGO%20D%20WILLY%20EMPANADAS.png",
+      "instagram_url": "#",
+      "size": "standard"
+    },
+    {
+      "id": "cb-7",
+      "slug": "gregorioluperon",
+      "name": "POLITÉCNICO GREGORIO LUPERÓN",
+      "logo_url": "/Logos/LOGO%20GREGORIO%20LUPERON.png",
+      "instagram_url": "#",
+      "size": "medium"
+    }
+  ],
+  "services": [
+    {
+      "id": "s1",
+      "number": "01/",
+      "title_es": "Publicidad y Consultoría Estratégica",
+      "title_en": "Advertising & Strategic Consulting",
+      "tags_es": "Estrategia de Marca • Análisis de Mercado • Campañas Integrales",
+      "tags_en": "Brand Strategy • Market Analysis • Integrated Campaigns",
+      "desc_es": "Diseñamos rutas estratégicas y campañas publicitarias de alto impacto que conectan marcas con su audiencia ideal. Maximizamos el posicionamiento y retorno de inversión mediante consultoría de marketing especializada y orientada a resultados.",
+      "desc_en": "We design high-impact strategic roadmaps and advertising campaigns that connect brands with their ideal audience. We maximize positioning and return on investment through specialized, results-driven marketing consulting."
+    },
+    {
+      "id": "s2",
+      "number": "02/",
+      "title_es": "Diseño Gráfico e Impresión",
+      "title_en": "Graphic Design & Printing",
+      "tags_es": "Identidad Visual • Diseño Editorial • Producción Impresa",
+      "tags_en": "Visual Identity • Editorial Design • Print Production",
+      "desc_es": "Sistemas de identidad visual y diseño gráfico meticuloso, materializados a través de servicios de impresión de alta fidelidad. Creamos puntos de contacto físicos y digitales memorables que elevan la percepción de su marca.",
+      "desc_en": "Visual identity systems and meticulous graphic design brought to life through high-fidelity printing services. We craft memorable physical and digital touchpoints that elevate your brand perception."
+    },
+    {
+      "id": "s3",
+      "number": "03/",
+      "title_es": "Producción Audiovisual y Fotografía",
+      "title_en": "Audiovisual Production & Photography",
+      "tags_es": "Dirección de Arte • Cinematografía • Fotografía Comercial",
+      "tags_en": "Art Direction • Cinematography • Commercial Photography",
+      "desc_es": "Narrativas visuales cautivadoras a través de producción de video y servicios de fotografía profesional. Capturamos la esencia de su proyecto comercial o corporativo con los más altos estándares estéticos y técnicos.",
+      "desc_en": "Captivating visual narratives through video production and professional photography services. We capture the essence of your commercial or corporate project with the highest aesthetic and technical standards."
+    },
+    {
+      "id": "s4",
+      "number": "04/",
+      "title_es": "Desarrollo y Servicios Web",
+      "title_en": "Web Development & Digital Services",
+      "tags_es": "Diseño UI/UX • Desarrollo a Medida • Ecosistemas Digitales",
+      "tags_en": "UI/UX Design • Bespoke Development • Digital Ecosystems",
+      "desc_es": "Arquitectura digital y desarrollo de plataformas web responsivas. Traducimos la identidad de su marca en experiencias de usuario excepcionales, construyendo interfaces intuitivas y escalables para el entorno digital moderno.",
+      "desc_en": "Digital architecture and responsive web platform development. We translate your brand identity into exceptional user experiences, building intuitive and scalable interfaces for the modern digital landscape."
+    }
+  ],
+  "industries": [
+    {
+      "id": "ind-1",
+      "number": "01 —",
+      "title_es": "Construcción e inmobiliaria",
+      "title_en": "Construction & Real Estate",
+      "desc_es": "Proyectos, desarrollos y marcas que necesitan proyectar confianza.",
+      "desc_en": "Projects, developments, and brands that need to project trust and authority.",
+      "tag_es": "01 // Arquitectura y Desarrollo",
+      "tag_en": "01 // Architecture & Development",
+      "sub_es": "",
+      "sub_en": "",
+      "image_url": "https://images.unsplash.com/photo-1541888946425-d09bb18086f6?auto=format&fit=crop&w=1200&q=85",
+      "layout": "feature-dark"
+    },
+    {
+      "id": "ind-2",
+      "number": "02 —",
+      "title_es": "Distribución y alimentos",
+      "title_en": "Distribution & Food Supply",
+      "desc_es": "Productos, surtidoras y negocios que buscan fortalecer su presencia en el mercado.",
+      "desc_en": "Products, suppliers, and businesses looking to strengthen their market presence.",
+      "tag_es": "02 // Sector Comercial",
+      "tag_en": "02 // Commercial Sector",
+      "sub_es": "",
+      "sub_en": "",
+      "image_url": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1000&q=85",
+      "layout": "vertical-light"
+    },
+    {
+      "id": "ind-3",
+      "number": "03 —",
+      "title_es": "Motopréstamos y servicios financieros",
+      "title_en": "Vehicle Financing & Financial Services",
+      "desc_es": "Marcas que necesitan comunicar confianza, accesibilidad y credibilidad.",
+      "desc_en": "Brands that need to communicate trust, accessibility, and credibility.",
+      "tag_es": "03 // Finanzas y Movilidad",
+      "tag_en": "03 // Finance & Mobility",
+      "sub_es": "",
+      "sub_en": "",
+      "image_url": "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=900&q=85",
+      "layout": "monolith-dark"
+    },
+    {
+      "id": "ind-4",
+      "number": "04 —",
+      "title_es": "Restaurantes y gastronomía",
+      "title_en": "Restaurants & Gastronomy",
+      "desc_es": "Experiencias, productos y espacios que merecen ser vistos y recordados.",
+      "desc_en": "Experiences, culinary products, and spaces that deserve to be seen and remembered.",
+      "tag_es": "04 // Hospitalidad y Sabor",
+      "tag_en": "04 // Hospitality & Flavor",
+      "sub_es": "Dirección de Arte Culinaria",
+      "sub_en": "Culinary Art Direction",
+      "image_url": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1100&q=85",
+      "layout": "split-wide"
+    },
+    {
+      "id": "ind-5",
+      "number": "05 —",
+      "title_es": "Equipos y suministros industriales",
+      "title_en": "Industrial Equipment & Supplies",
+      "desc_es": "Soluciones especializadas que necesitan una comunicación clara y profesional.",
+      "desc_en": "Specialized technical solutions that require clear, authoritative communication.",
+      "tag_es": "05 // Precisión Técnica",
+      "tag_en": "05 // Technical Precision",
+      "sub_es": "",
+      "sub_en": "",
+      "image_url": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=900&q=85",
+      "layout": "horizontal-muted"
+    },
+    {
+      "id": "ind-6",
+      "number": "06 —",
+      "title_es": "Comercio y servicios",
+      "title_en": "Commerce & Services",
+      "desc_es": "Negocios que quieren destacar, conectar con sus clientes y crecer.",
+      "desc_en": "Businesses that want to stand out, connect with their customers, and grow.",
+      "tag_es": "06 // Expansión Comercial",
+      "tag_en": "06 // Commercial Growth",
+      "sub_es": "",
+      "sub_en": "",
+      "image_url": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=85",
+      "layout": "horizontal-light"
+    }
+  ],
+  "project_tags": [
+    {
+      "id": "tag-1",
+      "slug": "motion",
+      "label_es": "Cine",
+      "label_en": "Motion"
+    },
+    {
+      "id": "tag-2",
+      "slug": "identity",
+      "label_es": "Identidad",
+      "label_en": "Identity"
+    },
+    {
+      "id": "tag-3",
+      "slug": "spatial",
+      "label_es": "Espacial",
+      "label_en": "Spatial"
+    }
+  ],
+  "projects": [
+    {
+      "id": "p1",
+      "featured": true,
+      "categories": [
+        "motion"
+      ],
+      "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuAIwIZmv43bbeNfq9F2A8zdxlm5t5yE7Vy89Dg7mx0H4ZzYEi0dN9SCG5pKa0eNFsiQPzaG96vbhz4jXRDQ_CZOr8LG2AljBdzL3hU83CVaLBDkXvrAHduBA4LnbFqyJVuNJu6mZwlfYM0NvTvlv2oZwZMG-QXETcPDrGhlv9-n1bDHlT-1ArKEuMrfWlr2Pt5LthbeZHwWp1a99lG9zqCxKZhnBulp2yxnFAhfzGQ4",
+      "badge_es": "Filme Destacado • 35mm",
+      "badge_en": "Featured Film • 35mm",
+      "client_es": "Punta Cana Heritage [Estudio Conceptual]",
+      "client_en": "Punta Cana Heritage [Concept Study]",
+      "meta_es": "2024 • Comercial / Docu",
+      "meta_en": "2024 • Commercial / Docu",
+      "title_es": "Crónica de Sal y Piedra",
+      "title_en": "The Salt & Stone Chronicle",
+      "desc_es": "Concepto de antología cinematográfica en cuatro partes sobre desarrollos hoteleros patrimoniales, narrado por artesanos locales y concebido para celuloide Kodak de 35mm.",
+      "desc_en": "A four-part cinematic anthology concept documenting heritage luxury resort developments, narrated through local artisan voices and framed for Kodak 35mm stock.",
+      "specs_es": "Formato: 35mm y ARRI Alexa Mini LF • Relación de Aspecto: 2.39:1 Scope • Locación: Higüey / Punta Cana",
+      "specs_en": "Format: 35mm & ARRI Alexa Mini LF • Aspect Ratio: 2.39:1 Scope • Location: Higüey / Punta Cana",
+      "location": "Higüey • Punta Cana"
+    },
+    {
+      "id": "p2",
+      "featured": false,
+      "categories": [
+        "identity",
+        "spatial"
+      ],
+      "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuASda-Il1ENca_NnkmFrS5Zc_1aeqA7HKeB8OcmhYW-vJ13cdotL5ZW8a_HmK4eU0rQeDeJv5a4uXxnp2EQ5G94EyFHVHNS8-KE33RX44iSQSWyQt9W7-tieHYVnVgId9Vbz0cv2LHYiMK3NXGPokwUYwLmsSC8p-f9nEjMtUqjq7uhPGToHeD0zF23fMPaOynQwJQ23Od-2ptIwpnHoHAyL91DWAQ3nRJIF-OkLcR9",
+      "badge_es": "Sistema de Identidad",
+      "badge_en": "Identity System",
+      "client_es": "Casa Macao [Estudio Conceptual]",
+      "client_en": "Casa Macao [Concept Study]",
+      "meta_es": "2024 • Espacial e Impreso",
+      "meta_en": "2024 • Spatial & Print",
+      "title_es": "Arquitectura de Villa Privada",
+      "title_en": "Private Villa Architecture",
+      "desc_es": "Concepto de identidad visual a medida y gráfica espacial para un santuario eco-resort de ultralujo en los acantilados de Macao.",
+      "desc_en": "Bespoke visual identity and spatial graphics package concept for an ultra-luxury eco-resort sanctuary nestled in Macao cliffs.",
+      "specs_es": "Entregables: Arquitectura de Marca, Monograma Propio, Señalética Arquitectónica • Locación: Macao, RD",
+      "specs_en": "Deliverables: Brand Architecture, Custom Monogram, Architectural Signage • Location: Macao, RD",
+      "location": "Macao • RD"
+    },
+    {
+      "id": "p3",
+      "featured": false,
+      "categories": [
+        "identity"
+      ],
+      "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuBBcgZk-Qko0kePP1Md2JPqEVABdf_auZ69FWYQ_TlljB4mSNC2P8thwXrSvLhgJJX4cLTCS__onFrYv64hnH1Z6IVEpjub8_7g-bocPZYQfovre0ynMBrqo-3v_zEGLKogF7Eazi6sAD7ixa1HRyOSdftGc_QcVKWGYlYuo1Lp0QlTqVX8_L5Y7G4CZAj0NqeL49qv6hsjCZ6lpyt4cCDKXEsfWh-6a_gq8pnRET16",
+      "badge_es": "Empaque • Estrategia",
+      "badge_en": "Packaging • Strategy",
+      "client_es": "Bávaro Coffee Co. [Estudio Conceptual]",
+      "client_en": "Bávaro Coffee Co. [Concept Study]",
+      "meta_es": "2025 • Lanzamiento Global",
+      "meta_en": "2025 • Global Launch",
+      "title_es": "Sindicato de Tueste de Altura",
+      "title_en": "High-Altitude Roast Syndicate",
+      "desc_es": "Concepto integral de narrativa de empaque, arquitectura social y campaña digital para el lanzamiento de café dominicano de especialidad.",
+      "desc_en": "End-to-end packaging narrative, social architecture, and digital campaign concept launching Dominican specialty coffee.",
+      "specs_es": "Entregables: Empaque Estructural, Campaña Editorial, Estrategia Digital • Locación: Bávaro, RD",
+      "specs_en": "Deliverables: Structural Packaging, Editorial Campaign, Digital Strategy • Location: Bávaro, RD",
+      "location": "Bávaro • RD"
+    }
+  ],
+  "process_steps": [
+    {
+      "id": "proc-1",
+      "number": "01/",
+      "icon": "psychology",
+      "title_es": "Inmersión y Estrategia",
+      "title_en": "Inmersión y Estrategia",
+      "desc_es": "Deconstruimos la fricción del mercado, los arquetipos de audiencia y los puntos de resonancia cultural mediante auditorías cualitativas rigurosas.",
+      "desc_en": "Deconstruimos la fricción del mercado, los arquetipos de audiencia y los puntos de resonancia cultural mediante auditorías cualitativas rigurosas.",
+      "deliverable_es": "Entregable: Códice Estratégico",
+      "deliverable_en": "Entregable: Códice Estratégico"
+    },
+    {
+      "id": "proc-2",
+      "number": "02/",
+      "icon": "style",
+      "title_es": "Dirección Visual",
+      "title_en": "Dirección Visual",
+      "desc_es": "Establecemos tensión estilística mediante dirección de arte, maridajes tipográficos, paletas cromáticas y tratados de iluminación cinematográfica.",
+      "desc_en": "Establecemos tensión estilística mediante dirección de arte, maridajes tipográficos, paletas cromáticas y tratados de iluminación cinematográfica.",
+      "deliverable_es": "Entregable: Biblia de Dirección de Arte",
+      "deliverable_en": "Entregable: Biblia de Dirección de Arte"
+    },
+    {
+      "id": "proc-3",
+      "number": "03/",
+      "icon": "videocam",
+      "title_es": "Producción Rigurosa",
+      "title_en": "Producción Rigurosa",
+      "desc_es": "Ejecución física en sets de estudio y locaciones del Caribe con equipos de precisión, cámaras de cine de alta gama y maestros artesanos.",
+      "desc_en": "Ejecución física en sets de estudio y locaciones del Caribe con equipos de precisión, cámaras de cine de alta gama y maestros artesanos.",
+      "deliverable_es": "Entregable: Activos Maestros de Medios",
+      "deliverable_en": "Entregable: Activos Maestros de Medios"
+    },
+    {
+      "id": "proc-4",
+      "number": "04/",
+      "icon": "rocket_launch",
+      "title_es": "Lanzamiento Cultural",
+      "title_en": "Lanzamiento Cultural",
+      "desc_es": "Presentación pública orquestada en nodos digitales y puntos de contacto espaciales, seguida de monitoreo de sentimiento comunitario en tiempo real.",
+      "desc_en": "Presentación pública orquestada en nodos digitales y puntos de contacto espaciales, seguida de monitoreo de sentimiento comunitario en tiempo real.",
+      "deliverable_es": "Entregable: Despliegue de Mercado",
+      "deliverable_en": "Entregable: Despliegue de Mercado"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "test-1",
+      "kicker_es": "Perspectiva Editorial // Sector Hospitalidad",
+      "kicker_en": "Perspectiva Editorial // Sector Hospitalidad",
+      "badge_es": "01 / 04 • Muestra Editorial",
+      "badge_en": "01 / 04 • Muestra Editorial",
+      "quote_es": "«Publimarca transformó nuestra presencia de marca, pasando de ser un discreto hotel regional de lujo a un destino internacional de diseño. Su disciplina de cámara e instinto cultural son incomparables.»",
+      "quote_en": "«Publimarca transformó nuestra presencia de marca, pasando de ser un discreto hotel regional de lujo a un destino internacional de diseño. Su disciplina de cámara e instinto cultural son incomparables.»",
+      "author_es": "Atribución de Socio Hotelero [Marcador de Posición]",
+      "author_en": "Atribución de Socio Hotelero [Marcador de Posición]",
+      "role_es": "Dirección Ejecutiva • Grupo Regional de Hospitalidad de Lujo",
+      "role_en": "Dirección Ejecutiva • Grupo Regional de Hospitalidad de Lujo",
+      "location": "Higüey / Punta Cana"
+    },
+    {
+      "id": "test-2",
+      "kicker_es": "Perspectiva Editorial // Construcción e Inmobiliaria",
+      "kicker_en": "Perspectiva Editorial // Construcción e Inmobiliaria",
+      "badge_es": "02 / 04 • Muestra Editorial",
+      "badge_en": "02 / 04 • Muestra Editorial",
+      "quote_es": "«Su claridad estratégica y dirección visual le dieron a nuestro desarrollo inmobiliario una identidad inconfundible. Desde los dossiers impresos hasta la fotografía arquitectónica, cada detalle proyectó confianza y solidez.»",
+      "quote_en": "«Su claridad estratégica y dirección visual le dieron a nuestro desarrollo inmobiliario una identidad inconfundible. Desde los dossiers impresos hasta la fotografía arquitectónica, cada detalle proyectó confianza y solidez.»",
+      "author_es": "Socio de Construcción e Inmobiliaria [Marcador de Posición]",
+      "author_en": "Socio de Construcción e Inmobiliaria [Marcador de Posición]",
+      "role_es": "Dirección de Proyectos • Grupo Desarrollador del Este",
+      "role_en": "Dirección de Proyectos • Grupo Desarrollador del Este",
+      "location": "La Altagracia, RD"
+    },
+    {
+      "id": "test-3",
+      "kicker_es": "Perspectiva Editorial // Distribución y Comercio",
+      "kicker_en": "Perspectiva Editorial // Distribución y Comercio",
+      "badge_es": "03 / 04 • Muestra Editorial",
+      "badge_en": "03 / 04 • Muestra Editorial",
+      "quote_es": "«Trabajar con Publimarca nos permitió unificar nuestra imagen comercial en todos nuestros puntos de distribución. Su capacidad para traducir objetivos de negocio en piezas gráficas memorables marcó un antes y un después.»",
+      "quote_en": "«Trabajar con Publimarca nos permitió unificar nuestra imagen comercial en todos nuestros puntos de distribución. Su capacidad para traducir objetivos de negocio en piezas gráficas memorables marcó un antes y un después.»",
+      "author_es": "Socio Comercial y Distribución [Marcador de Posición]",
+      "author_en": "Socio Comercial y Distribución [Marcador de Posición]",
+      "role_es": "Gerencia General • Surtidora y Distribuidora Comercial",
+      "role_en": "Gerencia General • Surtidora y Distribuidora Comercial",
+      "location": "Higüey, RD"
+    },
+    {
+      "id": "test-4",
+      "kicker_es": "Perspectiva Editorial // Servicios Financieros y Movilidad",
+      "kicker_en": "Perspectiva Editorial // Servicios Financieros y Movilidad",
+      "badge_es": "04 / 04 • Muestra Editorial",
+      "badge_en": "04 / 04 • Muestra Editorial",
+      "quote_es": "«Necesitábamos una comunicación cercana, accesible y con alta credibilidad para conectar con nuestra comunidad. El estudio diseñó una campaña y un ecosistema visual que elevó nuestro reconocimiento de inmediato.»",
+      "quote_en": "«Necesitábamos una comunicación cercana, accesible y con alta credibilidad para conectar con nuestra comunidad. El estudio diseñó una campaña y un ecosistema visual que elevó nuestro reconocimiento de inmediato.»",
+      "author_es": "Socio Financiero y Automotriz [Marcador de Posición]",
+      "author_en": "Socio Financiero y Automotriz [Marcador de Posición]",
+      "role_es": "Consejo Comercial • División de Financiamiento y Servicios",
+      "role_en": "Consejo Comercial • División de Financiamiento y Servicios",
+      "location": "Región Este, RD"
+    }
+  ],
+  "commissions": [
+    {
+      "id": "3e81277a-d9ee-5750-a966-ea965fb6b5c7",
+      "name": "martiris",
+      "company": "dksl",
+      "email": "dkjsk@gmail.com",
+      "phone": "7298374912",
+      "capabilities": [
+        "Graphic Design & Printing",
+        "Web Development & Digital Services"
+      ],
+      "scope": "HHAHDSLKHFLKADJLFKAJLDKJFALKDJSALF",
+      "locale": "es",
+      "status": "nuevo",
+      "created_at": "2026-11-09T07:39:30.266238+00:00"
+    },
+    {
+      "id": "d4c4d7db-d987-5206-8a51-418a35e92302",
+      "name": "Sofía Morales, Directora General",
+      "company": "Grupo Altagracia Living",
+      "email": "smorales@altagracialiving.do",
+      "phone": "+1 (809) 555-0192",
+      "capabilities": [
+        "Publicidad y Consultoría",
+        "Diseño Gráfico e Impresión"
+      ],
+      "scope": "Buscamos rediseñar la identidad visual completa e implementar una campaña publicitaria integral para nuestro nuevo desarrollo inmobiliario en Punta Cana.",
+      "locale": "es",
+      "status": "nuevo",
+      "created_at": "2026-11-02T20:00:00+00:00"
+    }
+  ]
+}

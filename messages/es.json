@@ -1,0 +1,334 @@
+{
+  "metadata": {
+    "title": "Publimarca Studio — Atelier Creativo Independiente | Higüey, República Dominicana",
+    "description": "Atelier creativo independiente en el punto exacto entre la fuerza cultural del Caribe y la precisión editorial global. Producción audiovisual, identidad de marca, narrativa social y diseño espacial."
+  },
+  "topbar": {
+    "coordinates": "Higüey • Rep. Dominicana [18°37'N 68°42'W]",
+    "status": "Aceptando Comisiones para Q3/Q4",
+    "timezone": "AST / UTC-4"
+  },
+  "nav": {
+    "skipToContent": "Saltar al contenido principal",
+    "work": "Proyectos",
+    "services": "Servicios",
+    "industries": "Industrias",
+    "about": "Manifiesto",
+    "process": "Proceso",
+    "cta": "Iniciar Proyecto",
+    "openMenu": "Abrir menú de navegación",
+    "closeMenu": "Cerrar menú de navegación",
+    "langLabel": "Cambiar idioma"
+  },
+  "hero": {
+    "badge": "Despacho del Estudio",
+    "location": "Higüey, RD [18°37'N]",
+    "headlinePrefix": "Forjamos",
+    "headlineHighlight": "Relevancia Cultural",
+    "headlineSuffix": "para marcas ambiciosas.",
+    "subheadline": "Atelier creativo independiente que opera en el punto exacto entre la gravedad cultural del Caribe y la precisión editorial global. Diseñamos narrativas cinematográficas, estética espacial e identidades gráficas inmutables.",
+    "ctaPrimary": "Trabaja con Nosotros",
+    "ctaSecondary": "Explorar Proyectos",
+    "archiveYears": "[2024–2025]",
+    "metric1Val": "04",
+    "metric1Label": "Disciplinas Clave",
+    "metric2Val": "35mm",
+    "metric2Label": "Flujo Nativo en 35mm",
+    "metric3Val": "100%",
+    "metric3Label": "Producción a Medida",
+    "liveStage": "Set en Vivo • Cámara A",
+    "clientsLabel": "Empresas y Marcas con las que Trabajamos",
+    "plateLabel": "Placa 01 // Estudio Higüey",
+    "plateSpecs": "ISO 800 • T1.9",
+    "plateCaption": "Dirección de fotografía para muestra patrimonial [Estudio Conceptual].",
+    "imageAlt": "Fotografía de estudio de producción cinematográfica mostrando a una directora de cine operando una cámara de alta gama en un set industrial con iluminación dramática y tonos editoriales cálidos."
+  },
+  "manifesto": {
+    "kicker": "Manifiesto N.º 01",
+    "code": "DO-CUR-2025",
+    "sub": "La Filosofía",
+    "body": "En una era saturada de feeds algorítmicos sintéticos e imágenes desechables basadas en plantillas, Publimarca opera como un contramovimiento deliberado.",
+    "quote": "«No somos una agencia de plantillas. Somos un santuario de oficio, valentía estratégica y narrativa visual de alto impacto construido desde la médula cultural de la República Dominicana.»",
+    "author": "— Directiva del Estudio",
+    "location": "Sede Central Higüey",
+    "revision": "Rev. 04.2"
+  },
+  "services": {
+    "kicker": "Directorio de Servicios • Sección 02",
+    "title": "Enfoque Disciplinario",
+    "subtitle": "Módulos estructurados diseñados para hospitalidad de lujo, empresas disruptivas y conglomerados culturales.",
+    "items": {
+      "s1": {
+        "number": "01/",
+        "capabilityKey": "Advertising & Strategic Consulting",
+        "title": "Publicidad y Consultoría Estratégica",
+        "tags": "Estrategia de Marca • Análisis de Mercado • Campañas Integrales",
+        "description": "Diseñamos rutas estratégicas y campañas publicitarias de alto impacto que conectan marcas con su audiencia ideal. Maximizamos el posicionamiento y retorno de inversión mediante consultoría de marketing especializada y orientada a resultados."
+      },
+      "s2": {
+        "number": "02/",
+        "capabilityKey": "Graphic Design & Printing",
+        "title": "Diseño Gráfico e Impresión",
+        "tags": "Identidad Visual • Diseño Editorial • Producción Impresa",
+        "description": "Sistemas de identidad visual y diseño gráfico meticuloso, materializados a través de servicios de impresión de alta fidelidad. Creamos puntos de contacto físicos y digitales memorables que elevan la percepción de su marca."
+      },
+      "s3": {
+        "number": "03/",
+        "capabilityKey": "Audiovisual Production & Photography",
+        "title": "Producción Audiovisual y Fotografía",
+        "tags": "Dirección de Arte • Cinematografía • Fotografía Comercial",
+        "description": "Narrativas visuales cautivadoras a través de producción de video y servicios de fotografía profesional. Capturamos la esencia de su proyecto comercial o corporativo con los más altos estándares estéticos y técnicos."
+      },
+      "s4": {
+        "number": "04/",
+        "capabilityKey": "Web Development & Digital Services",
+        "title": "Desarrollo y Servicios Web",
+        "tags": "Diseño UI/UX • Desarrollo a Medida • Ecosistemas Digitales",
+        "description": "Arquitectura digital y desarrollo de plataformas web responsivas. Traducimos la identidad de su marca en experiencias de usuario excepcionales, construyendo interfaces intuitivas y escalables para el entorno digital moderno."
+      }
+    }
+  },
+  "industries": {
+    "label": "SOLUCIONES PARA CADA INDUSTRIA",
+    "headlineMain": "Cada industria tiene su propio lenguaje.",
+    "headlineAccent": "Nosotros sabemos hablarlo.",
+    "intro": "No existen dos negocios iguales. Cada sector tiene sus propios desafíos, audiencias y oportunidades. Por eso, en Publimarca no trabajamos con fórmulas genéricas: desarrollamos soluciones creativas y estrategias de comunicación que se adaptan a la realidad de cada marca.",
+    "supporting": "Conectamos ideas, imágenes y estrategias con industrias como:",
+    "closingTitle": "Diferentes industrias. Una misma visión creativa.",
+    "closingBody": "Desde la identidad visual hasta la producción audiovisual, el diseño gráfico y la estrategia digital, ponemos la creatividad al servicio de cada negocio.",
+    "highlightPhrase": "Tu industria puede ser diferente. Nuestra creatividad sabe adaptarse.",
+    "cta": "HABLEMOS DE TU PROYECTO",
+    "items": {
+      "i1": {
+        "number": "01 —",
+        "title": "Construcción e inmobiliaria",
+        "description": "Proyectos, desarrollos y marcas que necesitan proyectar confianza.",
+        "tag": "01 // Desarrollo & Arquitectura"
+      },
+      "i2": {
+        "number": "02 —",
+        "title": "Distribución y alimentos",
+        "description": "Productos, surtidoras y negocios que buscan fortalecer su presencia en el mercado.",
+        "tag": "02 // Sector Comercial"
+      },
+      "i3": {
+        "number": "03 —",
+        "title": "Motopréstamos y servicios financieros",
+        "description": "Marcas que necesitan comunicar confianza, accesibilidad y credibilidad.",
+        "tag": "03 // Finanzas y Movilidad"
+      },
+      "i4": {
+        "number": "04 —",
+        "title": "Restaurantes y gastronomía",
+        "description": "Experiencias, productos y espacios que merecen ser vistos y recordados.",
+        "tag": "04 // Hospitalidad y Sabor",
+        "sub": "Dirección de Arte Culinaria"
+      },
+      "i5": {
+        "number": "05 —",
+        "title": "Equipos y suministros industriales",
+        "description": "Soluciones especializadas que necesitan una comunicación clara y profesional.",
+        "tag": "05 // Precisión Técnica"
+      },
+      "i6": {
+        "number": "06 —",
+        "title": "Comercio y servicios",
+        "description": "Negocios que quieren destacar, conectar con sus clientes y crecer.",
+        "tag": "06 // Expansión Comercial"
+      }
+    }
+  },
+  "works": {
+    "kicker": "Índice de Obras",
+    "placeholderBadge": "Estudios Conceptuales • Archivo Muestra",
+    "title": "Proyectos Seleccionados",
+    "filterLabel": "Filtrar proyectos por disciplina",
+    "filters": {
+      "all": "Todos",
+      "motion": "Cine",
+      "identity": "Identidad",
+      "spatial": "Espacial"
+    },
+    "inspectBtn": "Inspeccionar Expediente",
+    "modalNote": "Dossier de producción completo disponible tras firma de NDA.",
+    "modalCta": "Comisionar Alcance Similar",
+    "closeModal": "Cerrar expediente de proyecto",
+    "projects": {
+      "p1": {
+        "badge": "Filme Destacado • 35mm",
+        "client": "Punta Cana Heritage [Estudio Conceptual]",
+        "meta": "2024 • Comercial / Docu",
+        "title": "Crónica de Sal y Piedra",
+        "summary": "Concepto de antología cinematográfica en cuatro partes sobre desarrollos hoteleros patrimoniales, narrado por artesanos locales y concebido para celuloide Kodak de 35mm.",
+        "fullDescription": "Concepto de antología cinematográfica en cuatro partes sobre desarrollos hoteleros patrimoniales en la costa este dominicana, narrado por artesanos locales y diseñado para celuloide Kodak Vision3 de 35mm.",
+        "specs": "Formato: 35mm y ARRI Alexa Mini LF • Relación de Aspecto: 2.39:1 Scope • Locación: Higüey / Punta Cana • Estado: Estudio Conceptual",
+        "location": "Higüey • Punta Cana",
+        "alt": "Fotograma editorial de alta moda y cine rodado en locación en Punta Cana, República Dominicana, con arquitectura tropical brutalista en hormigón e iluminación al atardecer."
+      },
+      "p2": {
+        "badge": "Sistema de Identidad",
+        "client": "Casa Macao [Estudio Conceptual]",
+        "meta": "2024 • Espacial e Impreso",
+        "title": "Arquitectura de Villa Privada",
+        "summary": "Concepto de identidad visual a medida y gráfica espacial para un santuario eco-resort de ultralujo en los acantilados de Macao.",
+        "fullDescription": "Concepto de identidad visual a medida, sistema de ligaduras serif personalizadas, papelería en algodón con grabado en seco y señalética arquitectónica para un santuario eco-lujo en los acantilados de Macao.",
+        "specs": "Entregables: Arquitectura de Marca, Monograma Propio, Señalética Arquitectónica, Papelería Táctil • Locación: Macao, RD • Estado: Estudio Conceptual",
+        "location": "Macao • RD",
+        "alt": "Presentación de identidad de marca minimalista de lujo con papelería impresa en relieve sobre papel texturizado color alabastro y tipografía serif nítida."
+      },
+      "p3": {
+        "badge": "Empaque • Estrategia",
+        "client": "Bávaro Coffee Co. [Estudio Conceptual]",
+        "meta": "2025 • Lanzamiento Global",
+        "title": "Sindicato de Tueste de Altura",
+        "summary": "Concepto integral de narrativa de empaque, arquitectura social y campaña digital para el lanzamiento de café dominicano de especialidad.",
+        "fullDescription": "Concepto integral de narrativa de empaque, cilindros en laca mate con sellos carmín y estrategia editorial de lanzamiento para posicionar el café dominicano de origen único en mercados de especialidad.",
+        "specs": "Entregables: Empaque Estructural, Campaña Editorial, Estrategia Digital de Lanzamiento • Locación: Bávaro, RD • Estado: Estudio Conceptual",
+        "location": "Bávaro • RD",
+        "alt": "Diseño de empaque editorial de alto contraste para marca caribeña de café de especialidad, envases oscuros con tipografía vibrante y sellos carmín en relieve."
+      }
+    }
+  },
+  "process": {
+    "kicker": "Nuestro Protocolo",
+    "title": "La Cadencia de 4 Etapas",
+    "code": "[ISO-PROC-V4]",
+    "stages": {
+      "s1": {
+        "number": "01/",
+        "title": "Inmersión y Estrategia",
+        "description": "Deconstruimos la fricción del mercado, los arquetipos de audiencia y los puntos de resonancia cultural mediante auditorías cualitativas rigurosas.",
+        "deliverable": "Entregable: Códice Estratégico"
+      },
+      "s2": {
+        "number": "02/",
+        "title": "Dirección Visual",
+        "description": "Establecemos tensión estilística mediante dirección de arte, maridajes tipográficos, paletas cromáticas y tratados de iluminación cinematográfica.",
+        "deliverable": "Entregable: Biblia de Dirección de Arte"
+      },
+      "s3": {
+        "number": "03/",
+        "title": "Producción Rigurosa",
+        "description": "Ejecución física en sets de estudio y locaciones del Caribe con equipos de precisión, cámaras de cine de alta gama y maestros artesanos.",
+        "deliverable": "Entregable: Activos Maestros de Medios"
+      },
+      "s4": {
+        "number": "04/",
+        "title": "Lanzamiento Cultural",
+        "description": "Presentación pública orquestada en nodos digitales y puntos de contacto espaciales, seguida de monitoreo de sentimiento comunitario en tiempo real.",
+        "deliverable": "Entregable: Despliegue de Mercado"
+      }
+    }
+  },
+  "testimonial": {
+    "kicker": "Perspectiva Editorial // Voces de Clientes",
+    "sectionTitle": "Lo que dicen las marcas que construyen con nosotros",
+    "badge": "Muestra de Diseño • Pendiente Verificación de Cliente",
+    "quote": "«Publimarca transformó nuestra presencia de marca, pasando de ser un discreto hotel regional de lujo a un destino internacional de diseño. Su disciplina de cámara e instinto cultural son incomparables.»",
+    "author": "Atribución de Socio Hotelero [Marcador de Posición]",
+    "role": "Dirección Ejecutiva • Grupo Regional de Hospitalidad de Lujo",
+    "location": "Santo Domingo / Higüey",
+    "items": {
+      "c1": {
+        "kicker": "Perspectiva Editorial // Sector Hospitalidad",
+        "badge": "01 / 04 • Muestra Editorial",
+        "quote": "«Publimarca transformó nuestra presencia de marca, pasando de ser un discreto hotel regional de lujo a un destino internacional de diseño. Su disciplina de cámara e instinto cultural son incomparables.»",
+        "author": "Atribución de Socio Hotelero [Marcador de Posición]",
+        "role": "Dirección Ejecutiva • Grupo Regional de Hospitalidad de Lujo",
+        "location": "Santo Domingo / Higüey"
+      },
+      "c2": {
+        "kicker": "Perspectiva Editorial // Construcción e Inmobiliaria",
+        "badge": "02 / 04 • Muestra Editorial",
+        "quote": "«Su claridad estratégica y dirección visual le dieron a nuestro desarrollo inmobiliario una identidad inconfundible. Desde los dossiers impresos hasta la fotografía arquitectónica, cada detalle proyectó confianza y solidez.»",
+        "author": "Socio de Construcción e Inmobiliaria [Marcador de Posición]",
+        "role": "Dirección de Proyectos • Grupo Desarrollador del Este",
+        "location": "Punta Cana / Bávaro"
+      },
+      "c3": {
+        "kicker": "Perspectiva Editorial // Distribución y Comercio",
+        "badge": "03 / 04 • Muestra Editorial",
+        "quote": "«Trabajar con Publimarca nos permitió unificar nuestra imagen comercial en todos nuestros puntos de distribución. Su capacidad para traducir objetivos de negocio en piezas gráficas memorables marcó un antes y un después.»",
+        "author": "Socio Comercial y Distribución [Marcador de Posición]",
+        "role": "Gerencia General • Surtidora y Distribuidora Comercial",
+        "location": "La Altagracia • RD"
+      },
+      "c4": {
+        "kicker": "Perspectiva Editorial // Servicios Financieros y Movilidad",
+        "badge": "04 / 04 • Muestra Editorial",
+        "quote": "«Necesitábamos una comunicación cercana, accesible y con alta credibilidad para conectar con nuestra comunidad. El estudio diseñó una campaña y un ecosistema visual que elevó nuestro reconocimiento de inmediato.»",
+        "author": "Socio Financiero y Automotriz [Marcador de Posición]",
+        "role": "Consejo Comercial • División de Financiamiento y Servicios",
+        "location": "Higüey / Región Este"
+      }
+    }
+  },
+  "contact": {
+    "kicker": "Iniciar Diálogo",
+    "title": "Comience su Proyecto",
+    "subtitle": "Aceptamos un número estrictamente limitado de comisiones por trimestre para garantizar una dedicación absoluta a cada socio.",
+    "locLabel": "Estudio Higüey",
+    "locValue": "Higüey, La Altagracia, República Dominicana [Dirección Pendiente de Verificación]",
+    "emailLabel": "Buzón de Despacho",
+    "emailValue": "dispatch@publimarca.do",
+    "phoneLabel": "Telefonía Directa",
+    "phoneValue": "+1 (809) 554-2040 [Marcador — Pendiente de Verificación]",
+    "turnaround": "Tiempo estándar de respuesta: 24–48 horas hábiles. Acuerdos de confidencialidad (NDA) disponibles bajo solicitud.",
+    "form": {
+      "nameLabel": "Su Nombre / Cargo *",
+      "namePlaceholder": "ej. Sofía Morales, Fundadora",
+      "companyLabel": "Entidad Corporativa / Empresa *",
+      "companyPlaceholder": "ej. Grupo Altagracia Living",
+      "emailLabel": "Correo Directo *",
+      "emailPlaceholder": "smorales@empresa.com",
+      "phoneLabel": "Teléfono Principal",
+      "phonePlaceholder": "+1 (809) 000-0000",
+      "capabilitiesLabel": "Capacidades Requeridas",
+      "cap1": "Publicidad y Consultoría",
+      "cap2": "Diseño Gráfico e Impresión",
+      "cap3": "Audiovisual y Fotografía",
+      "cap4": "Desarrollo Web",
+      "scopeLabel": "Contexto y Alcance del Proyecto *",
+      "scopePlaceholder": "Describa sus objetivos, consideraciones de cronograma y aspiraciones estratégicas...",
+      "ndaNote": "Protegido bajo Protocolo NDA",
+      "submitBtn": "Transmitir Comisión",
+      "submittingBtn": "Transmitiendo...",
+      "errors": {
+        "name": "Por favor ingrese su nombre y cargo.",
+        "company": "Por favor ingrese el nombre de su empresa o proyecto.",
+        "email": "Por favor ingrese un correo electrónico válido.",
+        "phone": "Por favor ingrese un número telefónico válido (ej. +1 809-000-0000).",
+        "scope": "Por favor describa el alcance de su proyecto (mínimo 20 caracteres)."
+      },
+      "status": {
+        "confirmed": "Transmisión confirmada por el servidor. Nuestro director de estudio revisará su brief en 24–48 horas hábiles.",
+        "noBackendTitle": "Servicio de Entrega No Configurado — Listo para Envío Directo:",
+        "noBackendBody": "El servidor no registró este envío porque aún no se ha configurado un webhook o clave de API de correo en vivo. Puede enviar su brief formateado directamente por correo o copiarlo a continuación:",
+        "openMailto": "Abrir Correo Prellenado",
+        "copyBrief": "Copiar Brief Formateado",
+        "copied": "Brief Copiado al Portapapeles"
+      }
+    }
+  },
+  "footer": {
+    "summary": "Brutalismo editorial moderno templado por un refinamiento de alta costura. Estudio independiente en la intersección de la fuerza cultural caribeña y la estética arquitectónica global.",
+    "coordTitle": "Coordenadas del Estudio",
+    "coordLine1": "Higüey 23000, La Altagracia, República Dominicana",
+    "coordLine2": "[Dirección Física Pendiente de Verificación]",
+    "coordGeo": "18°37'00\"N 68°42'30\"W • AST (UTC-4)",
+    "capTitle": "Capacidades Clave",
+    "cap1": "Dirección Audiovisual y Cinematográfica",
+    "cap2": "Identidad de Marca y Alta Gráfica",
+    "cap3": "Editorial Cultural y Estrategia Digital",
+    "cap4": "Arquitectura Espacial e Instalaciones",
+    "cap5": "Arquitectura de Redes Sociales",
+    "indexTitle": "Índice",
+    "manifesto": "Manifiesto",
+    "commission": "Comisión",
+    "transmissionTitle": "Transmisión",
+    "phoneNote": "Tel: Pendiente de Verificación",
+    "socialPending": "[Perfiles Sociales Pendientes de URL]",
+    "copyright": "© 2025 Publimarca Studio. Todos los derechos reservados.",
+    "terms": "Términos y Propiedad Intelectual"
+  }
+}

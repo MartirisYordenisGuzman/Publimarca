@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Control &amp; Supabase CMS — Publimarca Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Outfit", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-[#FBFBF9] text-[#101014] font-sans antialiased min-h-screen flex flex-col">
+  <!-- Hidden global file input for uploading images/videos -->
+  <input type="file" id="global-file-uploader" class="hidden" />
+
+  <!-- Authentication Login Screen Overlay -->
+  <div id="admin-login-screen" class="fixed inset-0 z-50 bg-[#FBFBF9] flex items-center justify-center p-6">
+    <div class="w-full max-w-md bg-white rounded-3xl border border-[#E5E5DF] shadow-xl p-8 sm:p-10 space-y-6">
+      <div class="text-center space-y-2">
+        <a href="/es" class="inline-flex items-center justify-center mb-1">
+          <img src="/logo%202.png" alt="Publimarca Studio" class="h-14 w-auto object-contain" />
+        </a>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F4F4F0] border border-[#E5E5DF]">
+          <span class="w-2 h-2 rounded-full bg-[#A01318]"></span>
+          <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-[#101014]">Acceso Restringido • Estudio</span>
+        </div>
+        <h1 class="font-display text-2xl font-bold uppercase text-[#101014] pt-1">Iniciar Sesión en el Panel</h1>
+        <p class="text-xs text-[#52525B] leading-relaxed">
+          Ingresa tus credenciales de administrador para gestionar las secciones dinámicas y la base de datos de Publimarca Studio.
+        </p>
+      </div>
+
+      <form id="admin-login-form" class="space-y-4" novalidate>
+        <div>
+          <label for="login-email" class="block text-xs font-bold uppercase text-[#404048] mb-1.5">Correo o Usuario Administrador *</label>
+          <input
+            id="login-email"
+            name="email"
+            type="text"
+            required
+            autocomplete="username"
+            placeholder="admin@publimarca.do"
+            class="w-full bg-[#FBFBF9] px-4 py-3 text-[#101014] placeholder:text-[#7A7A75] text-sm rounded-xl border border-[#E0E0D8] focus:outline-none focus:border-[#A01318] focus:ring-1 focus:ring-[#A01318] transition-all"
+          />
+          <p id="err-login-email" class="hidden mt-1.5 text-xs text-[#A01318] font-medium" role="alert"></p>
+        </div>
+
+        <div>
+          <label for="login-password" class="block text-xs font-bold uppercase text-[#404048] mb-1.5">Contraseña *</label>
+          <div class="relative">
+            <input
+              id="login-password"
+              name="password"
+              type="password"
+              required
+              autocomplete="current-password"
+              placeholder="••••••••••••"
+              class="w-full bg-[#FBFBF9] pl-4 pr-11 py-3 text-[#101014] placeholder:text-[#7A7A75] text-sm rounded-xl border border-[#E0E0D8] focus:outline-none focus:border-[#A01318] focus:ring-1 focus:ring-[#A01318] transition-all"
+            />
+            <button
+              type="button"
+              id="toggle-login-pwd"
+              aria-label="Mostrar u ocultar contraseña"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-[#52525B] hover:text-[#101014] flex items-center justify-center"
+            >
+              <span id="toggle-login-pwd-icon" class="material-symbols-outlined text-[18px]">visibility</span>
+            </button>
+          </div>
+          <p id="err-login-password" class="hidden mt-1.5 text-xs text-[#A01318] font-medium" role="alert"></p>
+        </div>
+
+        <div class="flex items-center justify-between pt-1">
+          <label class="inline-flex items-center gap-2 cursor-pointer text-xs text-[#52525B]">
+            <input type="checkbox" id="login-remember" checked class="rounded border-[#E0E0D8] text-[#A01318] focus:ring-[#A01318]" />
+            <span>Mantener sesión iniciada</span>
+          </label>
+          <a href="/es" class="text-xs font-bold text-[#00758C] hover:text-[#A01318] transition-colors">← Volver al sitio</a>
+        </div>
+
+        <div id="login-error-box" class="hidden p-3.5 rounded-xl bg-[#A01318]/10 border border-[#A01318]/30 text-xs text-[#A01318] font-medium" role="alert"></div>
+
+        <button
+          type="submit"
+          id="login-submit-btn"
+          class="w-full py-3.5 px-6 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center justify-center gap-2"
+        >
+          <span class="material-symbols-outlined text-[16px]">lock_open</span>
+          <span id="login-submit-label">Acceder al Panel de Control</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Top Admin Header -->
+  <header id="admin-app-header" class="hidden sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-[#E5E5DF] px-6 py-4">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <a href="/es" class="flex items-center gap-3">
+          <img src="/logo%202.png" alt="Publimarca" class="h-10 w-auto object-contain" />
+        </a>
+        <span class="h-5 w-px bg-[#E5E5DF]"></span>
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#30B4D7] animate-pulse"></span>
+          <span class="font-display font-bold text-xs uppercase tracking-widest text-[#101014]">Panel de Control Dinámico &amp; Supabase CMS</span>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <span id="sync-badge" class="px-3 py-1.5 rounded-full bg-[#F4F4F0] border border-[#E5E5DF] text-[11px] font-mono text-[#52525B]">
+          Almacenamiento Local + Supabase Ready
+        </span>
+        <span id="admin-user-badge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F8F8F5] border border-[#E5E5DF] text-[11px] font-mono text-[#101014]">
+          <span class="material-symbols-outlined text-[14px] text-[#00758C]">verified_user</span>
+          <span id="admin-user-email">admin@publimarca.do</span>
+        </span>
+        <button type="button" id="global-save-btn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#A01318] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#800F13] transition-colors shadow-sm">
+          <span class="material-symbols-outlined text-[16px]">cloud_upload</span>
+          <span>Guardar Todo</span>
+        </button>
+        <a href="/es" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#101014] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#00758C] transition-colors">
+          <span>Ver Sitio Web</span>
+          <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+        </a>
+        <button type="button" id="admin-logout-btn" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white hover:bg-[#F4F4F0] text-[#52525B] hover:text-[#A01318] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-colors" title="Cerrar Sesión">
+          <span class="material-symbols-outlined text-[16px]">logout</span>
+          <span class="hidden md:inline">Salir</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <div id="admin-app-workspace" class="hidden max-w-7xl w-full mx-auto flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 px-6 py-8">
+    <!-- Left Sidebar Navigation -->
+    <aside class="lg:col-span-3 space-y-1.5">
+      <div class="px-3 pb-2 text-[10px] font-mono uppercase tracking-widest text-[#52525B] font-semibold">
+        Control de Secciones
+      </div>
+
+      <button type="button" data-tab="visibility" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-[#101014] text-white text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px]">visibility</span>
+          <span>Visibilidad de Secciones</span>
+        </span>
+      </button>
+
+      <button type="button" data-tab="herovideo" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px]">smart_display</span>
+          <span>Video del Hero</span>
+        </span>
+        <span id="herovideo-count-badge" class="text-[10px] font-mono text-[#52525B]">01</span>
+      </button>
+
+      <button type="button" data-tab="logos" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px]">Burst_mode</span>
+          <span>Barra de Logos</span>
+        </span>
+        <span id="logos-count-badge" class="text-[10px] font-mono text-[#52525B]">07</span>
+      </button>
+
+      <button type="button" data-tab="services" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px]">design_services</span>
+          <span>Enfoque Disciplinario</span>
+        </span>
+        <span id="services-count-badge" class="text-[10px] font-mono text-[#52525B]">04</span>
+      </button>
+
+      <button type="button" data-tab="industries" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px]">domain</span>
+          <span>Industrias</span>
+        </span>
+        <span id="industries-count-badge" class="text-[10px] font-mono text-[#52525B]">06</span>
+      </button>
+
+      <button type="button" data-tab="projects" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px]">perm_media</span>
+          <span>Proyectos Seleccionados</span>
+        </span>
+        <span id="projects-count-badge" class="text-[10px] font-mono text-[#52525B]">03</span>
+      </button>
+
+      <button type="button" data-tab="process" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px]">account_tree</span>
+          <span>Nuestro Protocolo</span>
+        </span>
+        <span id="process-count-badge" class="text-[10px] font-mono text-[#52525B]">04</span>
+      </button>
+
+      <button type="button" data-tab="testimonials" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px]">format_quote</span>
+          <span>Comentarios</span>
+        </span>
+        <span id="testimonials-count-badge" class="text-[10px] font-mono text-[#52525B]">04</span>
+      </button>
+
+      <div class="pt-3 px-3 pb-1 text-[10px] font-mono uppercase tracking-widest text-[#52525B] font-semibold">
+        Operaciones y Cloud
+      </div>
+
+      <button type="button" data-tab="commissions" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px]">inbox</span>
+          <span>Solicitudes / Leads</span>
+        </span>
+        <span id="leads-count-badge" class="px-2 py-0.5 rounded-full bg-[#A01318] text-white text-[10px] font-mono">0</span>
+      </button>
+
+      <button type="button" data-tab="settings" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px]">tune</span>
+          <span>Textos Hero &amp; Contacto</span>
+        </span>
+      </button>
+
+      <button type="button" data-tab="supabase" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px] text-[#00758C]">database</span>
+          <span>Conexión Supabase</span>
+        </span>
+      </button>
+    </aside>
+
+    <!-- Right Content Panels -->
+    <main class="lg:col-span-9 space-y-6">
+      <!-- Toast Alert -->
+      <div id="admin-toast" class="hidden p-4 rounded-2xl bg-[#101014] text-white text-xs font-semibold uppercase tracking-wider flex items-center justify-between shadow-lg">
+        <span id="admin-toast-text">Cambios guardados y sincronizados.</span>
+        <span class="material-symbols-outlined text-[#30B4D7] text-[18px]">check_circle</span>
+      </div>
+
+      <!-- TAB 0: VISIBILITY OVERVIEW -->
+      <section id="panel-visibility" class="admin-panel space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#00758C] block mb-1">Control Maestro de Página</span>
+              <h1 class="font-display text-2xl font-bold uppercase">Visibilidad de Secciones Dinámicas</h1>
+              <p class="text-xs text-[#52525B] mt-1">
+                Activa o desactiva cualquier sección para mostrarla u ocultarla instantáneamente en la página final (<strong>/es</strong> y <strong>/en</strong>).
+              </p>
+            </div>
+            <button type="button" id="save-visibility-btn" class="px-6 py-3 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px]">save</span>
+              <span>Guardar Visibilidad</span>
+            </button>
+          </div>
+          <div id="visibility-toggles-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+      </section>
+
+      <!-- TAB 1: HERO VIDEO PLAYLIST & SLIDER -->
+      <section id="panel-herovideo" class="admin-panel hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#A01318] block mb-1">Reproductor Secuencial y Deslizante</span>
+              <h2 class="font-display text-2xl font-bold uppercase">Videos del Hero</h2>
+              <p class="text-xs text-[#52525B] mt-1">
+                Reemplaza el video actual o añade varios videos. Si hay más de uno, se reproducirán automáticamente uno tras otro y el usuario podrá deslizarlos horizontalmente.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="button" id="add-hero-video-btn" class="px-4 py-2.5 rounded-full bg-[#F4F4F0] hover:bg-[#101014] hover:text-white text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">add_circle</span>
+                <span>Añadir Video</span>
+              </button>
+              <button type="button" id="save-herovideo-btn" class="px-6 py-2.5 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px]">save</span>
+                <span>Guardar Videos</span>
+              </button>
+            </div>
+          </div>
+          <div id="hero-videos-editor-list" class="space-y-5"></div>
+        </div>
+      </section>
+
+      <!-- TAB 2: CLIENT LOGOS MARQUEE -->
+      <section id="panel-logos" class="admin-panel hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#00758C] block mb-1">Cinta Desplazable Inferior del Hero</span>
+              <h2 class="font-display text-2xl font-bold uppercase">Barra de Logos y Enlaces</h2>
+              <p class="text-xs text-[#52525B] mt-1">
+                Añade o elimina logos, sube archivos PNG/SVG y asigna los enlaces (URL / Instagram / Web) a los que apuntará cada marca.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="button" id="add-logo-btn" class="px-4 py-2.5 rounded-full bg-[#F4F4F0] hover:bg-[#101014] hover:text-white text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+                <span>Añadir Logo</span>
+              </button>
+              <button type="button" id="save-logos-btn" class="px-6 py-2.5 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px]">save</span>
+                <span>Guardar Logos</span>
+              </button>
+            </div>
+          </div>
+          <div id="logos-editor-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+      </section>
+
+      <!-- TAB 3: DISCIPLINARY SERVICES -->
+      <section id="panel-services" class="admin-panel hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#00758C] block mb-1">Directorio de Servicios • Sección 02</span>
+              <h2 class="font-display text-2xl font-bold uppercase">Enfoque Disciplinario</h2>
+              <p class="text-xs text-[#52525B] mt-1">
+                Edita los servicios existentes, añade nuevas capacidades o elimina las que no necesites.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="button" id="add-service-btn" class="px-4 py-2.5 rounded-full bg-[#F4F4F0] hover:bg-[#101014] hover:text-white text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+                <span>Añadir Servicio</span>
+              </button>
+              <button type="button" id="save-services-btn" class="px-6 py-2.5 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px]">save</span>
+                <span>Guardar Servicios</span>
+              </button>
+            </div>
+          </div>
+          <div id="services-editor-list" class="space-y-6"></div>
+        </div>
+      </section>
+
+      <!-- TAB 4: INDUSTRIES WE SERVE -->
+      <section id="panel-industries" class="admin-panel hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#A01318] block mb-1">Sectores y Especialidades</span>
+              <h2 class="font-display text-2xl font-bold uppercase">Soluciones para Cada Industria</h2>
+              <p class="text-xs text-[#52525B] mt-1">
+                Cambia las fotografías de cada industria, edita sus textos, añade nuevas industrias o elimina las existentes.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="button" id="add-industry-btn" class="px-4 py-2.5 rounded-full bg-[#F4F4F0] hover:bg-[#101014] hover:text-white text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+                <span>Añadir Industria</span>
+              </button>
+              <button type="button" id="save-industries-btn" class="px-6 py-2.5 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px]">save</span>
+                <span>Guardar Industrias</span>
+              </button>
+            </div>
+          </div>
+          <div id="industries-editor-list" class="space-y-6"></div>
+        </div>
+      </section>
+
+      <!-- TAB 5: PORTFOLIO PROJECTS & TAG FILTERING -->
+      <section id="panel-projects" class="admin-panel hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#A01318] block mb-1">Archivo de Obras y Casos de Estudio</span>
+              <h2 class="font-display text-2xl font-bold uppercase">Proyectos Seleccionados</h2>
+              <p class="text-xs text-[#52525B] mt-1">
+                Añade proyectos, sube imágenes y asígnales <strong>Tags</strong> (Cine, Identidad, Espacial o personalizados) para filtrarlos tanto aquí como en la página web.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="button" id="add-project-btn" class="px-4 py-2.5 rounded-full bg-[#F4F4F0] hover:bg-[#101014] hover:text-white text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+                <span>Añadir Proyecto</span>
+              </button>
+              <button type="button" id="save-projects-btn" class="px-6 py-2.5 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px]">save</span>
+                <span>Guardar Portafolio</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Editable Project Tags Manager (project_tags table) -->
+          <div class="p-5 rounded-2xl bg-[#F8F8F5] border border-[#E5E5DF] mb-6 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-widest text-[#00758C] block">Tabla project_tags • Filtros Dinámicos</span>
+                <h3 class="text-sm font-bold uppercase text-[#101014]">Gestor de Tags deProyectos Seleccionados</h3>
+                <p class="text-xs text-[#52525B]">Edita el nombre de cada tag (Español / Inglés), su identificador (slug), añade nuevos tags o elimina los que no necesites.</p>
+              </div>
+              <button type="button" id="add-project-tag-btn" class="px-3.5 py-2 rounded-full bg-[#101014] hover:bg-[#A01318] text-white text-[11px] font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[15px]">new_label</span>
+                <span>Añadir Tag</span>
+              </button>
+            </div>
+            <div id="project-tags-editor-list" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+          </div>
+
+          <!-- Admin Tag Filter Bar -->
+          <div class="flex flex-wrap items-center gap-2 pb-5 mb-5 border-b border-[#EBEBE6]" id="admin-project-tag-filters"></div>
+
+          <div id="projects-editor-list" class="space-y-6"></div>
+        </div>
+      </section>
+
+      <!-- TAB 6: OUR PROTOCOL (PROCESS STEPS) -->
+      <section id="panel-process" class="admin-panel hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#00758C] block mb-1">Metodología del Estudio</span>
+              <h2 class="font-display text-2xl font-bold uppercase">Nuestro Protocolo (Etapas)</h2>
+              <p class="text-xs text-[#52525B] mt-1">
+                Edita las etapas del protocolo de trabajo, añade nuevos pasos o elimina los existentes.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="button" id="add-process-btn" class="px-4 py-2.5 rounded-full bg-[#F4F4F0] hover:bg-[#101014] hover:text-white text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+                <span>Añadir Etapa</span>
+              </button>
+              <button type="button" id="save-process-btn" class="px-6 py-2.5 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px]">save</span>
+                <span>Guardar Protocolo</span>
+              </button>
+            </div>
+          </div>
+          <div id="process-editor-list" class="space-y-5"></div>
+        </div>
+      </section>
+
+      <!-- TAB 7: TESTIMONIALS / EDITORIAL PERSPECTIVE CAROUSEL -->
+      <section id="panel-testimonials" class="admin-panel hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#A01318] block mb-1">Carrusel de Tarjetas Apiladas</span>
+              <h2 class="font-display text-2xl font-bold uppercase">Sección de Comentarios (Perspectiva Editorial)</h2>
+              <p class="text-xs text-[#52525B] mt-1">
+                Edita las tarjetas de comentarios que rotan automáticamente en el carrusel, añade nuevos testimonios o elimina los existentes.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="button" id="add-testimonial-btn" class="px-4 py-2.5 rounded-full bg-[#F4F4F0] hover:bg-[#101014] hover:text-white text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+                <span>Añadir Comentario</span>
+              </button>
+              <button type="button" id="save-testimonials-btn" class="px-6 py-2.5 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px]">save</span>
+                <span>Guardar Comentarios</span>
+              </button>
+            </div>
+          </div>
+          <div id="testimonials-editor-list" class="space-y-5"></div>
+        </div>
+      </section>
+
+      <!-- TAB 8: COMMISSIONS / LEADS -->
+      <section id="panel-commissions" class="admin-panel hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#A01318] block mb-1">Buzón de Recepción • Tabla commissions</span>
+              <h2 class="font-display text-2xl font-bold uppercase">Solicitudes de Proyectos (Leads)</h2>
+              <p class="text-xs text-[#52525B] mt-1">
+                Cada formulario enviado en la web se guarda automáticamente en la tabla <code class="px-1.5 py-0.5 bg-[#F4F4F0] rounded font-mono">commissions</code> de Supabase y dispara una notificación al Correo de Recepción configurado en la pestaña Textos y Contacto.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button type="button" id="sync-leads-btn" class="px-4 py-2 rounded-full bg-[#00758C] hover:bg-[#005e70] text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors">
+                <span class="material-symbols-outlined text-[16px]">cloud_sync</span>
+                <span>Sincronizar Buzón con Supabase</span>
+              </button>
+              <button type="button" id="refresh-leads-btn" class="px-4 py-2 rounded-full bg-[#F4F4F0] hover:bg-[#E5E5DF] text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors">
+                <span class="material-symbols-outlined text-[16px]">refresh</span>
+                <span>Actualizar</span>
+              </button>
+            </div>
+          </div>
+          <div id="commissions-list" class="space-y-4"></div>
+        </div>
+      </section>
+
+      <!-- TAB 9: HERO TEXTS, MANIFESTO & CONTACT SETTINGS -->
+      <section id="panel-settings" class="admin-panel hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#00758C] block mb-1">Configuración Editorial</span>
+              <h2 class="font-display text-2xl font-bold uppercase">Textos del Hero, Manifiesto y Contacto</h2>
+            </div>
+            <button type="button" id="save-settings-btn" class="px-6 py-3 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px]">save</span>
+              <span>Guardar Configuración</span>
+            </button>
+          </div>
+
+          <div class="space-y-6">
+            <div>
+              <label class="block text-xs font-bold uppercase text-[#52525B] mb-1.5">Subtítulo del Hero (Español)</label>
+              <textarea id="set-hero-sub-es" rows="2" class="w-full rounded-xl border-[#E0E0D8] text-sm"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase text-[#52525B] mb-1.5">Cita del Manifiesto N.º 01 (Español)</label>
+              <textarea id="set-manifesto-es" rows="3" class="w-full rounded-xl border-[#E0E0D8] text-sm"></textarea>
+            </div>
+
+            <div class="pt-4 border-t border-[#EBEBE6] space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <span class="text-xs font-bold uppercase tracking-widest text-[#00758C] block mb-1">Coordenadas de Contacto y Destino de Formularios</span>
+                  <p class="text-xs text-[#52525B]">El correo que escribas en <strong>Correo de Recepción</strong> recibirá automáticamente cada solicitud enviada desde el formulario de la página.</p>
+                </div>
+                <button type="button" id="test-email-btn" class="px-4 py-2 rounded-full bg-[#00758C] hover:bg-[#005e70] text-white text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px]">forward_to_inbox</span>
+                  <span>Enviar Correo de Prueba</span>
+                </button>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-[#52525B] mb-1.5">Dirección Física</label>
+                  <input id="set-contact-address" type="text" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-[#A01318] mb-1.5">Correo de Recepción (Recibe los Formularios) *</label>
+                  <input id="set-contact-email" type="email" placeholder="tucorreo@gmail.com" class="w-full rounded-xl border-[#E0E0D8] text-sm font-semibold" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-[#52525B] mb-1.5">Teléfono Directo / WhatsApp</label>
+                  <input id="set-contact-phone" type="text" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+                </div>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-[#F8F8F5] border border-[#E5E5DF] space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-[#101014]">Configuración SMTP Directa (Opcional — Para envío inmediato desde tu Gmail/Correo)</span>
+                  <span class="text-[10px] font-mono text-[#52525B]">Si se deja en blanco, se usa envío automático FormSubmit</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                  <div>
+                    <label class="block text-[10px] font-bold uppercase text-[#52525B] mb-1">Servidor SMTP</label>
+                    <input id="set-smtp-host" type="text" placeholder="smtp.gmail.com" class="w-full rounded-lg border-[#E0E0D8] text-xs font-mono" />
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-bold uppercase text-[#52525B] mb-1">Puerto</label>
+                    <input id="set-smtp-port" type="text" placeholder="465" class="w-full rounded-lg border-[#E0E0D8] text-xs font-mono" />
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-bold uppercase text-[#52525B] mb-1">Usuario SMTP (Correo)</label>
+                    <input id="set-smtp-user" type="email" placeholder="tu-correo@gmail.com" class="w-full rounded-lg border-[#E0E0D8] text-xs font-mono" />
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-bold uppercase text-[#52525B] mb-1">Contraseña de Aplicación SMTP</label>
+                    <input id="set-smtp-pass" type="password" placeholder="xxxx xxxx xxxx xxxx" class="w-full rounded-lg border-[#E0E0D8] text-xs font-mono" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin Credentials Management -->
+            <div class="pt-6 border-t border-[#EBEBE6] space-y-4">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-[#A01318] block mb-1">Seguridad del Panel</span>
+                <h3 class="font-display text-lg font-bold uppercase text-[#101014]">Actualizar Credenciales de Administrador</h3>
+                <p class="text-xs text-[#52525B]">Cambia el correo/usuario o la contraseña con la que inicias sesión en este panel de control.</p>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-[#52525B] mb-1.5">Nuevo Correo / Usuario</label>
+                  <input id="sec-new-email" type="text" placeholder="admin@publimarca.do" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-[#52525B] mb-1.5">Contraseña Actual *</label>
+                  <input id="sec-current-pwd" type="password" placeholder="Contraseña actual" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-[#52525B] mb-1.5">Nueva Contraseña (mín. 6 caracteres) *</label>
+                  <input id="sec-new-pwd" type="password" placeholder="Nueva contraseña" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+                </div>
+              </div>
+              <div>
+                <button type="button" id="change-password-btn" class="px-5 py-2.5 rounded-full bg-[#101014] hover:bg-[#A01318] text-white text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px]">key</span>
+                  <span>Actualizar Contraseña de Acceso</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 10: SUPABASE CONNECTION -->
+      <section id="panel-supabase" class="admin-panel hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm space-y-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-[#00758C] block mb-1">Infraestructura Cloud</span>
+            <h2 class="font-display text-2xl font-bold uppercase">Conexión y Sincronización con Supabase</h2>
+            <p class="text-sm text-[#52525B] mt-1">
+              Conecta tu proyecto de Supabase para respaldar y sincronizar en la nube todas las secciones dinámicas (visibilidad, videos del hero, barra de logos, servicios, industrias, proyectos, protocolo y comentarios). Ejecuta primero <code class="px-2 py-0.5 bg-[#F4F4F0] rounded font-mono text-xs">supabase/schema.sql</code> en el SQL Editor de Supabase.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-[#52525B] mb-1.5">URL del Proyecto Supabase (Project URL)</label>
+              <input id="sb-url" type="url" placeholder="https://xxxxxxxxxxxx.supabase.co" class="w-full rounded-xl border-[#E0E0D8] font-mono text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-[#52525B] mb-1.5">Publishable / Anon Public Key</label>
+              <input id="sb-pub-key" type="text" placeholder="sb_publishable_... o eyJhbGci..." class="w-full rounded-xl border-[#E0E0D8] font-mono text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-[#52525B] mb-1.5">Service Role / Secret Key (Para escritura desde el Panel)</label>
+              <input id="sb-key" type="password" placeholder="sb_secret_... o eyJhbGci..." class="w-full rounded-xl border-[#E0E0D8] font-mono text-sm" />
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <button type="button" id="save-supabase-btn" class="px-6 py-3 rounded-full bg-[#101014] hover:bg-[#A01318] text-white text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px]">cloud_sync</span>
+              <span>Guardar Credenciales y Sincronizar con Supabase</span>
+            </button>
+            <button type="button" id="seed-supabase-btn" class="px-5 py-3 rounded-full bg-[#00758C] hover:bg-[#005e70] text-white text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px]">database</span>
+              <span>Enviar Datos Actuales / Por Defecto a Supabase</span>
+            </button>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-[#F8F8F5] border border-[#E5E5DF] space-y-2 text-xs text-[#52525B]">
+            <p class="font-bold uppercase text-[#101014]">Flujo de Sincronización Bidireccional Activo:</p>
+            <p>• Al conectar la <strong>Project URL</strong> y las llaves, la página principal (<code class="px-1.5 py-0.5 bg-white rounded border">GET /api/cms</code>) carga toda la información directamente desde las tablas de Supabase.</p>
+            <p>• Cada vez que presionas <strong>Guardar</strong> en cualquier pestaña de este panel (<code class="px-1.5 py-0.5 bg-white rounded border">POST /api/cms</code>), los cambios (incluyendo nuevos elementos, ediciones, tags o eliminaciones) se actualizan automáticamente en Supabase.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      let cmsState = null;
+      let activeProjectTagFilter = "all";
+      let pendingUploadCallback = null;
+      const AUTH_STORAGE_KEY = "publimarca_admin_token";
+
+      function getAuthToken() {
+        return localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY) || "";
+      }
+
+      function setAuthToken(token, remember) {
+        if (remember) {
+          localStorage.setItem(AUTH_STORAGE_KEY, token);
+          sessionStorage.removeItem(AUTH_STORAGE_KEY);
+        } else {
+          sessionStorage.setItem(AUTH_STORAGE_KEY, token);
+          localStorage.removeItem(AUTH_STORAGE_KEY);
+        }
+      }
+
+      function clearAuthToken() {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        sessionStorage.removeItem(AUTH_STORAGE_KEY);
+      }
+
+      function getAuthHeaders(extraHeaders) {
+        const headers = Object.assign({ "Content-Type": "application/json" }, extraHeaders || {});
+        const token = getAuthToken();
+        if (token) {
+          headers["Authorization"] = "Bearer " + token;
+        }
+        return headers;
+      }
+
+      function showAuthenticatedApp(user) {
+        document.getElementById("admin-login-screen").classList.add("hidden");
+        document.getElementById("admin-app-header").classList.remove("hidden");
+        document.getElementById("admin-app-workspace").classList.remove("hidden");
+        if (user && user.email) {
+          const emailBadge = document.getElementById("admin-user-email");
+          if (emailBadge) emailBadge.textContent = user.email;
+          const secEmail = document.getElementById("sec-new-email");
+          if (secEmail && !secEmail.value) secEmail.value = user.email;
+        }
+        fetchCMS();
+      }
+
+      function showLoginScreen() {
+        document.getElementById("admin-login-screen").classList.remove("hidden");
+        document.getElementById("admin-app-header").classList.add("hidden");
+        document.getElementById("admin-app-workspace").classList.add("hidden");
+      }
+
+      const SECTION_META = [
+        { key: "hero_video", title: "Video del Hero", desc: "Marco audiovisual derecho del Hero con lista de reproducción y deslizamiento horizontal", icon: "smart_display", tab: "herovideo" },
+        { key: "client_logos", title: "Barra de Logos", desc: "Cinta desplazable inferior del Hero con logos de clientes y links", icon: "Burst_mode", tab: "logos" },
+        { key: "services", title: "Directorio de Servicios", desc: "Sección Enfoque Disciplinario (Publicidad, Diseño, Audiovisual, Web...)", icon: "design_services", tab: "services" },
+        { key: "industries", title: "Soluciones para Cada Industria", desc: "Composición editorial asimétrica de sectores e industrias", icon: "domain", tab: "industries" },
+        { key: "projects", title: "Proyectos Seleccionados", desc: "Portafolio de casos de estudio filtrables por tags", icon: "perm_media", tab: "projects" },
+        { key: "process", title: "Nuestro Protocolo", desc: "La Cadencia de Etapas / Metodología de trabajo", icon: "account_tree", tab: "process" },
+        { key: "testimonials", title: "Sección de Comentarios", desc: "Carrusel de tarjetas apiladas de Perspectiva Editorial", icon: "format_quote", tab: "testimonials" },
+        { key: "manifesto", title: "Manifiesto N.º 01", desc: "Cinta curatorial de filosofía del estudio", icon: "menu_book", tab: "settings" }
+      ];
+
+      const STANDARD_PROJECT_TAGS = [
+        { id: "motion", label: "Cine (motion)" },
+        { id: "identity", label: "Identidad (identity)" },
+        { id: "spatial", label: "Espacial (spatial)" },
+        { id: "web", label: "Web / Digital (web)" },
+        { id: "print", label: "Impresión (print)" }
+      ];
+
+      function showToast(msg) {
+        const toast = document.getElementById("admin-toast");
+        const text = document.getElementById("admin-toast-text");
+        if (!toast || !text) return;
+        text.textContent = msg;
+        toast.classList.remove("hidden");
+        setTimeout(() => toast.classList.add("hidden"), 3500);
+      }
+
+      // File Uploader Helper
+      const fileInput = document.getElementById("global-file-uploader");
+      function triggerFileUpload(accept, callback) {
+        pendingUploadCallback = callback;
+        fileInput.setAttribute("accept", accept || "*/*");
+        fileInput.value = "";
+        fileInput.click();
+      }
+
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file || !pendingUploadCallback) return;
+        const reader = new FileReader();
+        showToast("Subiendo archivo " + file.name + "...");
+        reader.onload = async () => {
+          try {
+            const res = await fetch("/api/upload", {
+              method: "POST",
+              headers: getAuthHeaders(),
+              body: JSON.stringify({
+                filename: file.name,
+                dataUrl: reader.result
+              })
+            });
+            if (res.status === 401) {
+              clearAuthToken();
+              showLoginScreen();
+              return;
+            }
+            const data = await res.json();
+            if (data && data.ok && data.url) {
+              pendingUploadCallback(data.url);
+              showToast("Archivo subido correctamente: " + data.url);
+            } else {
+              showToast("Error al subir archivo.");
+            }
+          } catch (e) {
+            showToast("Error de red al subir archivo.");
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Tab Navigation
+      const tabBtns = document.querySelectorAll(".admin-tab");
+      const panels = document.querySelectorAll(".admin-panel");
+      function switchTab(target) {
+        tabBtns.forEach((b) => {
+          const active = b.getAttribute("data-tab") === target;
+          b.className = active
+            ? "admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-[#101014] text-white text-xs font-bold uppercase tracking-wider transition-all"
+            : "admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all";
+        });
+        panels.forEach((p) => {
+          if (p.id === "panel-" + target) {
+            p.classList.remove("hidden");
+          } else {
+            p.classList.add("hidden");
+          }
+        });
+      }
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", () => switchTab(btn.getAttribute("data-tab")));
+      });
+
+      async function fetchCMS() {
+        const res = await fetch("/api/cms");
+        cmsState = await res.json();
+        ensureDefaults();
+        renderAll();
+      }
+
+      function ensureDefaults() {
+        if (!cmsState.section_visibility) {
+          cmsState.section_visibility = {
+            hero_video: true,
+            client_logos: true,
+            manifesto: true,
+            services: true,
+            industries: true,
+            projects: true,
+            process: true,
+            testimonials: true
+          };
+        }
+        if (!Array.isArray(cmsState.hero_videos) || cmsState.hero_videos.length === 0) {
+          cmsState.hero_videos = [
+            {
+              id: "hv-1",
+              url: (cmsState.site_settings && cmsState.site_settings.hero_video_url) || "/video_hero_publimarca.mp4",
+              title_es: "Showreel Principal Publimarca",
+              title_en: "Publimarca Main Showreel",
+              badge_es: (cmsState.site_settings && cmsState.site_settings.hero_live_badge_es) || "Set en Vivo • Cámara A",
+              badge_en: (cmsState.site_settings && cmsState.site_settings.hero_live_badge_en) || "Live Stage • A-Cam Roll"
+            }
+          ];
+        }
+        if (!Array.isArray(cmsState.client_brands)) cmsState.client_brands = [];
+        if (!Array.isArray(cmsState.services)) cmsState.services = [];
+        if (!Array.isArray(cmsState.industries)) cmsState.industries = [];
+        if (!Array.isArray(cmsState.project_tags) || cmsState.project_tags.length === 0) {
+          cmsState.project_tags = [
+            { id: "tag-motion", slug: "motion", label_es: "Cine", label_en: "Motion" },
+            { id: "tag-identity", slug: "identity", label_es: "Identidad", label_en: "Identity" },
+            { id: "tag-spatial", slug: "spatial", label_es: "Espacial", label_en: "Spatial" }
+          ];
+        }
+        if (!Array.isArray(cmsState.projects)) cmsState.projects = [];
+        if (!Array.isArray(cmsState.process_steps)) cmsState.process_steps = [];
+        if (!Array.isArray(cmsState.testimonials)) cmsState.testimonials = [];
+      }
+
+      async function saveCMS(sectionMessage) {
+        collectAllInputsIntoState();
+        const res = await fetch("/api/cms", {
+          method: "POST",
+          headers: getAuthHeaders(),
+          body: JSON.stringify(cmsState)
+        });
+        if (res.status === 401) {
+          clearAuthToken();
+          showLoginScreen();
+          showToast("Tu sesión ha expirado. Inicia sesión nuevamente.");
+          return;
+        }
+        if (res.ok) {
+          const out = await res.json();
+          const sbNote = out.supabase && out.supabase.synced ? " (Sincronizado con Supabase)" : "";
+          showToast((sectionMessage || "Cambios guardados y publicados en el sitio.") + sbNote);
+          renderAll();
+        }
+      }
+
+      // 0. Render Section Visibility Toggles
+      function renderVisibility() {
+        const grid = document.getElementById("visibility-toggles-grid");
+        if (!grid || !cmsState) return;
+        grid.innerHTML = "";
+        const vis = cmsState.section_visibility;
+
+        SECTION_META.forEach((sec) => {
+          const isVisible = vis[sec.key] !== false;
+          const card = document.createElement("div");
+          card.className = `p-5 rounded-2xl border transition-all flex items-center justify-between gap-4 ${
+            isVisible ? "bg-[#FBFBF9] border-[#E5E5DF]" : "bg-[#F4F4F0]/60 border-[#E5E5DF] opacity-75"
+          }`;
+          card.innerHTML = `
+            <div class="flex items-start gap-3.5">
+              <div class="w-10 h-10 rounded-xl ${isVisible ? "bg-[#101014] text-white" : "bg-[#E5E5DF] text-[#52525B]"} flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[20px]">${sec.icon}</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-sm font-bold uppercase text-[#101014]">${sec.title}</h3>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase ${
+                    isVisible ? "bg-emerald-100 text-emerald-800 font-bold" : "bg-zinc-200 text-zinc-600"
+                  }">${isVisible ? "Visible" : "Oculto"}</span>
+                </div>
+                <p class="text-xs text-[#52525B] mt-1 leading-relaxed">${sec.desc}</p>
+                <button type="button" data-goto-tab="${sec.tab}" class="mt-2 text-[11px] font-bold uppercase tracking-wider text-[#00758C] hover:text-[#A01318] inline-flex items-center gap-1">
+                  <span>Editar Contenido</span>
+                  <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </button>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0">
+              <input type="checkbox" data-vis-toggle="${sec.key}" class="sr-only peer" ${isVisible ? "checked" : ""} />
+              <div class="w-12 h-7 bg-zinc-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#A01318]"></div>
+            </label>
+          `;
+          grid.appendChild(card);
+        });
+
+        grid.querySelectorAll("[data-vis-toggle]").forEach((chk) => {
+          chk.addEventListener("change", () => {
+            const key = chk.getAttribute("data-vis-toggle");
+            cmsState.section_visibility[key] = chk.checked;
+            saveCMS(`Sección "${key}" marcada como ${chk.checked ? "VISIBLE" : "OCULTA"}.`);
+          });
+        });
+
+        grid.querySelectorAll("[data-goto-tab]").forEach((btn) => {
+          btn.addEventListener("click", () => switchTab(btn.getAttribute("data-goto-tab")));
+        });
+      }
+
+      // 1. Render Hero Videos Playlist
+      function renderHeroVideos() {
+        const list = document.getElementById("hero-videos-editor-list");
+        const badge = document.getElementById("herovideo-count-badge");
+        if (!list || !cmsState) return;
+        const videos = cmsState.hero_videos || [];
+        if (badge) badge.textContent = String(videos.length).padStart(2, "0");
+        list.innerHTML = "";
+
+        videos.forEach((v, idx) => {
+          const item = document.createElement("div");
+          item.className = "p-6 rounded-2xl bg-[#FBFBF9] border border-[#E5E5DF] space-y-4";
+          item.innerHTML = `
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-full bg-[#101014] text-white font-mono text-xs font-bold">Video #${idx + 1}</span>
+                <span class="text-xs font-bold uppercase text-[#52525B]">${idx === 0 ? "Reproducción Inicial" : "Siguiente en Secuencia Horizontal"}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" data-move-hv="${idx}" data-dir="-1" class="px-2.5 py-1 rounded-lg bg-white border border-[#E5E5DF] text-xs font-bold hover:bg-[#F4F4F0]" ${idx === 0 ? "disabled opacity-40" : ""}>↑</button>
+                <button type="button" data-move-hv="${idx}" data-dir="1" class="px-2.5 py-1 rounded-lg bg-white border border-[#E5E5DF] text-xs font-bold hover:bg-[#F4F4F0]" ${idx === videos.length - 1 ? "disabled opacity-40" : ""}>↓</button>
+                <button type="button" data-upload-hv="${idx}" class="px-3 py-1.5 rounded-full bg-[#00758C] text-white text-[11px] font-bold uppercase tracking-wider hover:bg-[#005e70] inline-flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[15px]">upload_file</span>
+                  <span>Subir MP4</span>
+                </button>
+                ${
+                  videos.length > 1
+                    ? `<button type="button" data-del-hv="${idx}" class="px-3 py-1.5 rounded-full bg-white border border-[#E5E5DF] text-[#A01318] hover:bg-[#A01318] hover:text-white text-[11px] font-bold uppercase tracking-wider inline-flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[15px]">delete</span>
+                        <span>Eliminar</span>
+                      </button>`
+                    : ""
+                }
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              <div class="md:col-span-4 rounded-xl overflow-hidden bg-[#101014] aspect-video border border-[#E5E5DF]">
+                <video src="${v.url}" class="w-full h-full object-cover" muted playsinline controls preload="metadata"></video>
+              </div>
+              <div class="md:col-span-8 space-y-3">
+                <div>
+                  <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Ruta o URL del Archivo de Video (.mp4 / .webm)</label>
+                  <input type="text" data-hv-field="url" data-hv-idx="${idx}" value="${v.url || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Título Interno / Referencia (ES)</label>
+                    <input type="text" data-hv-field="title_es" data-hv-idx="${idx}" value="${v.title_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Insignia en Esquina Superior (ES)</label>
+                    <input type="text" data-hv-field="badge_es" data-hv-idx="${idx}" value="${v.badge_es || "Set en Vivo • Cámara A"}" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          list.appendChild(item);
+        });
+
+        list.querySelectorAll("[data-upload-hv]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const i = Number(btn.getAttribute("data-upload-hv"));
+            collectAllInputsIntoState();
+            triggerFileUpload("video/mp4,video/webm,video/quicktime", (uploadedUrl) => {
+              cmsState.hero_videos[i].url = uploadedUrl;
+              if (i === 0 && cmsState.site_settings) cmsState.site_settings.hero_video_url = uploadedUrl;
+              renderHeroVideos();
+            });
+          });
+        });
+
+        list.querySelectorAll("[data-move-hv]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            collectAllInputsIntoState();
+            const i = Number(btn.getAttribute("data-move-hv"));
+            const dir = Number(btn.getAttribute("data-dir"));
+            const target = i + dir;
+            if (target < 0 || target >= cmsState.hero_videos.length) return;
+            const temp = cmsState.hero_videos[i];
+            cmsState.hero_videos[i] = cmsState.hero_videos[target];
+            cmsState.hero_videos[target] = temp;
+            renderHeroVideos();
+          });
+        });
+
+        list.querySelectorAll("[data-del-hv]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            collectAllInputsIntoState();
+            const i = Number(btn.getAttribute("data-del-hv"));
+            cmsState.hero_videos.splice(i, 1);
+            saveCMS("Video eliminado de la secuencia del Hero.");
+          });
+        });
+      }
+
+      // 2. Render Client Logos Marquee
+      function renderLogos() {
+        const list = document.getElementById("logos-editor-list");
+        const badge = document.getElementById("logos-count-badge");
+        if (!list || !cmsState) return;
+        const brands = cmsState.client_brands || [];
+        if (badge) badge.textContent = String(brands.length).padStart(2, "0");
+        list.innerHTML = "";
+
+        brands.forEach((b, idx) => {
+          const card = document.createElement("div");
+          card.className = "p-5 rounded-2xl bg-[#FBFBF9] border border-[#E5E5DF] space-y-3 flex flex-col justify-between";
+          card.innerHTML = `
+            <div class="space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-mono text-xs font-bold text-[#00758C]">Logo #${String(idx + 1).padStart(2, "0")}</span>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" data-upload-logo="${idx}" class="px-2.5 py-1 rounded-full bg-[#00758C] text-white text-[10px] font-bold uppercase tracking-wider hover:bg-[#005e70] inline-flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[13px]">upload</span> Subir Imagen
+                  </button>
+                  <button type="button" data-del-logo="${idx}" class="w-7 h-7 rounded-full bg-white border border-[#E5E5DF] text-[#52525B] hover:bg-[#A01318] hover:text-white flex items-center justify-center transition-colors" title="Eliminar Logo">
+                    <span class="material-symbols-outlined text-[15px]">delete</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="h-20 rounded-xl bg-white border border-[#EBEBE6] flex items-center justify-center p-3">
+                <img src="${b.logo_url}" alt="${b.name}" class="max-h-14 w-auto object-contain" />
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold uppercase text-[#52525B] mb-1">Nombre de la Marca / Cliente</label>
+                <input type="text" data-logo-field="name" data-logo-idx="${idx}" value="${b.name || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-bold" />
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold uppercase text-[#52525B] mb-1">Ruta / URL de Imagen del Logo</label>
+                <input type="text" data-logo-field="logo_url" data-logo-idx="${idx}" value="${b.logo_url || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold uppercase text-[#A01318] mb-1">Link de Destino (URL Web / Instagram)</label>
+                <input type="text" data-logo-field="instagram_url" data-logo-idx="${idx}" value="${b.instagram_url || "#"}" placeholder="https://instagram.com/..." class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+              </div>
+            </div>
+          `;
+          list.appendChild(card);
+        });
+
+        list.querySelectorAll("[data-upload-logo]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const i = Number(btn.getAttribute("data-upload-logo"));
+            collectAllInputsIntoState();
+            triggerFileUpload("image/png,image/jpeg,image/webp,image/svg+xml", (uploadedUrl) => {
+              cmsState.client_brands[i].logo_url = uploadedUrl;
+              renderLogos();
+            });
+          });
+        });
+
+        list.querySelectorAll("[data-del-logo]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            collectAllInputsIntoState();
+            const i = Number(btn.getAttribute("data-del-logo"));
+            cmsState.client_brands.splice(i, 1);
+            saveCMS("Logo eliminado de la cinta desplazable.");
+          });
+        });
+      }
+
+      // 3. Render Disciplinary Services
+      function renderServices() {
+        const container = document.getElementById("services-editor-list");
+        const badge = document.getElementById("services-count-badge");
+        if (!container || !cmsState) return;
+        const services = cmsState.services || [];
+        if (badge) badge.textContent = String(services.length).padStart(2, "0");
+        container.innerHTML = "";
+
+        services.forEach((srv, idx) => {
+          const numStr = String(idx + 1).padStart(2, "0") + "/";
+          srv.number = numStr;
+          const block = document.createElement("div");
+          block.className = "p-6 rounded-2xl bg-[#FBFBF9] border border-[#E5E5DF] space-y-4";
+          block.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-sm font-bold text-[#00758C]">${numStr} Servicio Disciplinario</span>
+              <button type="button" data-del-service="${idx}" class="text-xs text-[#52525B] hover:text-[#A01318] font-bold uppercase flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">delete</span> Eliminar Servicio
+              </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Título (Español)</label>
+                <input type="text" data-srv-field="title_es" data-srv-idx="${idx}" value="${srv.title_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-sm font-bold" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Título (Inglés)</label>
+                <input type="text" data-srv-field="title_en" data-srv-idx="${idx}" value="${srv.title_en || ""}" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Subcategorías / Etiquetas (Español)</label>
+                <input type="text" data-srv-field="tags_es" data-srv-idx="${idx}" value="${srv.tags_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Subcategorías / Etiquetas (Inglés)</label>
+                <input type="text" data-srv-field="tags_en" data-srv-idx="${idx}" value="${srv.tags_en || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Descripción (Español)</label>
+                <textarea rows="3" data-srv-field="desc_es" data-srv-idx="${idx}" class="w-full rounded-xl border-[#E0E0D8] text-sm">${srv.desc_es || ""}</textarea>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Descripción (Inglés)</label>
+                <textarea rows="3" data-srv-field="desc_en" data-srv-idx="${idx}" class="w-full rounded-xl border-[#E0E0D8] text-sm">${srv.desc_en || ""}</textarea>
+              </div>
+            </div>
+          `;
+          container.appendChild(block);
+        });
+
+        container.querySelectorAll("[data-del-service]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            collectAllInputsIntoState();
+            const i = Number(btn.getAttribute("data-del-service"));
+            cmsState.services.splice(i, 1);
+            saveCMS("Servicio eliminado del directorio.");
+          });
+        });
+      }
+
+      // 4. Render Industries We Serve
+      function renderIndustries() {
+        const container = document.getElementById("industries-editor-list");
+        const badge = document.getElementById("industries-count-badge");
+        if (!container || !cmsState) return;
+        const industries = cmsState.industries || [];
+        if (badge) badge.textContent = String(industries.length).padStart(2, "0");
+        container.innerHTML = "";
+
+        industries.forEach((ind, idx) => {
+          const numStr = String(idx + 1).padStart(2, "0") + " —";
+          ind.number = numStr;
+          const block = document.createElement("div");
+          block.className = "p-6 rounded-2xl bg-[#FBFBF9] border border-[#E5E5DF] space-y-4";
+          block.innerHTML = `
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="font-mono text-sm font-bold text-[#A01318]">${numStr} Industria #${idx + 1}</span>
+              <div class="flex items-center gap-2">
+                <button type="button" data-upload-ind="${idx}" class="px-3 py-1.5 rounded-full bg-[#00758C] text-white text-[11px] font-bold uppercase tracking-wider hover:bg-[#005e70] inline-flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[15px]">image</span> Cambiar / Subir Imagen
+                </button>
+                <button type="button" data-del-industry="${idx}" class="px-3 py-1.5 rounded-full bg-white border border-[#E5E5DF] text-[#52525B] hover:bg-[#A01318] hover:text-white text-[11px] font-bold uppercase tracking-wider inline-flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[15px]">delete</span> Eliminar
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+              <div class="md:col-span-4 rounded-2xl overflow-hidden bg-[#ECECE7] h-44 border border-[#E5E5DF]">
+                <img src="${ind.image_url || ""}" alt="${ind.title_es || ""}" class="w-full h-full object-cover" />
+              </div>
+              <div class="md:col-span-8 space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Nombre de la Industria (ES)</label>
+                    <input type="text" data-ind-field="title_es" data-ind-idx="${idx}" value="${ind.title_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-sm font-bold" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Nombre de la Industria (EN)</label>
+                    <input type="text" data-ind-field="title_en" data-ind-idx="${idx}" value="${ind.title_en || ""}" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Etiqueta Editorial (ES)</label>
+                    <input type="text" data-ind-field="tag_es" data-ind-idx="${idx}" value="${ind.tag_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">URL de la Imagen</label>
+                    <input type="text" data-ind-field="image_url" data-ind-idx="${idx}" value="${ind.image_url || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Descripción (Español)</label>
+                  <textarea rows="2" data-ind-field="desc_es" data-ind-idx="${idx}" class="w-full rounded-xl border-[#E0E0D8] text-sm">${ind.desc_es || ""}</textarea>
+                </div>
+              </div>
+            </div>
+          `;
+          container.appendChild(block);
+        });
+
+        container.querySelectorAll("[data-upload-ind]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const i = Number(btn.getAttribute("data-upload-ind"));
+            collectAllInputsIntoState();
+            triggerFileUpload("image/png,image/jpeg,image/webp", (uploadedUrl) => {
+              cmsState.industries[i].image_url = uploadedUrl;
+              renderIndustries();
+            });
+          });
+        });
+
+        container.querySelectorAll("[data-del-industry]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            collectAllInputsIntoState();
+            const i = Number(btn.getAttribute("data-del-industry"));
+            cmsState.industries.splice(i, 1);
+            saveCMS("Industria eliminada de la sección.");
+          });
+        });
+      }
+
+      // 5. Render Portfolio Projects with Editable Tag Manager, Tag Filter & Tag Assignment
+      function renderProjects() {
+        const container = document.getElementById("projects-editor-list");
+        const countBadge = document.getElementById("projects-count-badge");
+        const filterBar = document.getElementById("admin-project-tag-filters");
+        const tagsEditorList = document.getElementById("project-tags-editor-list");
+        if (!container || !cmsState) return;
+        const projects = cmsState.projects || [];
+        const projectTags = cmsState.project_tags || [];
+        if (countBadge) countBadge.textContent = String(projects.length).padStart(2, "0");
+
+        // Render Editable Project Tags Manager
+        if (tagsEditorList) {
+          tagsEditorList.innerHTML = "";
+          projectTags.forEach((pt, tIdx) => {
+            const tagCard = document.createElement("div");
+            tagCard.className = "p-3.5 rounded-xl bg-white border border-[#E5E5DF] space-y-2.5 shadow-2xs";
+            tagCard.innerHTML = `
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-2 py-0.5 rounded bg-[#101014] text-white font-mono text-[10px] font-bold uppercase">Tag #${tIdx + 1}</span>
+                <button type="button" data-del-proj-tag="${tIdx}" class="text-[11px] font-bold uppercase text-[#52525B] hover:text-[#A01318] inline-flex items-center gap-0.5" title="Quitar Tag">
+                  <span class="material-symbols-outlined text-[14px]">close</span> Quitar
+                </button>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-[#52525B] mb-0.5">Nombre (ES)</label>
+                  <input type="text" data-ptag-field="label_es" data-ptag-idx="${tIdx}" value="${pt.label_es || ""}" class="w-full rounded-lg border-[#E0E0D8] text-xs font-bold py-1.5 px-2.5" />
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-[#52525B] mb-0.5">Nombre (EN)</label>
+                  <input type="text" data-ptag-field="label_en" data-ptag-idx="${tIdx}" value="${pt.label_en || ""}" class="w-full rounded-lg border-[#E0E0D8] text-xs py-1.5 px-2.5" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold uppercase text-[#00758C] mb-0.5">Identificador / Slug</label>
+                <input type="text" data-ptag-field="slug" data-ptag-idx="${tIdx}" value="${pt.slug || ""}" class="w-full rounded-lg border-[#E0E0D8] text-[11px] font-mono py-1 px-2.5 bg-[#FBFBF9]" />
+              </div>
+            `;
+            tagsEditorList.appendChild(tagCard);
+          });
+
+          tagsEditorList.querySelectorAll("[data-del-proj-tag]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              collectAllInputsIntoState();
+              const tIdx = Number(btn.getAttribute("data-del-proj-tag"));
+              const removed = cmsState.project_tags.splice(tIdx, 1)[0];
+              if (removed && removed.slug) {
+                cmsState.projects.forEach((p) => {
+                  if (Array.isArray(p.categories)) {
+                    p.categories = p.categories.filter((c) => c !== removed.slug);
+                    if (p.categories.length === 0 && cmsState.project_tags[0]) {
+                      p.categories = [cmsState.project_tags[0].slug];
+                    }
+                  }
+                });
+                if (activeProjectTagFilter === removed.slug) activeProjectTagFilter = "all";
+              }
+              saveCMS("Tag eliminado y sincronizado.");
+            });
+          });
+        }
+
+        // Build tag lookup map from cmsState.project_tags
+        const tagLabelLookup = { all: "Todos" };
+        projectTags.forEach((pt) => {
+          if (pt.slug) {
+            tagLabelLookup[pt.slug] = `${pt.label_es || pt.slug} (${pt.slug})`;
+          }
+        });
+
+        // Collect all unique tags across projects + defined project_tags
+        const tagCounts = { all: projects.length };
+        projectTags.forEach((pt) => {
+          if (pt.slug) tagCounts[pt.slug] = 0;
+        });
+        projects.forEach((p) => {
+          (p.categories || []).forEach((t) => {
+            tagCounts[t] = (tagCounts[t] || 0) + 1;
+          });
+        });
+
+        if (filterBar) {
+          filterBar.innerHTML = `<span class="text-[11px] font-mono uppercase text-[#52525B] mr-2">Filtrar por Tag:</span>`;
+          const allTags = ["all", ...Object.keys(tagCounts).filter((k) => k !== "all")];
+          allTags.forEach((tag) => {
+            const active = activeProjectTagFilter === tag;
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = active
+              ? "px-3.5 py-1.5 rounded-full bg-[#101014] text-white text-xs font-bold uppercase tracking-wider"
+              : "px-3.5 py-1.5 rounded-full bg-[#F4F4F0] text-[#52525B] hover:bg-[#E5E5DF] text-xs font-bold uppercase tracking-wider";
+            const label = tagLabelLookup[tag] || tag;
+            btn.textContent = `${label} [${String(tagCounts[tag] || 0).padStart(2, "0")}]`;
+            btn.addEventListener("click", () => {
+              collectAllInputsIntoState();
+              activeProjectTagFilter = tag;
+              renderProjects();
+            });
+            filterBar.appendChild(btn);
+          });
+        }
+
+        container.innerHTML = "";
+
+        projects.forEach((proj, idx) => {
+          const cats = Array.isArray(proj.categories) ? proj.categories : ["identity"];
+          if (activeProjectTagFilter !== "all" && !cats.includes(activeProjectTagFilter)) {
+            return;
+          }
+
+          const block = document.createElement("div");
+          block.className = "p-6 rounded-2xl bg-[#FBFBF9] border border-[#E5E5DF] space-y-4";
+
+          const tagCheckboxesHtml = projectTags.map((pt) => {
+            const checked = cats.includes(pt.slug) ? "checked" : "";
+            return `
+              <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E5E5DF] text-xs font-semibold cursor-pointer hover:border-[#101014]">
+                <input type="checkbox" data-proj-tag-chk="${idx}" value="${pt.slug}" ${checked} class="rounded text-[#A01318] focus:ring-[#A01318]" />
+                <span>${pt.label_es || pt.slug} (${pt.slug})</span>
+              </label>
+            `;
+          }).join("");
+
+          const customTags = cats.filter((c) => !projectTags.some((pt) => pt.slug === c)).join(", ");
+
+          block.innerHTML = `
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-[#A01318]">Proyecto #${idx + 1} ${idx === 0 ? "(Destacado Principal)" : ""}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" data-upload-proj="${idx}" class="px-3 py-1.5 rounded-full bg-[#00758C] text-white text-[11px] font-bold uppercase tracking-wider hover:bg-[#005e70] inline-flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[15px]">image</span> Subir Imagen
+                </button>
+                <button type="button" data-del-project="${idx}" class="px-3 py-1.5 rounded-full bg-white border border-[#E5E5DF] text-[#52525B] hover:bg-[#A01318] hover:text-white text-[11px] font-bold uppercase flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[15px]">delete</span> Eliminar
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+              <div class="md:col-span-4 rounded-2xl overflow-hidden bg-[#ECECE7] h-44 border border-[#E5E5DF]">
+                <img src="${proj.image_url || ""}" alt="${proj.title_es || ""}" class="w-full h-full object-cover" />
+              </div>
+              <div class="md:col-span-8 space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Título del Proyecto (ES)</label>
+                    <input type="text" data-proj-field="title_es" data-proj-idx="${idx}" value="${proj.title_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-sm font-bold" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Cliente (ES)</label>
+                    <input type="text" data-proj-field="client_es" data-proj-idx="${idx}" value="${proj.client_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Insignia Superior (ES)</label>
+                    <input type="text" data-proj-field="badge_es" data-proj-idx="${idx}" value="${proj.badge_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="sm:col-span-2">
+                    <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">URL de Imagen</label>
+                    <input type="text" data-proj-field="image_url" data-proj-idx="${idx}" value="${proj.image_url || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Año y Tipo (Meta)</label>
+                    <input type="text" data-proj-field="meta_es" data-proj-idx="${idx}" value="${proj.meta_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold uppercase text-[#00758C] mb-1.5">Tags de Filtrado (Selecciona uno o varios)</label>
+                  <div class="flex flex-wrap gap-2 mb-2">
+                    ${tagCheckboxesHtml}
+                  </div>
+                  <input type="text" data-proj-custom-tags="${idx}" value="${customTags}" placeholder="Tags adicionales separados por coma (ej. branding, editorial)" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Resumen del Proyecto (ES)</label>
+                <textarea rows="2" data-proj-field="desc_es" data-proj-idx="${idx}" class="w-full rounded-xl border-[#E0E0D8] text-sm">${proj.desc_es || ""}</textarea>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Ficha Técnica Modal (Specs ES)</label>
+                <textarea rows="2" data-proj-field="specs_es" data-proj-idx="${idx}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono">${proj.specs_es || ""}</textarea>
+              </div>
+            </div>
+          `;
+          container.appendChild(block);
+        });
+
+        container.querySelectorAll("[data-upload-proj]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const i = Number(btn.getAttribute("data-upload-proj"));
+            collectAllInputsIntoState();
+            triggerFileUpload("image/png,image/jpeg,image/webp", (uploadedUrl) => {
+              cmsState.projects[i].image_url = uploadedUrl;
+              renderProjects();
+            });
+          });
+        });
+
+        container.querySelectorAll("[data-del-project]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            collectAllInputsIntoState();
+            const i = Number(btn.getAttribute("data-del-project"));
+            cmsState.projects.splice(i, 1);
+            saveCMS("Proyecto eliminado del portafolio.");
+          });
+        });
+      }
+
+      // 6. Render Process Steps (Nuestro Protocolo)
+      function renderProcess() {
+        const container = document.getElementById("process-editor-list");
+        const badge = document.getElementById("process-count-badge");
+        if (!container || !cmsState) return;
+        const steps = cmsState.process_steps || [];
+        if (badge) badge.textContent = String(steps.length).padStart(2, "0");
+        container.innerHTML = "";
+
+        steps.forEach((step, idx) => {
+          const numStr = String(idx + 1).padStart(2, "0") + "/";
+          step.number = numStr;
+          const block = document.createElement("div");
+          block.className = "p-6 rounded-2xl bg-[#FBFBF9] border border-[#E5E5DF] space-y-4";
+          block.innerHTML = `
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-base font-bold text-[#A01318]">${numStr}</span>
+                <span class="material-symbols-outlined text-[#00758C] text-[20px]">${step.icon || "psychology"}</span>
+                <span class="text-xs font-bold uppercase text-[#101014]">Etapa del Protocolo</span>
+              </div>
+              <button type="button" data-del-process="${idx}" class="text-xs text-[#52525B] hover:text-[#A01318] font-bold uppercase flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">delete</span> Eliminar Etapa
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Título de la Etapa (ES)</label>
+                <input type="text" data-proc-field="title_es" data-proc-idx="${idx}" value="${step.title_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-sm font-bold" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Entregable (ES)</label>
+                <input type="text" data-proc-field="deliverable_es" data-proc-idx="${idx}" value="${step.deliverable_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Icono Material Symbol</label>
+                <input type="text" data-proc-field="icon" data-proc-idx="${idx}" value="${step.icon || "psychology"}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Descripción de la Etapa (ES)</label>
+              <textarea rows="2" data-proc-field="desc_es" data-proc-idx="${idx}" class="w-full rounded-xl border-[#E0E0D8] text-sm">${step.desc_es || ""}</textarea>
+            </div>
+          `;
+          container.appendChild(block);
+        });
+
+        container.querySelectorAll("[data-del-process]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            collectAllInputsIntoState();
+            const i = Number(btn.getAttribute("data-del-process"));
+            cmsState.process_steps.splice(i, 1);
+            saveCMS("Etapa eliminada de Nuestro Protocolo.");
+          });
+        });
+      }
+
+      // 7. Render Testimonials Carousel Cards
+      function renderTestimonials() {
+        const container = document.getElementById("testimonials-editor-list");
+        const badge = document.getElementById("testimonials-count-badge");
+        if (!container || !cmsState) return;
+        const items = cmsState.testimonials || [];
+        if (badge) badge.textContent = String(items.length).padStart(2, "0");
+        container.innerHTML = "";
+
+        items.forEach((t, idx) => {
+          const totalStr = String(items.length).padStart(2, "0");
+          const curStr = String(idx + 1).padStart(2, "0");
+          const block = document.createElement("div");
+          block.className = "p-6 rounded-2xl bg-[#FBFBF9] border border-[#E5E5DF] space-y-4";
+          block.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-full bg-[#101014] text-white font-mono text-xs font-bold">Tarjeta ${curStr} / ${totalStr}</span>
+              <button type="button" data-del-testimonial="${idx}" class="text-xs text-[#52525B] hover:text-[#A01318] font-bold uppercase flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">delete</span> Eliminar Comentario
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Encabezado / Sector (Kicker ES)</label>
+                <input type="text" data-test-field="kicker_es" data-test-idx="${idx}" value="${t.kicker_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Insignia Derecha (Badge ES)</label>
+                <input type="text" data-test-field="badge_es" data-test-idx="${idx}" value="${t.badge_es || `${curStr} / ${totalStr} • Muestra Editorial`}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Cita / Comentario (Español)</label>
+              <textarea rows="3" data-test-field="quote_es" data-test-idx="${idx}" class="w-full rounded-xl border-[#E0E0D8] text-sm italic">${t.quote_es || ""}</textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Autor / Atribución (ES)</label>
+                <input type="text" data-test-field="author_es" data-test-idx="${idx}" value="${t.author_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-sm font-bold" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Cargo / Empresa (ES)</label>
+                <input type="text" data-test-field="role_es" data-test-idx="${idx}" value="${t.role_es || ""}" class="w-full rounded-xl border-[#E0E0D8] text-sm" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Ubicación</label>
+                <input type="text" data-test-field="location" data-test-idx="${idx}" value="${t.location || "Higüey, RD"}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+              </div>
+            </div>
+          `;
+          container.appendChild(block);
+        });
+
+        container.querySelectorAll("[data-del-testimonial]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            collectAllInputsIntoState();
+            const i = Number(btn.getAttribute("data-del-testimonial"));
+            cmsState.testimonials.splice(i, 1);
+            saveCMS("Comentario eliminado del carrusel.");
+          });
+        });
+      }
+
+      // 8. Render Commissions / Leads
+      function renderCommissions() {
+        const list = document.getElementById("commissions-list");
+        const badge = document.getElementById("leads-count-badge");
+        const items = (cmsState && cmsState.commissions) || [];
+        if (badge) badge.textContent = String(items.length);
+        if (!list) return;
+
+        if (items.length === 0) {
+          list.innerHTML = '<div class="p-8 text-center text-sm text-[#52525B] bg-[#F8F8F5] rounded-2xl border border-[#E5E5DF]">No hay solicitudes registradas todavía.</div>';
+          return;
+        }
+
+        list.innerHTML = "";
+        items.forEach((lead, idx) => {
+          const card = document.createElement("div");
+          card.className = "p-6 rounded-2xl bg-[#FBFBF9] border border-[#E5E5DF] space-y-3";
+          card.innerHTML = `
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <span class="text-sm font-bold uppercase text-[#101014]">${lead.name}</span>
+                <span class="text-xs text-[#00758C] font-semibold ml-2">• ${lead.company}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <select data-lead-status="${idx}" class="text-xs font-bold uppercase rounded-full border-[#E0E0D8] py-1 pl-3 pr-7 bg-white">
+                  <option value="nuevo" ${lead.status === "nuevo" ? "selected" : ""}>Nuevo</option>
+                  <option value="en_revision" ${lead.status === "en_revision" ? "selected" : ""}>En Revisión</option>
+                  <option value="contactado" ${lead.status === "contactado" ? "selected" : ""}>Contactado</option>
+                  <option value="archivado" ${lead.status === "archivado" ? "selected" : ""}>Archivado</option>
+                </select>
+                <button type="button" data-delete-lead="${idx}" class="w-8 h-8 rounded-full bg-white border border-[#E5E5DF] hover:bg-[#A01318] hover:text-white flex items-center justify-center transition-colors" title="Eliminar">
+                  <span class="material-symbols-outlined text-[16px]">delete</span>
+                </button>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-4 text-xs text-[#52525B] font-mono">
+              <a href="mailto:${lead.email}" class="underline hover:text-[#A01318]">${lead.email}</a>
+              <span>${lead.phone || "Sin teléfono"}</span>
+              <span>${new Date(lead.created_at || Date.now()).toLocaleString()}</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              ${(lead.capabilities || []).map((c) => `<span class="px-2.5 py-0.5 rounded-full bg-white border border-[#E5E5DF] text-[10px] font-bold uppercase text-[#A01318]">${c}</span>`).join("")}
+            </div>
+            <p class="text-xs text-[#101014] bg-white p-3.5 rounded-xl border border-[#EBEBE6] leading-relaxed">${lead.scope}</p>
+          `;
+          list.appendChild(card);
+        });
+
+        list.querySelectorAll("[data-lead-status]").forEach((sel) => {
+          sel.addEventListener("change", () => {
+            const i = Number(sel.getAttribute("data-lead-status"));
+            cmsState.commissions[i].status = sel.value;
+            saveCMS("Estado de solicitud actualizado.");
+          });
+        });
+
+        list.querySelectorAll("[data-delete-lead]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const i = Number(btn.getAttribute("data-delete-lead"));
+            cmsState.commissions.splice(i, 1);
+            saveCMS("Solicitud eliminada.");
+          });
+        });
+      }
+
+      // 9. Render General Settings & Supabase
+      function renderSettings() {
+        if (!cmsState || !cmsState.site_settings) return;
+        const s = cmsState.site_settings;
+        document.getElementById("set-hero-sub-es").value = s.hero_subheadline_es || "";
+        document.getElementById("set-manifesto-es").value = s.manifesto_quote_es || "";
+        document.getElementById("set-contact-address").value = s.contact_address_es || "";
+        document.getElementById("set-contact-email").value = s.contact_email || "";
+        document.getElementById("set-contact-phone").value = s.contact_phone || "";
+        if (document.getElementById("set-smtp-host")) document.getElementById("set-smtp-host").value = s.smtp_host || "smtp.gmail.com";
+        if (document.getElementById("set-smtp-port")) document.getElementById("set-smtp-port").value = s.smtp_port || "465";
+        if (document.getElementById("set-smtp-user")) document.getElementById("set-smtp-user").value = s.smtp_user || "";
+        if (document.getElementById("set-smtp-pass")) document.getElementById("set-smtp-pass").value = s.smtp_pass || "";
+
+        if (cmsState.supabase) {
+          document.getElementById("sb-url").value = cmsState.supabase.url || "";
+          document.getElementById("sb-pub-key").value = cmsState.supabase.publishableKey || "";
+          document.getElementById("sb-key").value = cmsState.supabase.anonKey || "";
+          const badge = document.getElementById("sync-badge");
+          if (badge && (cmsState.supabase.url || cmsState.supabase.publishableKey)) {
+            badge.textContent = cmsState.supabase.url
+              ? "Conectado a Supabase Cloud"
+              : "Llaves Supabase Cargadas (Falta Project URL)";
+            badge.className = "px-3 py-1.5 rounded-full bg-[#00758C]/10 border border-[#00758C]/30 text-[11px] font-mono text-[#00758C] font-bold";
+          }
+        }
+      }
+
+      // Collect all DOM inputs into cmsState before saving or re-rendering
+      function collectAllInputsIntoState() {
+        if (!cmsState) return;
+
+        // Hero Videos
+        document.querySelectorAll("[data-hv-field]").forEach((el) => {
+          const idx = Number(el.getAttribute("data-hv-idx"));
+          const field = el.getAttribute("data-hv-field");
+          if (cmsState.hero_videos[idx]) {
+            cmsState.hero_videos[idx][field] = el.value.trim();
+            if (field === "title_es" && !cmsState.hero_videos[idx].title_en) {
+              cmsState.hero_videos[idx].title_en = el.value.trim();
+            }
+            if (field === "badge_es" && !cmsState.hero_videos[idx].badge_en) {
+              cmsState.hero_videos[idx].badge_en = el.value.trim();
+            }
+          }
+        });
+        if (cmsState.hero_videos[0] && cmsState.site_settings) {
+          cmsState.site_settings.hero_video_url = cmsState.hero_videos[0].url;
+          cmsState.site_settings.hero_live_badge_es = cmsState.hero_videos[0].badge_es;
+        }
+
+        // Client Brands / Logos
+        document.querySelectorAll("[data-logo-field]").forEach((el) => {
+          const idx = Number(el.getAttribute("data-logo-idx"));
+          const field = el.getAttribute("data-logo-field");
+          if (cmsState.client_brands[idx]) {
+            cmsState.client_brands[idx][field] = el.value.trim();
+          }
+        });
+
+        // Services
+        document.querySelectorAll("[data-srv-field]").forEach((el) => {
+          const idx = Number(el.getAttribute("data-srv-idx"));
+          const field = el.getAttribute("data-srv-field");
+          if (cmsState.services[idx]) {
+            cmsState.services[idx][field] = el.value;
+          }
+        });
+
+        // Industries
+        document.querySelectorAll("[data-ind-field]").forEach((el) => {
+          const idx = Number(el.getAttribute("data-ind-idx"));
+          const field = el.getAttribute("data-ind-field");
+          if (cmsState.industries[idx]) {
+            cmsState.industries[idx][field] = el.value;
+            if (field === "title_es" && !cmsState.industries[idx].title_en) {
+              cmsState.industries[idx].title_en = el.value;
+            }
+            if (field === "desc_es" && !cmsState.industries[idx].desc_en) {
+              cmsState.industries[idx].desc_en = el.value;
+            }
+          }
+        });
+
+        // Project Tags (project_tags table)
+        if (Array.isArray(cmsState.project_tags)) {
+          document.querySelectorAll("[data-ptag-field]").forEach((el) => {
+            const idx = Number(el.getAttribute("data-ptag-idx"));
+            const field = el.getAttribute("data-ptag-field");
+            if (cmsState.project_tags[idx]) {
+              const val = el.value.trim();
+              if (field === "slug") {
+                const oldSlug = cmsState.project_tags[idx].slug;
+                const cleanSlug = val.toLowerCase().replace(/[^a-z0-9_-]/g, "-") || ("tag-" + (idx + 1));
+                cmsState.project_tags[idx].slug = cleanSlug;
+                if (oldSlug && oldSlug !== cleanSlug && Array.isArray(cmsState.projects)) {
+                  cmsState.projects.forEach((p) => {
+                    if (Array.isArray(p.categories)) {
+                      p.categories = p.categories.map((c) => (c === oldSlug ? cleanSlug : c));
+                    }
+                  });
+                }
+              } else {
+                cmsState.project_tags[idx][field] = val;
+              }
+            }
+          });
+        }
+
+        // Projects & Tags
+        document.querySelectorAll("[data-proj-field]").forEach((el) => {
+          const idx = Number(el.getAttribute("data-proj-idx"));
+          const field = el.getAttribute("data-proj-field");
+          if (cmsState.projects[idx]) {
+            cmsState.projects[idx][field] = el.value;
+            const enMirror = field.replace("_es", "_en");
+            if (enMirror !== field && !cmsState.projects[idx][enMirror]) {
+              cmsState.projects[idx][enMirror] = el.value;
+            }
+          }
+        });
+
+        cmsState.projects.forEach((proj, idx) => {
+          const chkList = document.querySelectorAll(`[data-proj-tag-chk="${idx}"]`);
+          const customInput = document.querySelector(`[data-proj-custom-tags="${idx}"]`);
+          if (chkList.length > 0 || customInput) {
+            const selected = [];
+            chkList.forEach((c) => {
+              if (c.checked) selected.push(c.value);
+            });
+            if (customInput && customInput.value.trim()) {
+              customInput.value
+                .split(",")
+                .map((s) => s.trim().toLowerCase())
+                .filter(Boolean)
+                .forEach((t) => {
+                  if (!selected.includes(t)) selected.push(t);
+                });
+            }
+            proj.categories = selected.length > 0 ? selected : ["identity"];
+          }
+        });
+
+        // Process Steps
+        document.querySelectorAll("[data-proc-field]").forEach((el) => {
+          const idx = Number(el.getAttribute("data-proc-idx"));
+          const field = el.getAttribute("data-proc-field");
+          if (cmsState.process_steps[idx]) {
+            cmsState.process_steps[idx][field] = el.value;
+            const enMirror = field.replace("_es", "_en");
+            if (enMirror !== field) {
+              cmsState.process_steps[idx][enMirror] = el.value;
+            }
+          }
+        });
+
+        // Testimonials
+        document.querySelectorAll("[data-test-field]").forEach((el) => {
+          const idx = Number(el.getAttribute("data-test-idx"));
+          const field = el.getAttribute("data-test-field");
+          if (cmsState.testimonials[idx]) {
+            cmsState.testimonials[idx][field] = el.value;
+            const enMirror = field.replace("_es", "_en");
+            if (enMirror !== field) {
+              cmsState.testimonials[idx][enMirror] = el.value;
+            }
+          }
+        });
+
+        // Settings
+        if (cmsState.site_settings) {
+          const s = cmsState.site_settings;
+          const subEl = document.getElementById("set-hero-sub-es");
+          const manEl = document.getElementById("set-manifesto-es");
+          const addrEl = document.getElementById("set-contact-address");
+          const emailEl = document.getElementById("set-contact-email");
+          const phoneEl = document.getElementById("set-contact-phone");
+          if (subEl && subEl.value) s.hero_subheadline_es = subEl.value.trim();
+          if (manEl && manEl.value) s.manifesto_quote_es = manEl.value.trim();
+          if (addrEl && addrEl.value) s.contact_address_es = addrEl.value.trim();
+          if (emailEl && emailEl.value) s.contact_email = emailEl.value.trim();
+          if (phoneEl && phoneEl.value) s.contact_phone = phoneEl.value.trim();
+          const smtpHostEl = document.getElementById("set-smtp-host");
+          const smtpPortEl = document.getElementById("set-smtp-port");
+          const smtpUserEl = document.getElementById("set-smtp-user");
+          const smtpPassEl = document.getElementById("set-smtp-pass");
+          if (smtpHostEl) s.smtp_host = smtpHostEl.value.trim();
+          if (smtpPortEl) s.smtp_port = smtpPortEl.value.trim();
+          if (smtpUserEl) s.smtp_user = smtpUserEl.value.trim();
+          if (smtpPassEl) s.smtp_pass = smtpPassEl.value.trim();
+        }
+
+        // Supabase
+        const sbUrl = document.getElementById("sb-url");
+        const sbPub = document.getElementById("sb-pub-key");
+        const sbKey = document.getElementById("sb-key");
+        if (sbUrl && sbPub && sbKey) {
+          cmsState.supabase = {
+            url: sbUrl.value.trim(),
+            publishableKey: sbPub.value.trim(),
+            anonKey: sbKey.value.trim()
+          };
+        }
+      }
+
+      function renderAll() {
+        renderVisibility();
+        renderHeroVideos();
+        renderLogos();
+        renderServices();
+        renderIndustries();
+        renderProjects();
+        renderProcess();
+        renderTestimonials();
+        renderCommissions();
+        renderSettings();
+      }
+
+      // Add Item Buttons
+      document.getElementById("add-hero-video-btn").addEventListener("click", () => {
+        collectAllInputsIntoState();
+        const nextNum = cmsState.hero_videos.length + 1;
+        cmsState.hero_videos.push({
+          id: "hv-" + Date.now(),
+          url: "/video_hero_publimarca.mp4",
+          title_es: "Reel de Estudio #" + nextNum,
+          title_en: "Studio Reel #" + nextNum,
+          badge_es: "Set en Vivo • Cámara " + String.fromCharCode(64 + nextNum),
+          badge_en: "Live Stage • Cam " + String.fromCharCode(64 + nextNum)
+        });
+        renderHeroVideos();
+      });
+
+      document.getElementById("add-logo-btn").addEventListener("click", () => {
+        collectAllInputsIntoState();
+        const nextNum = cmsState.client_brands.length + 1;
+        cmsState.client_brands.push({
+          id: "cb-" + Date.now(),
+          slug: "marca-" + nextNum,
+          name: "NUEVA MARCA #" + nextNum,
+          logo_url: "/logo%202.png",
+          instagram_url: "#",
+          size: "standard"
+        });
+        renderLogos();
+      });
+
+      document.getElementById("add-service-btn").addEventListener("click", () => {
+        collectAllInputsIntoState();
+        const nextNum = String(cmsState.services.length + 1).padStart(2, "0") + "/";
+        cmsState.services.push({
+          id: "s-" + Date.now(),
+          number: nextNum,
+          title_es: "Nueva Capacidad Estratégica",
+          title_en: "New Strategic Capability",
+          tags_es: "Consultoría • Dirección Creativa • Ejecución",
+          tags_en: "Consulting • Creative Direction • Execution",
+          desc_es: "Descripción detallada del nuevo servicio ofrecido por Publimarca Studio.",
+          desc_en: "Detailed description of the new service offered by Publimarca Studio."
+        });
+        renderServices();
+      });
+
+      document.getElementById("add-industry-btn").addEventListener("click", () => {
+        collectAllInputsIntoState();
+        const nextIdx = cmsState.industries.length + 1;
+        const numStr = String(nextIdx).padStart(2, "0") + " —";
+        const layouts = ["feature-dark", "vertical-light", "monolith-dark", "split-wide", "horizontal-muted", "horizontal-light"];
+        cmsState.industries.push({
+          id: "ind-" + Date.now(),
+          number: numStr,
+          title_es: "Nueva Industria o Sector",
+          title_en: "New Industry Sector",
+          desc_es: "Estrategias creativas y comunicación visual adaptada a las necesidades de este sector.",
+          desc_en: "Creative strategies and visual communication tailored to the needs of this sector.",
+          tag_es: `${String(nextIdx).padStart(2, "0")} // Nuevo Sector`,
+          tag_en: `${String(nextIdx).padStart(2, "0")} // New Sector`,
+          sub_es: "Dirección Estratégica",
+          sub_en: "Strategic Direction",
+          image_url: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1000&q=85",
+          layout: layouts[(nextIdx - 1) % layouts.length]
+        });
+        renderIndustries();
+      });
+
+      const addProjectTagBtn = document.getElementById("add-project-tag-btn");
+      if (addProjectTagBtn) {
+        addProjectTagBtn.addEventListener("click", () => {
+          collectAllInputsIntoState();
+          const nextIdx = (cmsState.project_tags || []).length + 1;
+          const slug = "tag-" + nextIdx;
+          cmsState.project_tags.push({
+            id: "tag-" + Date.now(),
+            slug: slug,
+            label_es: "Nuevo Tag " + nextIdx,
+            label_en: "New Tag " + nextIdx
+          });
+          renderProjects();
+        });
+      }
+
+      document.getElementById("add-project-btn").addEventListener("click", () => {
+        collectAllInputsIntoState();
+        activeProjectTagFilter = "all";
+        cmsState.projects.push({
+          id: "p" + Date.now(),
+          featured: cmsState.projects.length === 0,
+          categories: ["identity"],
+          image_url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=85",
+          badge_es: "Nuevo Proyecto",
+          badge_en: "New Project",
+          client_es: "Cliente Publimarca",
+          client_en: "Publimarca Client",
+          meta_es: "2025 • Identidad y Campaña",
+          meta_en: "2025 • Identity & Campaign",
+          title_es: "Nuevo Caso de Estudio",
+          title_en: "New Case Study",
+          desc_es: "Descripción ejecutiva del proyecto desarrollado por Publimarca Studio.",
+          desc_en: "Executive description of the project developed by Publimarca Studio.",
+          specs_es: "Entregables: Identidad Visual, Producción Impresa, Dirección Creativa",
+          specs_en: "Deliverables: Visual Identity, Print Production, Creative Direction",
+          location: "Higüey • RD"
+        });
+        renderProjects();
+      });
+
+      document.getElementById("add-process-btn").addEventListener("click", () => {
+        collectAllInputsIntoState();
+        const nextIdx = cmsState.process_steps.length + 1;
+        cmsState.process_steps.push({
+          id: "proc-" + Date.now(),
+          number: String(nextIdx).padStart(2, "0") + "/",
+          icon: "verified",
+          title_es: "Nueva Etapa del Protocolo",
+          title_en: "New Protocol Stage",
+          desc_es: "Descripción del proceso metodológico ejecutado por nuestro equipo.",
+          desc_en: "Description of the methodological stage executed by our team.",
+          deliverable_es: "Entregable: Reporte Ejecutivo",
+          deliverable_en: "Deliverable: Executive Report"
+        });
+        renderProcess();
+      });
+
+      document.getElementById("add-testimonial-btn").addEventListener("click", () => {
+        collectAllInputsIntoState();
+        const nextIdx = cmsState.testimonials.length + 1;
+        const numStr = String(nextIdx).padStart(2, "0");
+        cmsState.testimonials.push({
+          id: "test-" + Date.now(),
+          kicker_es: "Perspectiva Editorial // Nuevo Sector",
+          kicker_en: "Editorial Perspective // New Sector",
+          badge_es: `${numStr} • Muestra Editorial`,
+          badge_en: `${numStr} • Sample Placement`,
+          quote_es: "«Excelente experiencia trabajando con Publimarca Studio. Su enfoque estratégico y cuidado por los detalles elevaron la percepción de nuestra marca.»",
+          quote_en: "“Excellent experience working with Publimarca Studio. Their strategic focus and attention to detail elevated our brand perception.”",
+          author_es: "Dirección General — Socio Comercial",
+          author_en: "General Management — Commercial Partner",
+          role_es: "Proyecto Integral de Identidad y Comunicación",
+          role_en: "Comprehensive Identity & Communication Project",
+          location: "Higüey, RD"
+        });
+        renderTestimonials();
+      });
+
+      // Save Buttons
+      document.getElementById("global-save-btn").addEventListener("click", () => saveCMS("Todos los cambios fueron guardados y sincronizados."));
+      document.getElementById("save-visibility-btn").addEventListener("click", () => saveCMS("Visibilidad de secciones actualizada."));
+      document.getElementById("save-herovideo-btn").addEventListener("click", () => saveCMS("Secuencia de videos del Hero actualizada."));
+      document.getElementById("save-logos-btn").addEventListener("click", () => saveCMS("Barra de logos y enlaces actualizada."));
+      document.getElementById("save-services-btn").addEventListener("click", () => saveCMS("Directorio de servicios actualizado."));
+      document.getElementById("save-industries-btn").addEventListener("click", () => saveCMS("Sección de Industrias actualizada."));
+      document.getElementById("save-projects-btn").addEventListener("click", () => saveCMS("Portafolio de Proyectos y Tags actualizado."));
+      document.getElementById("save-process-btn").addEventListener("click", () => saveCMS("Nuestro Protocolo actualizado."));
+      document.getElementById("save-testimonials-btn").addEventListener("click", () => saveCMS("Carrusel de Comentarios actualizado."));
+      document.getElementById("save-settings-btn").addEventListener("click", () => saveCMS("Textos generales y contacto actualizados."));
+      document.getElementById("save-supabase-btn").addEventListener("click", () => saveCMS("Credenciales de Supabase guardadas y sincronizadas."));
+      const seedSupabaseBtn = document.getElementById("seed-supabase-btn");
+      if (seedSupabaseBtn) {
+        seedSupabaseBtn.addEventListener("click", async () => {
+          collectAllInputsIntoState();
+          await saveCMS("Guardando configuración antes de enviar a Supabase...");
+          showToast("Enviando toda la información a las tablas de Supabase...");
+          try {
+            const res = await fetch("/api/supabase/seed", {
+              method: "POST",
+              headers: getAuthHeaders()
+            });
+            const out = await res.json();
+            if (out.ok && out.supabase && out.supabase.synced) {
+              showToast("¡Éxito! Todas las tablas de Supabase fueron pobladas y sincronizadas.");
+              fetchCMS();
+            } else {
+              showToast("Aviso: Verifica la URL del proyecto y que hayas ejecutado supabase/schema.sql (" + ((out.supabase && out.supabase.reason) || "sin conexión") + ")");
+            }
+          } catch (e) {
+            showToast("Error de red al intentar poblar Supabase.");
+          }
+        });
+      }
+      document.getElementById("refresh-leads-btn").addEventListener("click", fetchCMS);
+      const syncLeadsBtn = document.getElementById("sync-leads-btn");
+      if (syncLeadsBtn) {
+        syncLeadsBtn.addEventListener("click", () => saveCMS("Buzón de solicitudes sincronizado con la tabla commissions en Supabase."));
+      }
+
+      const testEmailBtn = document.getElementById("test-email-btn");
+      if (testEmailBtn) {
+        testEmailBtn.addEventListener("click", async () => {
+          collectAllInputsIntoState();
+          await saveCMS("Guardando correo de recepción...");
+          const targetEmail = (cmsState.site_settings && cmsState.site_settings.contact_email) || "";
+          showToast("Enviando correo de prueba a " + targetEmail + "...");
+          try {
+            const res = await fetch("/api/email/test", {
+              method: "POST",
+              headers: getAuthHeaders(),
+              body: JSON.stringify({ site_settings: cmsState.site_settings })
+            });
+            const out = await res.json();
+            if (out.ok && out.email && out.email.sent) {
+              showToast("¡Correo enviado a " + out.email.recipient + "! (Revisa tu bandeja de entrada o spam para confirmar)");
+            } else {
+              const msg = (out.email && (out.email.message || out.email.error)) || "Verifica tu correo o configuración SMTP";
+              showToast("Aviso de envío a " + targetEmail + ": " + msg);
+            }
+          } catch (e) {
+            showToast("Error de red al enviar correo de prueba.");
+          }
+        });
+      }
+
+      // Login Form Real-Time Validation & Authentication Flow
+      const loginForm = document.getElementById("admin-login-form");
+      const loginEmailInput = document.getElementById("login-email");
+      const loginPwdInput = document.getElementById("login-password");
+      const loginErrorBox = document.getElementById("login-error-box");
+      const togglePwdBtn = document.getElementById("toggle-login-pwd");
+      const togglePwdIcon = document.getElementById("toggle-login-pwd-icon");
+
+      if (togglePwdBtn && loginPwdInput) {
+        togglePwdBtn.addEventListener("click", () => {
+          const isPwd = loginPwdInput.type === "password";
+          loginPwdInput.type = isPwd ? "text" : "password";
+          if (togglePwdIcon) togglePwdIcon.textContent = isPwd ? "visibility_off" : "visibility";
+        });
+      }
+
+      function validateLoginField(fieldId) {
+        const el = document.getElementById(fieldId);
+        if (!el) return true;
+        const val = el.value.trim();
+        if (fieldId === "login-email") {
+          const errEl = document.getElementById("err-login-email");
+          if (val.length < 3) {
+            el.classList.add("border-[#A01318]");
+            if (errEl) {
+              errEl.textContent = "Por favor ingresa tu correo o usuario de administrador.";
+              errEl.classList.remove("hidden");
+            }
+            return false;
+          }
+          el.classList.remove("border-[#A01318]");
+          if (errEl) {
+            errEl.textContent = "";
+            errEl.classList.add("hidden");
+          }
+          return true;
+        }
+        if (fieldId === "login-password") {
+          const errEl = document.getElementById("err-login-password");
+          if (el.value.length < 4) {
+            el.classList.add("border-[#A01318]");
+            if (errEl) {
+              errEl.textContent = "Por favor ingresa tu contraseña.";
+              errEl.classList.remove("hidden");
+            }
+            return false;
+          }
+          el.classList.remove("border-[#A01318]");
+          if (errEl) {
+            errEl.textContent = "";
+            errEl.classList.add("hidden");
+          }
+          return true;
+        }
+        return true;
+      }
+
+      ["login-email", "login-password"].forEach((fid) => {
+        const el = document.getElementById(fid);
+        if (!el) return;
+        el.addEventListener("input", () => {
+          validateLoginField(fid);
+          if (loginErrorBox) loginErrorBox.classList.add("hidden");
+        });
+        el.addEventListener("blur", () => validateLoginField(fid));
+      });
+
+      if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const v1 = validateLoginField("login-email");
+          const v2 = validateLoginField("login-password");
+          if (!v1 || !v2) return;
+
+          const submitBtn = document.getElementById("login-submit-btn");
+          const submitLabel = document.getElementById("login-submit-label");
+          if (submitBtn) submitBtn.disabled = true;
+          if (submitLabel) submitLabel.textContent = "Verificando credenciales...";
+          if (loginErrorBox) loginErrorBox.classList.add("hidden");
+
+          try {
+            const res = await fetch("/api/auth/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: loginEmailInput.value.trim(),
+                password: loginPwdInput.value
+              })
+            });
+            const data = await res.json();
+            if (res.ok && data.ok && data.token) {
+              const remember = document.getElementById("login-remember").checked;
+              setAuthToken(data.token, remember);
+              loginPwdInput.value = "";
+              showToast("Bienvenido al Panel de Control de Publimarca Studio.");
+              showAuthenticatedApp(data.user);
+            } else {
+              if (loginErrorBox) {
+                loginErrorBox.textContent = data.error || "Credenciales incorrectas.";
+                loginErrorBox.classList.remove("hidden");
+              }
+            }
+          } catch (err) {
+            if (loginErrorBox) {
+              loginErrorBox.textContent = "Error de conexión con el servidor.";
+              loginErrorBox.classList.remove("hidden");
+            }
+          } finally {
+            if (submitBtn) submitBtn.disabled = false;
+            if (submitLabel) submitLabel.textContent = "Acceder al Panel de Control";
+          }
+        });
+      }
+
+      // Logout Button
+      const logoutBtn = document.getElementById("admin-logout-btn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", async () => {
+          try {
+            await fetch("/api/auth/logout", {
+              method: "POST",
+              headers: getAuthHeaders()
+            });
+          } catch (_) {}
+          clearAuthToken();
+          showLoginScreen();
+          showToast("Sesión cerrada correctamente.");
+        });
+      }
+
+      // Change Admin Password Button
+      const changePwdBtn = document.getElementById("change-password-btn");
+      if (changePwdBtn) {
+        changePwdBtn.addEventListener("click", async () => {
+          const newEmail = document.getElementById("sec-new-email").value.trim();
+          const currentPassword = document.getElementById("sec-current-pwd").value;
+          const newPassword = document.getElementById("sec-new-pwd").value;
+          if (!currentPassword || !newPassword) {
+            showToast("Ingresa tu contraseña actual y la nueva contraseña.");
+            return;
+          }
+          try {
+            const res = await fetch("/api/auth/change-password", {
+              method: "POST",
+              headers: getAuthHeaders(),
+              body: JSON.stringify({ newEmail, currentPassword, newPassword })
+            });
+            const out = await res.json();
+            if (res.ok && out.ok) {
+              document.getElementById("sec-current-pwd").value = "";
+              document.getElementById("sec-new-pwd").value = "";
+              if (out.user && out.user.email) {
+                document.getElementById("admin-user-email").textContent = out.user.email;
+              }
+              showToast("Credenciales de administrador actualizadas correctamente.");
+            } else {
+              showToast(out.error || "No se pudo actualizar la contraseña.");
+            }
+          } catch (e) {
+            showToast("Error de red al actualizar credenciales.");
+          }
+        });
+      }
+
+      // Check existing session on load
+      async function checkSessionAndInit() {
+        const token = getAuthToken();
+        if (!token) {
+          showLoginScreen();
+          return;
+        }
+        try {
+          const res = await fetch("/api/auth/session", {
+            headers: getAuthHeaders()
+          });
+          const data = await res.json();
+          if (res.ok && data.authenticated) {
+            showAuthenticatedApp(data.user);
+          } else {
+            clearAuthToken();
+            showLoginScreen();
+          }
+        } catch (e) {
+          showLoginScreen();
+        }
+      }
+
+      checkSessionAndInit();
+    })();
+  </script>
+</body>
+</html>
