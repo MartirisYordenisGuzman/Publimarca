@@ -3223,8 +3223,25 @@
           }
         }
 
-        // Play sequential videos one after another when ended
+        // Play sequential videos one after another when ended & ensure first frame is decoded
         videoEls.forEach((vel, i) => {
+          vel.addEventListener(
+            "loadedmetadata",
+            () => {
+              if (i === currentSlide) {
+                vel.play().catch(() => {});
+              } else if (vel.currentTime === 0) {
+                try {
+                  vel.currentTime = 0.15;
+                } catch (_) {}
+              }
+            },
+            { once: true }
+          );
+          try {
+            vel.load();
+          } catch (_) {}
+
           vel.addEventListener("ended", () => {
             if (total > 1) {
               goToVideo(i + 1);

@@ -740,7 +740,13 @@
 
       // High-Quality Media Compression & Supabase Storage Uploader Pipeline
       const fileInput = document.getElementById("global-file-uploader");
+      let isUploadingMedia = false;
+
       function triggerFileUpload(accept, callback) {
+        if (isUploadingMedia) {
+          showToast("Espera unos segundos a que termine la subida en curso...");
+          return;
+        }
         pendingUploadCallback = callback;
         fileInput.setAttribute("accept", accept || "*/*");
         fileInput.value = "";
@@ -826,23 +832,19 @@
       }
 
       async function compressVideoHighQualityClient(file, onProgress) {
-        // Only run client-side browser transcoding if video is > 18 MB and MediaRecorder + captureStream are supported
+        // Never convert MP4/MOV to WebM (WebM from MediaRecorder lacks seek cues & fails on Safari/iOS).
+        // Only run client-side transcode if file > 42 MB AND native H.264 MP4 MediaRecorder is supported.
+        const mp4Mime = [
+          "video/mp4;codecs=avc1.42E01E,mp4a.40.2",
+          "video/mp4;codecs=avc1",
+          "video/mp4"
+        ].find((m) => typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(m));
+
         if (
-          file.size <= 18 * 1024 * 1024 ||
-          typeof MediaRecorder === "undefined" ||
+          file.size <= 42 * 1024 * 1024 ||
+          !mp4Mime ||
           !HTMLCanvasElement.prototype.captureStream
         ) {
-          return { blob: file, filename: file.name, mimeType: file.type || "video/mp4" };
-        }
-
-        const supportedMime = [
-          "video/webm;codecs=vp9,opus",
-          "video/webm;codecs=vp8,opus",
-          "video/webm",
-          "video/mp4"
-        ].find((m) => MediaRecorder.isTypeSupported(m));
-
-        if (!supportedMime) {
           return { blob: file, filename: file.name, mimeType: file.type || "video/mp4" };
         }
 
@@ -855,8 +857,7 @@
           video.preload = "auto";
 
           video.onloadedmetadata = () => {
-            // If video is longer than 90s, skip real-time canvas transcode and upload directly to Supabase Storage
-            if (!video.duration || video.duration > 90 || !isFinite(video.duration)) {
+            if (!video.duration || video.duration > 35 || !isFinite(video.duration)) {
               URL.revokeObjectURL(url);
               resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
               return;
@@ -884,8 +885,8 @@
             let recorder;
             try {
               recorder = new MediaRecorder(stream, {
-                mimeType: supportedMime,
-                videoBitsPerSecond: 5500000 // 5.5 Mbps High Quality 1080p HD
+                mimeType: mp4Mime,
+                videoBitsPerSecond: 2600000 // 2.6 Mbps High Quality 1080p MP4
               });
             } catch (e) {
               URL.revokeObjectURL(url);
@@ -899,12 +900,10 @@
 
             recorder.onstop = () => {
               URL.revokeObjectURL(url);
-              const ext = supportedMime.includes("mp4") ? ".mp4" : ".webm";
-              const outMime = supportedMime.split(";")[0];
-              const outBlob = new Blob(chunks, { type: outMime });
-              if (outBlob.size > 0 && outBlob.size < file.size) {
+              const outBlob = new Blob(chunks, { type: "video/mp4" });
+              if (outBlob.size > 0 && outBlob.size < file.size * 0.85) {
                 const baseName = file.name.replace(/\.[^/.]+$/, "");
-                resolve({ blob: outBlob, filename: baseName + ext, mimeType: outMime });
+                resolve({ blob: outBlob, filename: baseName + ".mp4", mimeType: "video/mp4" });
               } else {
                 resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
               }
@@ -948,54 +947,111 @@
         });
       }
 
-      async function uploadDirectToSupabaseStorage(blob, filename, mimeType) {
+      async function uploadDirectToSupabaseStorage(blob, filename, mimeType, onProgress) {
         try {
           const cfgRes = await fetch("/api/storage/config", { headers: getAuthHeaders() });
           if (!cfgRes.ok) return null;
           const cfg = await cfgRes.json();
           if (!cfg.ok || !cfg.url || !cfg.key) return null;
 
-          const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, "_");
+          const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, "_") || "media.mp4";
           const folder = mimeType.startsWith("video/") ? "videos" : "images";
           const objectPath = `${folder}/${Date.now()}_${safeName}`;
           const endpoint = `${cfg.url}/storage/v1/object/${cfg.bucket}/${objectPath}`;
+          const publicUrl = `${cfg.url}/storage/v1/object/public/${cfg.bucket}/${objectPath}`;
 
-          const upRes = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-              apikey: cfg.key,
-              Authorization: "Bearer " + cfg.key,
-              "Content-Type": mimeType,
-              "x-upsert": "true"
-            },
-            body: blob
+          return await new Promise((resolve) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", endpoint, true);
+            xhr.setRequestHeader("apikey", cfg.key);
+            xhr.setRequestHeader("Authorization", "Bearer " + cfg.key);
+            xhr.setRequestHeader("Content-Type", mimeType || "video/mp4");
+            xhr.setRequestHeader("x-upsert", "true");
+            xhr.setRequestHeader("cache-control", "3600");
+
+            if (xhr.upload && onProgress) {
+              xhr.upload.onprogress = (ev) => {
+                if (ev.lengthComputable && ev.total > 0) {
+                  const pct = Math.min(99, Math.round((ev.loaded / ev.total) * 100));
+                  onProgress(pct);
+                }
+              };
+            }
+
+            xhr.onload = () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(publicUrl);
+              } else {
+                resolve(null);
+              }
+            };
+            xhr.onerror = () => resolve(null);
+            xhr.send(blob);
           });
-
-          if (upRes.ok) {
-            return `${cfg.url}/storage/v1/object/public/${cfg.bucket}/${objectPath}`;
-          }
         } catch (_) {}
         return null;
+      }
+
+      async function uploadBinaryToLocalServer(blob, filename, mimeType, originalSize, onProgress) {
+        return new Promise((resolve) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", "/api/upload-binary", true);
+          const token = getAuthToken();
+          if (token) xhr.setRequestHeader("Authorization", "Bearer " + token);
+          xhr.setRequestHeader("Content-Type", mimeType || "application/octet-stream");
+          xhr.setRequestHeader("X-File-Name", encodeURIComponent(filename));
+          xhr.setRequestHeader("X-Original-Bytes", String(originalSize || blob.size));
+
+          if (xhr.upload && onProgress) {
+            xhr.upload.onprogress = (ev) => {
+              if (ev.lengthComputable && ev.total > 0) {
+                const pct = Math.min(99, Math.round((ev.loaded / ev.total) * 100));
+                onProgress(pct);
+              }
+            };
+          }
+
+          xhr.onload = () => {
+            try {
+              const data = JSON.parse(xhr.responseText || "{}");
+              if (xhr.status >= 200 && xhr.status < 300 && data.ok && data.url) {
+                resolve(data);
+                return;
+              }
+            } catch (_) {}
+            resolve(null);
+          };
+          xhr.onerror = () => resolve(null);
+          xhr.send(blob);
+        });
       }
 
       fileInput.addEventListener("change", async () => {
         const file = fileInput.files && fileInput.files[0];
         if (!file || !pendingUploadCallback) return;
 
+        const callbackToRun = pendingUploadCallback;
+        pendingUploadCallback = null;
+        isUploadingMedia = true;
+
         const originalSize = file.size;
         const isImage = file.type.startsWith("image/");
-        const isVideo = file.type.startsWith("video/");
+        const isVideo = file.type.startsWith("video/") || /\.(mp4|mov|m4v|webm)$/i.test(file.name);
 
         try {
-          let optimized = { blob: file, filename: file.name, mimeType: file.type || "application/octet-stream" };
+          let optimized = {
+            blob: file,
+            filename: file.name,
+            mimeType: file.type || (isVideo ? "video/mp4" : "application/octet-stream")
+          };
 
           if (isImage) {
             showToast(`Optimizando imagen en Alta Calidad (${formatBytes(originalSize)})...`);
             optimized = await compressImageHighQuality(file);
           } else if (isVideo) {
-            showToast(`Optimizando video HD (${formatBytes(originalSize)})...`);
+            showToast(`Preparando video HD (${formatBytes(originalSize)})...`);
             optimized = await compressVideoHighQualityClient(file, (pct) => {
-              showToast(`Comprimiendo video en Alta Calidad HD: ${pct}%...`);
+              showToast(`Optimizando video HD en Alta Calidad: ${pct}%...`);
             });
           }
 
@@ -1005,25 +1061,58 @@
               ? Math.round(((originalSize - compressedSize) / originalSize) * 100)
               : 0;
 
-          // If file is > 3.2 MB (e.g. HD video on Vercel), upload directly to Supabase Storage first
-          if (compressedSize > 3.2 * 1024 * 1024 && window.location.hostname !== "localhost") {
-            showToast(`Subiendo a Supabase Storage (${formatBytes(compressedSize)})...`);
-            const directSbUrl = await uploadDirectToSupabaseStorage(
+          // 1. On localhost, use /api/upload-binary first so macOS hardware avconvert compresses videos to fast-start MP4 + uploads to Supabase Storage
+          if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+            const binResult = await uploadBinaryToLocalServer(
               optimized.blob,
               optimized.filename,
-              optimized.mimeType
+              optimized.mimeType,
+              originalSize,
+              (pct) => {
+                showToast(
+                  isVideo
+                    ? `Comprimiendo en HD y subiendo a Supabase Storage: ${pct}%...`
+                    : `Subiendo imagen optimizada a Supabase Storage: ${pct}%...`
+                );
+              }
             );
-            if (directSbUrl) {
-              pendingUploadCallback(directSbUrl);
-              const statsMsg =
-                savedPct > 0
-                  ? `${formatBytes(originalSize)} → ${formatBytes(compressedSize)} (-${savedPct}%)`
-                  : formatBytes(compressedSize);
-              showToast(`¡Listo! Optimizado (${statsMsg}) y guardado en Supabase Storage.`);
+            if (binResult && binResult.url) {
+              const finalBytes = binResult.compressedBytes || compressedSize;
+              const totalSavedPct =
+                originalSize > 0 && finalBytes < originalSize
+                  ? Math.round(((originalSize - finalBytes) / originalSize) * 100)
+                  : savedPct;
+              const statsNote =
+                totalSavedPct > 0
+                  ? `${formatBytes(originalSize)} → ${formatBytes(finalBytes)} (-${totalSavedPct}% peso, Alta Calidad)`
+                  : `${formatBytes(finalBytes)} (Alta Calidad)`;
+              await callbackToRun(binResult.url, optimized.filename, statsNote);
               return;
             }
           }
 
+          // 2. Direct binary upload from browser to Supabase Storage (bypasses Vercel 4.5 MB limit for ALL videos & large images)
+          if (isVideo || compressedSize > 2.2 * 1024 * 1024) {
+            showToast(`Subiendo a Supabase Storage (${formatBytes(compressedSize)})...`);
+            const directSbUrl = await uploadDirectToSupabaseStorage(
+              optimized.blob,
+              optimized.filename,
+              optimized.mimeType,
+              (pct) => {
+                showToast(`Subiendo a Supabase Storage (${formatBytes(compressedSize)}): ${pct}%...`);
+              }
+            );
+            if (directSbUrl) {
+              const statsNote =
+                savedPct > 0
+                  ? `${formatBytes(originalSize)} → ${formatBytes(compressedSize)} (-${savedPct}% peso, Alta Calidad)`
+                  : `${formatBytes(compressedSize)} (Alta Calidad HD)`;
+              await callbackToRun(directSbUrl, optimized.filename, statsNote);
+              return;
+            }
+          }
+
+          // 3. Fallback JSON upload for small images
           showToast(`Subiendo archivo optimizado (${formatBytes(compressedSize)}) a Supabase...`);
           const dataUrl = await blobToDataURL(optimized.blob);
           const res = await fetch("/api/upload", {
@@ -1045,7 +1134,6 @@
 
           const data = await res.json();
           if (data && data.ok && data.url) {
-            pendingUploadCallback(data.url);
             const finalBytes = data.compressedBytes || compressedSize;
             const totalSavedPct =
               originalSize > 0 && finalBytes < originalSize
@@ -1055,12 +1143,14 @@
               totalSavedPct > 0
                 ? `${formatBytes(originalSize)} → ${formatBytes(finalBytes)} (-${totalSavedPct}% peso, Alta Calidad)`
                 : `${formatBytes(finalBytes)} (Alta Calidad)`;
-            showToast(`¡Archivo optimizado y subido! ${statsNote}`);
+            await callbackToRun(data.url, optimized.filename, statsNote);
           } else {
             showToast("Error al subir archivo.");
           }
         } catch (e) {
           showToast("Error al procesar o subir el archivo.");
+        } finally {
+          isUploadingMedia = false;
         }
       });
 
@@ -1134,8 +1224,18 @@
         if (!Array.isArray(cmsState.testimonials)) cmsState.testimonials = [];
       }
 
-      async function saveCMS(sectionMessage) {
-        collectAllInputsIntoState();
+      async function saveCMS(sectionMessage, skipInputCollect) {
+        if (isUploadingMedia && !skipInputCollect) {
+          showToast("Espera unos segundos a que termine de subirse el archivo actual antes de guardar...");
+          return;
+        }
+        if (!skipInputCollect) {
+          collectAllInputsIntoState();
+        }
+        if (cmsState.hero_videos && cmsState.hero_videos[0] && cmsState.site_settings) {
+          cmsState.site_settings.hero_video_url = cmsState.hero_videos[0].url;
+          cmsState.site_settings.hero_live_badge_es = cmsState.hero_videos[0].badge_es;
+        }
         const res = await fetch("/api/cms", {
           method: "POST",
           headers: getAuthHeaders(),
@@ -1218,6 +1318,8 @@
         list.innerHTML = "";
 
         videos.forEach((v, idx) => {
+          const rawUrl = (v.url || "").trim();
+          const previewSrc = rawUrl ? (rawUrl.includes("#") ? rawUrl : rawUrl + "#t=0.15") : "";
           const item = document.createElement("div");
           item.className = "p-6 rounded-2xl bg-[#FBFBF9] border border-[#E5E5DF] space-y-4";
           item.innerHTML = `
@@ -1229,9 +1331,9 @@
               <div class="flex items-center gap-2">
                 <button type="button" data-move-hv="${idx}" data-dir="-1" class="px-2.5 py-1 rounded-lg bg-white border border-[#E5E5DF] text-xs font-bold hover:bg-[#F4F4F0]" ${idx === 0 ? "disabled opacity-40" : ""}>↑</button>
                 <button type="button" data-move-hv="${idx}" data-dir="1" class="px-2.5 py-1 rounded-lg bg-white border border-[#E5E5DF] text-xs font-bold hover:bg-[#F4F4F0]" ${idx === videos.length - 1 ? "disabled opacity-40" : ""}>↓</button>
-                <button type="button" data-upload-hv="${idx}" class="px-3 py-1.5 rounded-full bg-[#00758C] text-white text-[11px] font-bold uppercase tracking-wider hover:bg-[#005e70] inline-flex items-center gap-1">
+                <button type="button" data-upload-hv="${idx}" class="px-3.5 py-1.5 rounded-full bg-[#00758C] text-white text-[11px] font-bold uppercase tracking-wider hover:bg-[#005e70] inline-flex items-center gap-1 shadow-2xs">
                   <span class="material-symbols-outlined text-[15px]">upload_file</span>
-                  <span>Subir MP4</span>
+                  <span>Reemplazar / Subir MP4</span>
                 </button>
                 ${
                   videos.length > 1
@@ -1245,13 +1347,21 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-              <div class="md:col-span-4 rounded-xl overflow-hidden bg-[#101014] aspect-video border border-[#E5E5DF]">
-                <video src="${v.url}" class="w-full h-full object-cover" muted playsinline controls preload="metadata"></video>
+              <div class="md:col-span-4 rounded-xl overflow-hidden bg-[#101014] aspect-video border border-[#E5E5DF] relative">
+                <video
+                  data-admin-hv-preview="${idx}"
+                  src="${previewSrc}"
+                  class="w-full h-full object-cover"
+                  muted
+                  playsinline
+                  controls
+                  preload="metadata"
+                ></video>
               </div>
               <div class="md:col-span-8 space-y-3">
                 <div>
                   <label class="block text-[11px] font-bold uppercase text-[#52525B] mb-1">Ruta o URL del Archivo de Video (.mp4 / .webm)</label>
-                  <input type="text" data-hv-field="url" data-hv-idx="${idx}" value="${v.url || ""}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
+                  <input type="text" data-hv-field="url" data-hv-idx="${idx}" value="${rawUrl}" class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono" />
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
@@ -1269,20 +1379,43 @@
           list.appendChild(item);
         });
 
+        // Force every preview <video> to load its metadata and paint its first frame thumbnail
+        list.querySelectorAll("video[data-admin-hv-preview]").forEach((vidEl) => {
+          const seekThumb = () => {
+            if (vidEl.currentTime === 0) {
+              try {
+                vidEl.currentTime = 0.15;
+              } catch (_) {}
+            }
+          };
+          vidEl.addEventListener("loadedmetadata", seekThumb, { once: true });
+          vidEl.addEventListener("loadeddata", seekThumb, { once: true });
+          try {
+            vidEl.load();
+          } catch (_) {}
+        });
+
         list.querySelectorAll("[data-upload-hv]").forEach((btn) => {
           btn.addEventListener("click", () => {
             const i = Number(btn.getAttribute("data-upload-hv"));
             collectAllInputsIntoState();
-            triggerFileUpload("video/mp4,video/webm,video/quicktime", (uploadedUrl) => {
+            triggerFileUpload("video/mp4,video/webm,video/quicktime", async (uploadedUrl, uploadedFilename, statsNote) => {
+              if (!cmsState.hero_videos[i]) return;
               cmsState.hero_videos[i].url = uploadedUrl;
-              if (i === 0 && cmsState.site_settings) cmsState.site_settings.hero_video_url = uploadedUrl;
+              if (i === 0 && cmsState.site_settings) {
+                cmsState.site_settings.hero_video_url = uploadedUrl;
+              }
               renderHeroVideos();
+              await saveCMS(
+                `¡Video #${i + 1} actualizado y publicado en Supabase! ${statsNote ? "(" + statsNote + ")" : ""}`,
+                true
+              );
             });
           });
         });
 
         list.querySelectorAll("[data-move-hv]").forEach((btn) => {
-          btn.addEventListener("click", () => {
+          btn.addEventListener("click", async () => {
             collectAllInputsIntoState();
             const i = Number(btn.getAttribute("data-move-hv"));
             const dir = Number(btn.getAttribute("data-dir"));
@@ -1292,6 +1425,7 @@
             cmsState.hero_videos[i] = cmsState.hero_videos[target];
             cmsState.hero_videos[target] = temp;
             renderHeroVideos();
+            await saveCMS("Orden de videos actualizado.", true);
           });
         });
 
@@ -1300,7 +1434,7 @@
             collectAllInputsIntoState();
             const i = Number(btn.getAttribute("data-del-hv"));
             cmsState.hero_videos.splice(i, 1);
-            saveCMS("Video eliminado de la secuencia del Hero.");
+            saveCMS("Video eliminado de la secuencia del Hero.", true);
           });
         });
       }
@@ -1358,9 +1492,11 @@
           btn.addEventListener("click", () => {
             const i = Number(btn.getAttribute("data-upload-logo"));
             collectAllInputsIntoState();
-            triggerFileUpload("image/png,image/jpeg,image/webp,image/svg+xml", (uploadedUrl) => {
+            triggerFileUpload("image/png,image/jpeg,image/webp,image/svg+xml", async (uploadedUrl, _, statsNote) => {
+              if (!cmsState.client_brands[i]) return;
               cmsState.client_brands[i].logo_url = uploadedUrl;
               renderLogos();
+              await saveCMS(`¡Logo #${i + 1} optimizado y guardado en Supabase! ${statsNote ? "(" + statsNote + ")" : ""}`, true);
             });
           });
         });
@@ -1508,9 +1644,11 @@
           btn.addEventListener("click", () => {
             const i = Number(btn.getAttribute("data-upload-ind"));
             collectAllInputsIntoState();
-            triggerFileUpload("image/png,image/jpeg,image/webp", (uploadedUrl) => {
+            triggerFileUpload("image/png,image/jpeg,image/webp", async (uploadedUrl, _, statsNote) => {
+              if (!cmsState.industries[i]) return;
               cmsState.industries[i].image_url = uploadedUrl;
               renderIndustries();
+              await saveCMS(`¡Imagen de Industria #${i + 1} optimizada y guardada en Supabase! ${statsNote ? "(" + statsNote + ")" : ""}`, true);
             });
           });
         });
@@ -1725,9 +1863,11 @@
           btn.addEventListener("click", () => {
             const i = Number(btn.getAttribute("data-upload-proj"));
             collectAllInputsIntoState();
-            triggerFileUpload("image/png,image/jpeg,image/webp", (uploadedUrl) => {
+            triggerFileUpload("image/png,image/jpeg,image/webp", async (uploadedUrl, _, statsNote) => {
+              if (!cmsState.projects[i]) return;
               cmsState.projects[i].image_url = uploadedUrl;
               renderProjects();
+              await saveCMS(`¡Imagen de Proyecto #${i + 1} optimizada y guardada en Supabase! ${statsNote ? "(" + statsNote + ")" : ""}`, true);
             });
           });
         });
@@ -2153,30 +2293,48 @@
       // Add Item Buttons
       document.getElementById("add-hero-video-btn").addEventListener("click", () => {
         collectAllInputsIntoState();
-        const nextNum = cmsState.hero_videos.length + 1;
-        cmsState.hero_videos.push({
-          id: "hv-" + Date.now(),
-          url: "/video_hero_publimarca.mp4",
-          title_es: "Reel de Estudio #" + nextNum,
-          title_en: "Studio Reel #" + nextNum,
-          badge_es: "Set en Vivo • Cámara " + String.fromCharCode(64 + nextNum),
-          badge_en: "Live Stage • Cam " + String.fromCharCode(64 + nextNum)
+        triggerFileUpload("video/mp4,video/webm,video/quicktime", async (uploadedUrl, uploadedFilename, statsNote) => {
+          const nextNum = (cmsState.hero_videos || []).length + 1;
+          const cleanTitle = uploadedFilename
+            ? uploadedFilename.replace(/\.[^/.]+$/, "").replace(/[_-]+/g, " ")
+            : "Reel de Estudio #" + nextNum;
+          cmsState.hero_videos.push({
+            id: "hv-" + Date.now(),
+            url: uploadedUrl,
+            title_es: cleanTitle,
+            title_en: cleanTitle,
+            badge_es: "Set en Vivo • Cámara " + String.fromCharCode(64 + nextNum),
+            badge_en: "Live Stage • Cam " + String.fromCharCode(64 + nextNum)
+          });
+          renderHeroVideos();
+          await saveCMS(
+            `¡Nuevo video (#${nextNum}) subido y publicado en el Hero! ${statsNote ? "(" + statsNote + ")" : ""}`,
+            true
+          );
         });
-        renderHeroVideos();
       });
 
       document.getElementById("add-logo-btn").addEventListener("click", () => {
         collectAllInputsIntoState();
-        const nextNum = cmsState.client_brands.length + 1;
-        cmsState.client_brands.push({
-          id: "cb-" + Date.now(),
-          slug: "marca-" + nextNum,
-          name: "NUEVA MARCA #" + nextNum,
-          logo_url: "/logo%202.png",
-          instagram_url: "#",
-          size: "standard"
+        triggerFileUpload("image/png,image/jpeg,image/webp,image/svg+xml", async (uploadedUrl, uploadedFilename, statsNote) => {
+          const nextNum = (cmsState.client_brands || []).length + 1;
+          const cleanName = uploadedFilename
+            ? uploadedFilename.replace(/\.[^/.]+$/, "").replace(/[_-]+/g, " ").toUpperCase()
+            : "NUEVA MARCA #" + nextNum;
+          cmsState.client_brands.push({
+            id: "cb-" + Date.now(),
+            slug: "marca-" + Date.now(),
+            name: cleanName,
+            logo_url: uploadedUrl,
+            instagram_url: "#",
+            size: "standard"
+          });
+          renderLogos();
+          await saveCMS(
+            `¡Nuevo logo "${cleanName}" optimizado y añadido! ${statsNote ? "(" + statsNote + ")" : ""}`,
+            true
+          );
         });
-        renderLogos();
       });
 
       document.getElementById("add-service-btn").addEventListener("click", () => {

@@ -769,6 +769,8 @@ def fetch_cms_from_supabase_or_local() -> dict:
         ],
         "commissions": comm_rows if comm_rows else local_store.get("commissions", []),
     }
+    if "admin_auth" in local_store:
+        assembled["admin_auth"] = local_store["admin_auth"]
 
     # Cache latest Supabase state locally
     write_local_cms_store(assembled)
@@ -1075,7 +1077,73 @@ class PublimarcaHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         parsed = urlparse(self.path)
         length = int(self.headers.get("Content-Length", "0"))
-        raw = self.rfile.read(length).decode("utf-8") if length > 0 else "{}"
+        raw_bytes = self.rfile.read(length) if length > 0 else b""
+
+        if parsed.path == "/api/upload-binary":
+            if not self._get_authenticated_user():
+                self._send_json(401, {"ok": False, "error": "Sesión expirada o no autenticada."})
+                return
+            try:
+                raw_filename = unquote(self.headers.get("X-File-Name", "asset.mp4"))
+                filename = os.path.basename(raw_filename)
+                safe_name = re.sub(r"[^a-zA-Z0-9._-]", "_", filename) or "asset.mp4"
+                ext = os.path.splitext(safe_name)[1].lower()
+                ts = int(datetime.now(timezone.utc).timestamp())
+                mime_type = (self.headers.get("Content-Type") or "application/octet-stream").split(";")[0].strip()
+
+                binary_data = raw_bytes
+                original_bytes = int(self.headers.get("X-Original-Bytes") or len(binary_data))
+
+                # Hardware H.264 fast-start MP4 compression on macOS when avconvert is available
+                if mime_type.startswith("video/") or ext in (".mp4", ".mov", ".m4v"):
+                    binary_data, new_ext = _compress_video_server_side(binary_data, ext)
+                    if new_ext != ext:
+                        safe_name = os.path.splitext(safe_name)[0] + new_ext
+                        mime_type = "video/mp4"
+
+                final_name = f"{ts}_{safe_name}"
+                folder = "videos" if mime_type.startswith("video/") else "images"
+
+                store = read_local_cms_store()
+                sb_url, sb_key = _get_supabase_creds(store.get("supabase") or {})
+                supabase_public_url = _upload_bytes_to_supabase_storage(
+                    sb_url,
+                    sb_key,
+                    f"{folder}/{final_name}",
+                    mime_type,
+                    binary_data,
+                    "publimarca-media",
+                )
+
+                local_public_url = None
+                try:
+                    os.makedirs(UPLOADS_DIR, exist_ok=True)
+                    os.makedirs(PUBLIC_UPLOADS_DIR, exist_ok=True)
+                    dest_path = os.path.join(UPLOADS_DIR, final_name)
+                    pub_path = os.path.join(PUBLIC_UPLOADS_DIR, final_name)
+                    with open(dest_path, "wb") as f:
+                        f.write(binary_data)
+                    shutil.copy2(dest_path, pub_path)
+                    local_public_url = f"/uploads/{final_name}"
+                except OSError:
+                    pass
+
+                final_url = supabase_public_url or local_public_url
+                self._send_json(
+                    200,
+                    {
+                        "ok": bool(final_url),
+                        "url": final_url,
+                        "storedIn": "supabase_storage" if supabase_public_url else "local",
+                        "originalBytes": original_bytes,
+                        "compressedBytes": len(binary_data),
+                    },
+                )
+            except Exception as e:
+                self._send_json(400, {"ok": False, "error": str(e)})
+            return
+
+        raw = raw_bytes.decode("utf-8", errors="replace") if raw_bytes else "{}"
 
         if parsed.path == "/api/auth/login":
             try:
