@@ -157,56 +157,83 @@
       transform: scale(1.06);
     }
 
+    /* Hide native scrollbar for horizontal mobile carousels */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
     /* Testimonial Stacked Deck Carousel: Smooth Front-to-Back Card Transitions */
     .testimonial-deck-stage {
       position: relative;
-      min-height: 360px;
+      min-height: 0;
       perspective: 1200px;
+    }
+    @media (max-width: 639px) {
+      .testimonial-deck-card {
+        display: none;
+        position: relative;
+        width: 100%;
+        height: auto;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+      }
+      .testimonial-deck-card[data-deck-state="active"] {
+        display: flex;
+        opacity: 1;
+        transform: none !important;
+      }
     }
     @media (min-width: 640px) {
       .testimonial-deck-stage {
         min-height: 340px;
       }
-    }
-    .testimonial-deck-card {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-                  opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-                  background-color 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-                  box-shadow 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-                  border-color 0.75s cubic-bezier(0.22, 1, 0.36, 1);
-      will-change: transform, opacity;
-    }
-    .testimonial-deck-card[data-deck-state="active"] {
-      z-index: 30;
-      opacity: 1;
-      transform: translate3d(0, 0, 0) scale(1);
-      background-color: #FFFFFF;
-      pointer-events: auto;
-    }
-    .testimonial-deck-card[data-deck-state="next"] {
-      z-index: 20;
-      opacity: 0.72;
-      transform: translate3d(0, 18px, -40px) scale(0.955);
-      background-color: #F6F6F2;
-      pointer-events: none;
-    }
-    .testimonial-deck-card[data-deck-state="behind"] {
-      z-index: 10;
-      opacity: 0.38;
-      transform: translate3d(0, 34px, -80px) scale(0.91);
-      background-color: #EFEFE9;
-      pointer-events: none;
-    }
-    .testimonial-deck-card[data-deck-state="prev"] {
-      z-index: 5;
-      opacity: 0;
-      transform: translate3d(0, -24px, -60px) scale(0.93);
-      background-color: #F4F4F0;
-      pointer-events: none;
+      .testimonial-deck-card {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                    background-color 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                    box-shadow 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                    border-color 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+        will-change: transform, opacity;
+      }
+      .testimonial-deck-card[data-deck-state="active"] {
+        z-index: 30;
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+        background-color: #FFFFFF;
+        pointer-events: auto;
+      }
+      .testimonial-deck-card[data-deck-state="next"] {
+        z-index: 20;
+        opacity: 0.72;
+        transform: translate3d(0, 18px, -40px) scale(0.955);
+        background-color: #F6F6F2;
+        pointer-events: none;
+      }
+      .testimonial-deck-card[data-deck-state="behind"] {
+        z-index: 10;
+        opacity: 0.38;
+        transform: translate3d(0, 34px, -80px) scale(0.91);
+        background-color: #EFEFE9;
+        pointer-events: none;
+      }
+      .testimonial-deck-card[data-deck-state="prev"] {
+        z-index: 5;
+        opacity: 0;
+        transform: translate3d(0, -24px, -60px) scale(0.93);
+        background-color: #F4F4F0;
+        pointer-events: none;
+      }
     }
     @media (min-width: 1024px) {
       .testimonial-deck-card[data-deck-state="next"] {
@@ -455,8 +482,8 @@
                 </a>
               </div>
 
-              <!-- Metric Ribbon: Soft Light Card -->
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10 p-5 sm:p-6 bg-white rounded-3xl border border-[#E5E5DF] shadow-editorial" aria-label="Studio Production Capabilities">
+              <!-- Metric Ribbon: Soft Light Card (Hidden on mobile, visible from sm upwards) -->
+              <div class="hidden sm:grid sm:grid-cols-3 gap-4 mt-10 p-5 sm:p-6 bg-white rounded-3xl border border-[#E5E5DF] shadow-editorial" aria-label="Studio Production Capabilities">
                 <div>
                   <span class="text-2xl lg:text-3xl font-bold text-[#00758C] block" data-i18n="hero.metric1Val">04</span>
                   <span class="text-[11px] uppercase tracking-wider text-[#52525B] font-medium block mt-0.5" data-i18n="hero.metric1Label">Core Disciplines</span>
@@ -939,10 +966,10 @@
             </div>
           </div>
 
-          <!-- Asymmetric 6-Industry Editorial Composition -->
-          <div id="industries-grid-container" class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-7">
+          <!-- Asymmetric 6-Industry Editorial Composition (Horizontal Gallery on Mobile, 12-Col Asymmetric Grid on Desktop) -->
+          <div id="industries-grid-container" class="flex lg:grid lg:grid-cols-12 gap-4 lg:gap-7 overflow-x-auto lg:overflow-visible snap-x snap-mandatory scroll-smooth no-scrollbar pb-2 lg:pb-0">
             <!-- 01 — Construcción e inmobiliaria (Wide 7-Column Architectural Feature Plate) -->
-            <a href="#commission" class="lg:col-span-7 group relative rounded-3xl overflow-hidden bg-[#101014] border border-[#E5E5DF] shadow-editorial hover:shadow-editorial-hover transition-all duration-500 min-h-[380px] sm:min-h-[430px] flex flex-col justify-between p-6 sm:p-9 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+            <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-7 group relative rounded-3xl overflow-hidden bg-[#101014] border border-[#E5E5DF] shadow-editorial hover:shadow-editorial-hover transition-all duration-500 min-h-[380px] sm:min-h-[430px] flex flex-col justify-between p-6 sm:p-9 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
               <img
                 src="https://images.unsplash.com/photo-1541888946425-d09bb18086f6?auto=format&fit=crop&w=1200&q=85"
                 alt="Proyectos de construcción e inmobiliaria contemporánea"
@@ -973,7 +1000,7 @@
             </a>
 
             <!-- 02 — Distribución y alimentos (5-Column Vertical Editorial Card) -->
-            <a href="#commission" class="lg:col-span-5 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#00758C]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+            <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-5 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#00758C]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
               <div class="relative h-56 sm:h-64 w-full overflow-hidden bg-[#ECECE7]">
                 <img
                   src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1000&q=85"
@@ -1004,7 +1031,7 @@
             </a>
 
             <!-- 03 — Motopréstamos y servicios financieros (4-Column High-Contrast Editorial Monolith) -->
-            <a href="#commission" class="lg:col-span-4 group bg-[#101014] text-white rounded-3xl border border-[#101014] hover:border-[#A01318] shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+            <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-4 group bg-[#101014] text-white rounded-3xl border border-[#101014] hover:border-[#A01318] shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
               <div class="relative h-52 w-full overflow-hidden bg-[#1A1A22]">
                 <img
                   src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=900&q=85"
@@ -1036,8 +1063,8 @@
             </a>
 
             <!-- 04 — Restaurantes y gastronomía (8-Column Horizontal Split Editorial Feature) -->
-            <a href="#commission" class="lg:col-span-8 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#A01318]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 md:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
-              <div class="md:col-span-7 relative min-h-[260px] md:min-h-full overflow-hidden bg-[#ECECE7]">
+            <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-8 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#A01318]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 md:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+              <div class="md:col-span-7 relative min-h-[200px] sm:min-h-[260px] md:min-h-full overflow-hidden bg-[#ECECE7]">
                 <img
                   src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1100&q=85"
                   alt="Gastronomía editorial e interiorismo de restaurantes"
@@ -1071,8 +1098,8 @@
             </a>
 
             <!-- 05 — Equipos y suministros industriales (6-Column Architectural Horizontal Card) -->
-            <a href="#commission" class="lg:col-span-6 group bg-[#F4F4F0] hover:bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#00758C]/50 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 sm:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
-              <div class="sm:col-span-5 relative min-h-[220px] sm:min-h-full overflow-hidden bg-[#E5E5DF]">
+            <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-6 group bg-[#F4F4F0] hover:bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#00758C]/50 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 sm:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+              <div class="sm:col-span-5 relative min-h-[200px] sm:min-h-full overflow-hidden bg-[#E5E5DF]">
                 <img
                   src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=900&q=85"
                   alt="Maquinaria, ingeniería y suministros industriales"
@@ -1102,8 +1129,8 @@
             </a>
 
             <!-- 06 — Comercio y servicios (6-Column Architectural Horizontal Card) -->
-            <a href="#commission" class="lg:col-span-6 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#A01318]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 sm:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
-              <div class="sm:col-span-5 relative min-h-[220px] sm:min-h-full overflow-hidden bg-[#ECECE7]">
+            <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-6 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#A01318]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 sm:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+              <div class="sm:col-span-5 relative min-h-[200px] sm:min-h-full overflow-hidden bg-[#ECECE7]">
                 <img
                   src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=85"
                   alt="Espacios comerciales, tiendas y servicios orientados al cliente"
@@ -1131,6 +1158,34 @@
                 </div>
               </div>
             </a>
+          </div>
+
+          <!-- Mobile Horizontal Gallery Controls for Industries (Hidden on Desktop lg:) -->
+          <div id="industries-mobile-nav" class="flex lg:hidden items-center justify-between gap-4 mt-5">
+            <button
+              type="button"
+              id="industries-prev-btn"
+              aria-label="Industria anterior"
+              class="w-10 h-10 rounded-full bg-white border border-[#E5E5DF] text-[#101014] active:bg-[#A01318] active:text-white shadow-editorial flex items-center justify-center shrink-0 transition-all"
+            >
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
+            </button>
+            <div id="industries-dots" class="flex items-center justify-center gap-2" role="tablist" aria-label="Selector de industrias">
+              <button type="button" data-industry-dot="0" aria-label="Industria 1" class="w-6 h-1.5 rounded-full bg-[#A01318] transition-all duration-300"></button>
+              <button type="button" data-industry-dot="1" aria-label="Industria 2" class="w-2 h-1.5 rounded-full bg-[#D1D1C7] transition-all duration-300"></button>
+              <button type="button" data-industry-dot="2" aria-label="Industria 3" class="w-2 h-1.5 rounded-full bg-[#D1D1C7] transition-all duration-300"></button>
+              <button type="button" data-industry-dot="3" aria-label="Industria 4" class="w-2 h-1.5 rounded-full bg-[#D1D1C7] transition-all duration-300"></button>
+              <button type="button" data-industry-dot="4" aria-label="Industria 5" class="w-2 h-1.5 rounded-full bg-[#D1D1C7] transition-all duration-300"></button>
+              <button type="button" data-industry-dot="5" aria-label="Industria 6" class="w-2 h-1.5 rounded-full bg-[#D1D1C7] transition-all duration-300"></button>
+            </div>
+            <button
+              type="button"
+              id="industries-next-btn"
+              aria-label="Siguiente industria"
+              class="w-10 h-10 rounded-full bg-[#A01318] border border-[#A01318] text-white shadow-editorial flex items-center justify-center shrink-0 transition-all"
+            >
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+            </button>
           </div>
 
           <!-- Editorial Closing Statement & CTA Ribbon -->
@@ -1390,131 +1445,149 @@
       </section>
 
       <!-- Editorial Quotation / Client Voices Stacked Carousel -->
-      <section class="w-full bg-[#FBFBF9] px-margin md:px-margin-tablet lg:px-margin-desktop py-20 overflow-hidden" id="testimonials" aria-label="Client Endorsement">
+      <section class="w-full bg-[#FBFBF9] px-margin md:px-margin-tablet lg:px-margin-desktop py-14 sm:py-20 overflow-hidden" id="testimonials" aria-label="Client Endorsement">
         <div class="max-w-6xl mx-auto">
-          <div class="relative flex items-center justify-center gap-3 sm:gap-6">
-            <!-- Left Previous Slide Button -->
+          <div class="relative flex items-center justify-center sm:gap-6">
+            <!-- Left Previous Slide Button (Desktop sm:+) -->
             <button
               type="button"
               id="testimonial-prev-btn"
               aria-label="Comentario anterior"
-              class="z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white border border-[#E5E5DF] text-[#101014] hover:bg-[#A01318] hover:text-white hover:border-[#A01318] shadow-editorial hover:shadow-editorial-hover transition-all duration-300 flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]"
+              class="hidden sm:flex z-40 w-12 h-12 rounded-full bg-white border border-[#E5E5DF] text-[#101014] hover:bg-[#A01318] hover:text-white hover:border-[#A01318] shadow-editorial hover:shadow-editorial-hover transition-all duration-300 items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]"
             >
               <span class="material-symbols-outlined text-[20px]" aria-hidden="true">arrow_back</span>
             </button>
 
-            <!-- Stacked Cards Stage -->
-            <div id="testimonial-carousel-stage" class="testimonial-deck-stage w-full max-w-4xl mb-8">
+            <!-- Stacked Cards Stage (Borderless full-width on Mobile, 3D Stacked Deck on Desktop) -->
+            <div id="testimonial-carousel-stage" class="testimonial-deck-stage w-full max-w-4xl mb-5 sm:mb-8">
               <!-- Card 01 -->
-              <article data-testimonial-card="0" data-deck-state="active" class="testimonial-deck-card rounded-3xl p-7 sm:p-10 md:p-12 border border-[#E5E5DF] shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="0" data-deck-state="active" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
-                  <div class="flex flex-wrap items-center justify-between gap-2 mb-5 text-[#00758C]">
-                    <div class="flex items-center gap-2">
-                      <span class="material-symbols-outlined text-2xl" aria-hidden="true">format_quote</span>
-                      <span class="text-xs uppercase tracking-widest font-mono font-semibold" data-i18n="testimonial.c1Kicker">Perspectiva Editorial // Sector Hospitalidad</span>
+                  <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <span class="material-symbols-outlined text-xl sm:text-2xl" aria-hidden="true">format_quote</span>
+                      <span class="text-[11px] sm:text-xs uppercase tracking-widest font-mono font-semibold" data-i18n="testimonial.c1Kicker">Perspectiva Editorial // Sector Hospitalidad</span>
                     </div>
                     <span class="px-2.5 py-0.5 rounded-full bg-[#F4F4F0] border border-[#E5E5DF] text-[10px] font-mono uppercase tracking-wider text-[#52525B]" data-i18n="testimonial.c1Badge">Comentario 01 / 04</span>
                   </div>
-                  <blockquote class="text-xl sm:text-2xl lg:text-3xl text-[#101014] font-serif italic mb-6 leading-snug" data-i18n="testimonial.c1Quote">
+                  <blockquote class="text-base sm:text-2xl lg:text-3xl text-[#101014] font-serif italic mb-5 sm:mb-6 leading-relaxed sm:leading-snug" data-i18n="testimonial.c1Quote">
                     «Publimarca transformó nuestra presencia de marca, pasando de ser un discreto proyecto regional a un referente visual con identidad propia. Su disciplina de cámara y criterio editorial son incomparables.»
                   </blockquote>
                 </div>
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-5 border-t border-[#EBEBE6]">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 pt-4 sm:pt-5 border-t border-[#EBEBE6]">
                   <div>
-                    <span class="text-sm sm:text-base font-bold text-[#101014] block uppercase" data-i18n="testimonial.c1Author">Dirección Ejecutiva — Socio del Sector Hospitalidad</span>
-                    <span class="text-xs text-[#52525B]" data-i18n="testimonial.c1Role">Desarrollo Hotelero y Turismo • Proyecto Integral</span>
+                    <span class="text-xs sm:text-base font-bold text-[#101014] block uppercase" data-i18n="testimonial.c1Author">Dirección Ejecutiva — Socio del Sector Hospitalidad</span>
+                    <span class="text-[11px] sm:text-xs text-[#52525B]" data-i18n="testimonial.c1Role">Desarrollo Hotelero y Turismo • Proyecto Integral</span>
                   </div>
-                  <div class="font-mono text-xs text-[#00758C] font-semibold" translate="no">Higüey / Punta Cana</div>
+                  <div class="font-mono text-[11px] sm:text-xs text-[#00758C] font-semibold" translate="no">Higüey / Punta Cana</div>
                 </div>
               </article>
 
               <!-- Card 02 -->
-              <article data-testimonial-card="1" data-deck-state="next" class="testimonial-deck-card rounded-3xl p-7 sm:p-10 md:p-12 border border-[#E5E5DF] shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="1" data-deck-state="next" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
-                  <div class="flex flex-wrap items-center justify-between gap-2 mb-5 text-[#00758C]">
-                    <div class="flex items-center gap-2">
-                      <span class="material-symbols-outlined text-2xl" aria-hidden="true">format_quote</span>
-                      <span class="text-xs uppercase tracking-widest font-mono font-semibold" data-i18n="testimonial.c2Kicker">Perspectiva Editorial // Construcción e Inmobiliaria</span>
+                  <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <span class="material-symbols-outlined text-xl sm:text-2xl" aria-hidden="true">format_quote</span>
+                      <span class="text-[11px] sm:text-xs uppercase tracking-widest font-mono font-semibold" data-i18n="testimonial.c2Kicker">Perspectiva Editorial // Construcción e Inmobiliaria</span>
                     </div>
                     <span class="px-2.5 py-0.5 rounded-full bg-[#F4F4F0] border border-[#E5E5DF] text-[10px] font-mono uppercase tracking-wider text-[#52525B]" data-i18n="testimonial.c2Badge">Comentario 02 / 04</span>
                   </div>
-                  <blockquote class="text-xl sm:text-2xl lg:text-3xl text-[#101014] font-serif italic mb-6 leading-snug" data-i18n="testimonial.c2Quote">
+                  <blockquote class="text-base sm:text-2xl lg:text-3xl text-[#101014] font-serif italic mb-5 sm:mb-6 leading-relaxed sm:leading-snug" data-i18n="testimonial.c2Quote">
                     «Lograron traducir la solidez técnica de nuestros desarrollos en una imagen corporativa moderna y confiable. Desde la identidad gráfica hasta el material audiovisual, cada entrega superó nuestras expectativas.»
                   </blockquote>
                 </div>
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-5 border-t border-[#EBEBE6]">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 pt-4 sm:pt-5 border-t border-[#EBEBE6]">
                   <div>
-                    <span class="text-sm sm:text-base font-bold text-[#101014] block uppercase" data-i18n="testimonial.c2Author">Gerencia General — Firma de Ingeniería y Desarrollo</span>
-                    <span class="text-xs text-[#52525B]" data-i18n="testimonial.c2Role">Arquitectura, Construcción y Proyectos Inmobiliarios</span>
+                    <span class="text-xs sm:text-base font-bold text-[#101014] block uppercase" data-i18n="testimonial.c2Author">Gerencia General — Firma de Ingeniería y Desarrollo</span>
+                    <span class="text-[11px] sm:text-xs text-[#52525B]" data-i18n="testimonial.c2Role">Arquitectura, Construcción y Proyectos Inmobiliarios</span>
                   </div>
-                  <div class="font-mono text-xs text-[#00758C] font-semibold" translate="no">La Altagracia, RD</div>
+                  <div class="font-mono text-[11px] sm:text-xs text-[#00758C] font-semibold" translate="no">La Altagracia, RD</div>
                 </div>
               </article>
 
               <!-- Card 03 -->
-              <article data-testimonial-card="2" data-deck-state="behind" class="testimonial-deck-card rounded-3xl p-7 sm:p-10 md:p-12 border border-[#E5E5DF] shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="2" data-deck-state="behind" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
-                  <div class="flex flex-wrap items-center justify-between gap-2 mb-5 text-[#00758C]">
-                    <div class="flex items-center gap-2">
-                      <span class="material-symbols-outlined text-2xl" aria-hidden="true">format_quote</span>
-                      <span class="text-xs uppercase tracking-widest font-mono font-semibold" data-i18n="testimonial.c3Kicker">Perspectiva Editorial // Comercio y Distribución</span>
+                  <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <span class="material-symbols-outlined text-xl sm:text-2xl" aria-hidden="true">format_quote</span>
+                      <span class="text-[11px] sm:text-xs uppercase tracking-widest font-mono font-semibold" data-i18n="testimonial.c3Kicker">Perspectiva Editorial // Comercio y Distribución</span>
                     </div>
                     <span class="px-2.5 py-0.5 rounded-full bg-[#F4F4F0] border border-[#E5E5DF] text-[10px] font-mono uppercase tracking-wider text-[#52525B]" data-i18n="testimonial.c3Badge">Comentario 03 / 04</span>
                   </div>
-                  <blockquote class="text-xl sm:text-2xl lg:text-3xl text-[#101014] font-serif italic mb-6 leading-snug" data-i18n="testimonial.c3Quote">
+                  <blockquote class="text-base sm:text-2xl lg:text-3xl text-[#101014] font-serif italic mb-5 sm:mb-6 leading-relaxed sm:leading-snug" data-i18n="testimonial.c3Quote">
                     «Necesitábamos renovar cómo nos percibían nuestros clientes sin perder nuestra esencia comercial. Su equipo diseñó una línea visual coherente, dinámica y adaptada exactamente a nuestro mercado.»
                   </blockquote>
                 </div>
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-5 border-t border-[#EBEBE6]">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 pt-4 sm:pt-5 border-t border-[#EBEBE6]">
                   <div>
-                    <span class="text-sm sm:text-base font-bold text-[#101014] block uppercase" data-i18n="testimonial.c3Author">Dirección Comercial — Grupo de Distribución y Ventas</span>
-                    <span class="text-xs text-[#52525B]" data-i18n="testimonial.c3Role">Posicionamiento de Marca, Impresión y Campaña Digital</span>
+                    <span class="text-xs sm:text-base font-bold text-[#101014] block uppercase" data-i18n="testimonial.c3Author">Dirección Comercial — Grupo de Distribución y Ventas</span>
+                    <span class="text-[11px] sm:text-xs text-[#52525B]" data-i18n="testimonial.c3Role">Posicionamiento de Marca, Impresión y Campaña Digital</span>
                   </div>
-                  <div class="font-mono text-xs text-[#00758C] font-semibold" translate="no">Higüey, RD</div>
+                  <div class="font-mono text-[11px] sm:text-xs text-[#00758C] font-semibold" translate="no">Higüey, RD</div>
                 </div>
               </article>
 
               <!-- Card 04 -->
-              <article data-testimonial-card="3" data-deck-state="prev" class="testimonial-deck-card rounded-3xl p-7 sm:p-10 md:p-12 border border-[#E5E5DF] shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="3" data-deck-state="prev" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
-                  <div class="flex flex-wrap items-center justify-between gap-2 mb-5 text-[#00758C]">
-                    <div class="flex items-center gap-2">
-                      <span class="material-symbols-outlined text-2xl" aria-hidden="true">format_quote</span>
-                      <span class="text-xs uppercase tracking-widest font-mono font-semibold" data-i18n="testimonial.c4Kicker">Perspectiva Editorial // Servicios y Financiamiento</span>
+                  <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <span class="material-symbols-outlined text-xl sm:text-2xl" aria-hidden="true">format_quote</span>
+                      <span class="text-[11px] sm:text-xs uppercase tracking-widest font-mono font-semibold" data-i18n="testimonial.c4Kicker">Perspectiva Editorial // Servicios y Financiamiento</span>
                     </div>
                     <span class="px-2.5 py-0.5 rounded-full bg-[#F4F4F0] border border-[#E5E5DF] text-[10px] font-mono uppercase tracking-wider text-[#52525B]" data-i18n="testimonial.c4Badge">Comentario 04 / 04</span>
                   </div>
-                  <blockquote class="text-xl sm:text-2xl lg:text-3xl text-[#101014] font-serif italic mb-6 leading-snug" data-i18n="testimonial.c4Quote">
+                  <blockquote class="text-base sm:text-2xl lg:text-3xl text-[#101014] font-serif italic mb-5 sm:mb-6 leading-relaxed sm:leading-snug" data-i18n="testimonial.c4Quote">
                     «Lo que más valoramos de trabajar con Publimarca es su capacidad de escuchar y adaptar la creatividad al lenguaje real de nuestro negocio. Nos ayudaron a proyectar cercanía, orden y total credibilidad.»
                   </blockquote>
                 </div>
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-5 border-t border-[#EBEBE6]">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 pt-4 sm:pt-5 border-t border-[#EBEBE6]">
                   <div>
-                    <span class="text-sm sm:text-base font-bold text-[#101014] block uppercase" data-i18n="testimonial.c4Author">Junta Directiva — Empresa de Servicios y Financiamiento</span>
-                    <span class="text-xs text-[#52525B]" data-i18n="testimonial.c4Role">Consultoría Estratégica, Identidad Visual y Redes</span>
+                    <span class="text-xs sm:text-base font-bold text-[#101014] block uppercase" data-i18n="testimonial.c4Author">Junta Directiva — Empresa de Servicios y Financiamiento</span>
+                    <span class="text-[11px] sm:text-xs text-[#52525B]" data-i18n="testimonial.c4Role">Consultoría Estratégica, Identidad Visual y Redes</span>
                   </div>
-                  <div class="font-mono text-xs text-[#00758C] font-semibold" translate="no">Región Este, RD</div>
+                  <div class="font-mono text-[11px] sm:text-xs text-[#00758C] font-semibold" translate="no">Región Este, RD</div>
                 </div>
               </article>
             </div>
 
-            <!-- Right Next Slide Button -->
+            <!-- Right Next Slide Button (Desktop sm:+) -->
             <button
               type="button"
               id="testimonial-next-btn"
               aria-label="Siguiente comentario"
-              class="z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white border border-[#E5E5DF] text-[#101014] hover:bg-[#A01318] hover:text-white hover:border-[#A01318] shadow-editorial hover:shadow-editorial-hover transition-all duration-300 flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]"
+              class="hidden sm:flex z-40 w-12 h-12 rounded-full bg-white border border-[#E5E5DF] text-[#101014] hover:bg-[#A01318] hover:text-white hover:border-[#A01318] shadow-editorial hover:shadow-editorial-hover transition-all duration-300 items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]"
             >
               <span class="material-symbols-outlined text-[20px]" aria-hidden="true">arrow_forward</span>
             </button>
           </div>
 
-          <!-- Slide Progress Dots -->
-          <div class="flex items-center justify-center gap-2.5 mt-4" role="tablist" aria-label="Selector de comentarios">
-            <button type="button" data-testimonial-dot="0" aria-label="Ir al comentario 1" class="w-8 h-1.5 rounded-full bg-[#A01318] transition-all duration-300"></button>
-            <button type="button" data-testimonial-dot="1" aria-label="Ir al comentario 2" class="w-2.5 h-1.5 rounded-full bg-[#D1D1C7] hover:bg-[#8A8A93] transition-all duration-300"></button>
-            <button type="button" data-testimonial-dot="2" aria-label="Ir al comentario 3" class="w-2.5 h-1.5 rounded-full bg-[#D1D1C7] hover:bg-[#8A8A93] transition-all duration-300"></button>
-            <button type="button" data-testimonial-dot="3" aria-label="Ir al comentario 4" class="w-2.5 h-1.5 rounded-full bg-[#D1D1C7] hover:bg-[#8A8A93] transition-all duration-300"></button>
+          <!-- Slide Progress Dots & Mobile Controls -->
+          <div class="flex items-center justify-between sm:justify-center gap-4 mt-2 sm:mt-4">
+            <button
+              type="button"
+              id="testimonial-mobile-prev-btn"
+              aria-label="Comentario anterior"
+              class="flex sm:hidden w-9 h-9 rounded-full bg-white border border-[#E5E5DF] text-[#101014] active:bg-[#A01318] active:text-white shadow-sm items-center justify-center shrink-0"
+            >
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
+            </button>
+            <div class="flex items-center justify-center gap-2.5" role="tablist" aria-label="Selector de comentarios">
+              <button type="button" data-testimonial-dot="0" aria-label="Ir al comentario 1" class="w-8 h-1.5 rounded-full bg-[#A01318] transition-all duration-300"></button>
+              <button type="button" data-testimonial-dot="1" aria-label="Ir al comentario 2" class="w-2.5 h-1.5 rounded-full bg-[#D1D1C7] hover:bg-[#8A8A93] transition-all duration-300"></button>
+              <button type="button" data-testimonial-dot="2" aria-label="Ir al comentario 3" class="w-2.5 h-1.5 rounded-full bg-[#D1D1C7] hover:bg-[#8A8A93] transition-all duration-300"></button>
+              <button type="button" data-testimonial-dot="3" aria-label="Ir al comentario 4" class="w-2.5 h-1.5 rounded-full bg-[#D1D1C7] hover:bg-[#8A8A93] transition-all duration-300"></button>
+            </div>
+            <button
+              type="button"
+              id="testimonial-mobile-next-btn"
+              aria-label="Siguiente comentario"
+              class="flex sm:hidden w-9 h-9 rounded-full bg-[#A01318] border border-[#A01318] text-white shadow-sm items-center justify-center shrink-0"
+            >
+              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+            </button>
           </div>
         </div>
       </section>
@@ -2907,7 +2980,7 @@
           { selector: "#services a[data-select-capability]", stagger: 90 },
           // Industries header, 6 asymmetric industry cards, and closing CTA banner
           { selector: "#industries > div > div:first-child", stagger: 0 },
-          { selector: "#industries > div > .grid > a", stagger: 85 },
+          { selector: "#industries-grid-container", stagger: 0 },
           { selector: "#industries > div > div:last-child", stagger: 100 },
           // Selected Works header & portfolio cards
           { selector: "#selected-works > div > div:first-child", stagger: 0 },
@@ -2957,16 +3030,19 @@
 
       window.PUBLIMARCA_CONFIG = window.PUBLIMARCA_CONFIG || { formEndpoint: "/api/commission" };
 
-      // Stacked Testimonial Card Deck Carousel (Auto-Advance + Left/Right Controls + Dynamic Rebind)
+      // Stacked Testimonial Card Deck Carousel (Auto-Advance + Left/Right Controls + Mobile Swipe + Dynamic Rebind)
       let testimonialTimer = null;
       let testimonialActiveIdx = 0;
 
       function initTestimonialCarousel() {
         const sectionEl = document.getElementById("testimonials");
+        const stageEl = document.getElementById("testimonial-carousel-stage");
         const cards = Array.from(document.querySelectorAll("[data-testimonial-card]"));
         const dots = Array.from(document.querySelectorAll("[data-testimonial-dot]"));
         const prevBtn = document.getElementById("testimonial-prev-btn");
         const nextBtn = document.getElementById("testimonial-next-btn");
+        const mobilePrevBtn = document.getElementById("testimonial-mobile-prev-btn");
+        const mobileNextBtn = document.getElementById("testimonial-mobile-next-btn");
         if (!cards.length) return;
 
         const total = cards.length;
@@ -3023,19 +3099,23 @@
           }
         }
 
-        if (prevBtn) {
-          prevBtn.onclick = () => {
-            prevSlide();
-            startAutoPlay();
-          };
-        }
+        [prevBtn, mobilePrevBtn].forEach((btn) => {
+          if (btn) {
+            btn.onclick = () => {
+              prevSlide();
+              startAutoPlay();
+            };
+          }
+        });
 
-        if (nextBtn) {
-          nextBtn.onclick = () => {
-            nextSlide();
-            startAutoPlay();
-          };
-        }
+        [nextBtn, mobileNextBtn].forEach((btn) => {
+          if (btn) {
+            btn.onclick = () => {
+              nextSlide();
+              startAutoPlay();
+            };
+          }
+        });
 
         dots.forEach((dot, idx) => {
           dot.onclick = () => {
@@ -3053,6 +3133,23 @@
           };
         });
 
+        if (stageEl && !stageEl.dataset.swipeBound) {
+          stageEl.dataset.swipeBound = "true";
+          let touchStartX = 0;
+          stageEl.addEventListener("touchstart", (e) => {
+            if (e.touches && e.touches[0]) touchStartX = e.touches[0].clientX;
+          }, { passive: true });
+          stageEl.addEventListener("touchend", (e) => {
+            if (!e.changedTouches || !e.changedTouches[0]) return;
+            const diffX = e.changedTouches[0].clientX - touchStartX;
+            if (Math.abs(diffX) > 40) {
+              if (diffX < 0) nextSlide();
+              else prevSlide();
+              startAutoPlay();
+            }
+          }, { passive: true });
+        }
+
         if (sectionEl && !sectionEl.dataset.carouselBound) {
           sectionEl.dataset.carouselBound = "true";
           sectionEl.addEventListener("mouseenter", stopAutoPlay);
@@ -3066,6 +3163,85 @@
       }
 
       initTestimonialCarousel();
+
+      // Mobile Horizontal Snap Gallery Controller for Industries (#industries-grid-container)
+      function initIndustriesMobileCarousel() {
+        const grid = document.getElementById("industries-grid-container");
+        const prevBtn = document.getElementById("industries-prev-btn");
+        const nextBtn = document.getElementById("industries-next-btn");
+        const dotsWrap = document.getElementById("industries-dots");
+        if (!grid) return;
+
+        const cards = Array.from(grid.querySelectorAll("a"));
+        const total = cards.length;
+        if (!total) return;
+
+        if (dotsWrap) {
+          dotsWrap.innerHTML = cards
+            .map(
+              (_, i) =>
+                `<button type="button" data-industry-dot="${i}" aria-label="Industria ${i + 1}" class="${
+                  i === 0 ? "w-6 bg-[#A01318]" : "w-2 bg-[#D1D1C7]"
+                } h-1.5 rounded-full transition-all duration-300"></button>`
+            )
+            .join("");
+        }
+
+        const dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll("[data-industry-dot]")) : [];
+
+        function getActiveIndex() {
+          const scrollLeft = grid.scrollLeft;
+          const cardWidth = cards[0] ? cards[0].offsetWidth + 16 : 320;
+          return Math.min(total - 1, Math.max(0, Math.round(scrollLeft / cardWidth)));
+        }
+
+        function updateDots(activeIdx) {
+          dots.forEach((dot, i) => {
+            dot.className =
+              i === activeIdx
+                ? "w-6 h-1.5 rounded-full bg-[#A01318] transition-all duration-300"
+                : "w-2 h-1.5 rounded-full bg-[#D1D1C7] transition-all duration-300";
+          });
+        }
+
+        function scrollToCard(idx) {
+          const targetIdx = ((idx % total) + total) % total;
+          const targetCard = cards[targetIdx];
+          if (!targetCard) return;
+          const leftPos = targetCard.offsetLeft - grid.offsetLeft;
+          grid.scrollTo({ left: leftPos, behavior: "smooth" });
+          updateDots(targetIdx);
+        }
+
+        if (prevBtn) {
+          prevBtn.onclick = () => {
+            scrollToCard(getActiveIndex() - 1);
+          };
+        }
+
+        if (nextBtn) {
+          nextBtn.onclick = () => {
+            scrollToCard(getActiveIndex() + 1);
+          };
+        }
+
+        dots.forEach((dot, i) => {
+          dot.onclick = () => scrollToCard(i);
+        });
+
+        if (!grid.dataset.scrollBound) {
+          grid.dataset.scrollBound = "true";
+          grid.addEventListener(
+            "scroll",
+            () => {
+              updateDots(getActiveIndex());
+            },
+            { passive: true }
+          );
+        }
+      }
+
+      initIndustriesMobileCarousel();
 
       // Dynamic CMS Rendering Helpers
       let latestCMSData = null;
@@ -3422,7 +3598,7 @@
 
             if (pattern === 0) {
               return `
-              <a href="#commission" class="lg:col-span-7 group relative rounded-3xl overflow-hidden bg-[#101014] border border-[#E5E5DF] shadow-editorial hover:shadow-editorial-hover transition-all duration-500 min-h-[380px] sm:min-h-[430px] flex flex-col justify-between p-6 sm:p-9 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+              <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-7 group relative rounded-3xl overflow-hidden bg-[#101014] border border-[#E5E5DF] shadow-editorial hover:shadow-editorial-hover transition-all duration-500 min-h-[380px] sm:min-h-[430px] flex flex-col justify-between p-6 sm:p-9 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
                 <img src="${img}" alt="${title}" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700 ease-out" />
                 <div class="absolute inset-0 bg-gradient-to-t from-[#101014]/95 via-[#101014]/45 to-[#101014]/15" aria-hidden="true"></div>
                 <div class="relative z-10 flex items-center justify-between gap-4">
@@ -3444,7 +3620,7 @@
 
             if (pattern === 1) {
               return `
-              <a href="#commission" class="lg:col-span-5 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#00758C]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+              <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-5 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#00758C]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
                 <div class="relative h-56 sm:h-64 w-full overflow-hidden bg-[#ECECE7]">
                   <img src="${img}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
                   <div class="absolute inset-0 bg-gradient-to-t from-[#101014]/35 via-transparent to-transparent" aria-hidden="true"></div>
@@ -3465,7 +3641,7 @@
 
             if (pattern === 2) {
               return `
-              <a href="#commission" class="lg:col-span-4 group bg-[#101014] text-white rounded-3xl border border-[#101014] hover:border-[#A01318] shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+              <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-4 group bg-[#101014] text-white rounded-3xl border border-[#101014] hover:border-[#A01318] shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
                 <div class="relative h-52 w-full overflow-hidden bg-[#1A1A22]">
                   <img src="${img}" alt="${title}" loading="lazy" class="w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-700 ease-out" />
                   <div class="absolute inset-0 bg-gradient-to-t from-[#101014] via-[#101014]/20 to-transparent" aria-hidden="true"></div>
@@ -3487,8 +3663,8 @@
 
             if (pattern === 3) {
               return `
-              <a href="#commission" class="lg:col-span-8 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#A01318]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 md:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
-                <div class="md:col-span-7 relative min-h-[260px] md:min-h-full overflow-hidden bg-[#ECECE7]">
+              <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-8 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#A01318]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 md:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+                <div class="md:col-span-7 relative min-h-[200px] sm:min-h-[260px] md:min-h-full overflow-hidden bg-[#ECECE7]">
                   <img src="${img}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
                   <span class="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md text-[#A01318] font-mono text-xs font-bold tracking-widest shadow-sm" translate="no">${num}</span>
                 </div>
@@ -3510,8 +3686,8 @@
 
             if (pattern === 4) {
               return `
-              <a href="#commission" class="lg:col-span-6 group bg-[#F4F4F0] hover:bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#00758C]/50 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 sm:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
-                <div class="sm:col-span-5 relative min-h-[220px] sm:min-h-full overflow-hidden bg-[#E5E5DF]">
+              <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-6 group bg-[#F4F4F0] hover:bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#00758C]/50 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 sm:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+                <div class="sm:col-span-5 relative min-h-[200px] sm:min-h-full overflow-hidden bg-[#E5E5DF]">
                   <img src="${img}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
                   <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#101014]/90 text-white font-mono text-xs font-bold tracking-widest" translate="no">${num}</span>
                 </div>
@@ -3530,8 +3706,8 @@
             }
 
             return `
-            <a href="#commission" class="lg:col-span-6 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#A01318]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 sm:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
-              <div class="sm:col-span-5 relative min-h-[220px] sm:min-h-full overflow-hidden bg-[#ECECE7]">
+            <a href="#commission" class="w-[86vw] max-w-[350px] sm:w-[400px] lg:w-auto lg:max-w-none shrink-0 snap-center lg:col-span-6 group bg-white rounded-3xl border border-[#E5E5DF] hover:border-[#A01318]/40 shadow-editorial hover:shadow-editorial-hover transition-all duration-500 overflow-hidden grid grid-cols-1 sm:grid-cols-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]">
+              <div class="sm:col-span-5 relative min-h-[200px] sm:min-h-full overflow-hidden bg-[#ECECE7]">
                 <img src="${img}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
                 <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-[#A01318] font-mono text-xs font-bold tracking-widest shadow-sm" translate="no">${num}</span>
               </div>
@@ -3549,6 +3725,8 @@
             </a>`;
           })
           .join("");
+
+        initIndustriesMobileCarousel();
       }
 
       function renderDynamicProjects(projects) {
@@ -3807,25 +3985,25 @@
             const loc = t.location || "Higüey, RD";
 
             return `
-            <article data-testimonial-card="${idx}" data-deck-state="${idx === 0 ? "active" : "behind"}" class="testimonial-deck-card rounded-3xl p-7 sm:p-10 md:p-12 border border-[#E5E5DF] shadow-editorial flex flex-col justify-between">
+            <article data-testimonial-card="${idx}" data-deck-state="${idx === 0 ? "active" : "behind"}" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
               <div>
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-5 text-[#00758C]">
-                  <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-2xl" aria-hidden="true">format_quote</span>
-                    <span class="text-xs uppercase tracking-widest font-mono font-semibold">${kicker || ""}</span>
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
+                  <div class="flex items-center gap-1.5 sm:gap-2">
+                    <span class="material-symbols-outlined text-xl sm:text-2xl" aria-hidden="true">format_quote</span>
+                    <span class="text-[11px] sm:text-xs uppercase tracking-widest font-mono font-semibold">${kicker || ""}</span>
                   </div>
                   <span class="px-2.5 py-0.5 rounded-full bg-[#F4F4F0] border border-[#E5E5DF] text-[10px] font-mono uppercase tracking-wider text-[#52525B]">${badge || ""}</span>
                 </div>
-                <blockquote class="text-xl sm:text-2xl lg:text-3xl text-[#101014] font-serif italic mb-6 leading-snug">
+                <blockquote class="text-base sm:text-2xl lg:text-3xl text-[#101014] font-serif italic mb-5 sm:mb-6 leading-relaxed sm:leading-snug">
                   ${quote || ""}
                 </blockquote>
               </div>
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-5 border-t border-[#EBEBE6]">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 pt-4 sm:pt-5 border-t border-[#EBEBE6]">
                 <div>
-                  <span class="text-sm sm:text-base font-bold text-[#101014] block uppercase">${author || ""}</span>
-                  <span class="text-xs text-[#52525B]">${role || ""}</span>
+                  <span class="text-xs sm:text-base font-bold text-[#101014] block uppercase">${author || ""}</span>
+                  <span class="text-[11px] sm:text-xs text-[#52525B]">${role || ""}</span>
                 </div>
-                <div class="font-mono text-xs text-[#00758C] font-semibold" translate="no">${loc}</div>
+                <div class="font-mono text-[11px] sm:text-xs text-[#00758C] font-semibold" translate="no">${loc}</div>
               </div>
             </article>
           `;
