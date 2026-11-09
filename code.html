@@ -172,34 +172,39 @@
       min-height: 0;
       perspective: 1200px;
     }
-    @keyframes mobileTestimonialFade {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
     @media (max-width: 639px) {
-      .testimonial-deck-card,
-      .testimonial-deck-card:not([data-deck-state="active"]) {
-        display: none !important;
+      .testimonial-deck-stage {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        gap: 1.5rem;
+        min-height: 0 !important;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .testimonial-deck-stage::-webkit-scrollbar {
+        display: none;
+      }
+      .testimonial-deck-card {
+        display: flex !important;
         position: relative !important;
-        width: 100%;
-        height: auto;
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        scroll-snap-align: center;
+        opacity: 1 !important;
+        transform: none !important;
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
         padding: 0 !important;
         border-radius: 0 !important;
-      }
-      .testimonial-deck-card[data-deck-state="active"] {
-        display: flex !important;
-        opacity: 1 !important;
-        transform: none !important;
-        animation: mobileTestimonialFade 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        pointer-events: auto !important;
       }
     }
     @media (min-width: 640px) {
@@ -1470,10 +1475,10 @@
               <span class="material-symbols-outlined text-[20px]" aria-hidden="true">arrow_back</span>
             </button>
 
-            <!-- Stacked Cards Stage (Borderless full-width on Mobile, 3D Stacked Deck on Desktop) -->
-            <div id="testimonial-carousel-stage" class="testimonial-deck-stage w-full max-w-4xl mb-5 sm:mb-8">
+            <!-- Stacked Cards Stage (Horizontal Snap Carousel on Mobile, 3D Stacked Deck on Desktop) -->
+            <div id="testimonial-carousel-stage" class="testimonial-deck-stage flex sm:block overflow-x-auto sm:overflow-visible snap-x snap-mandatory scroll-smooth no-scrollbar gap-6 sm:gap-0 w-full max-w-4xl mb-5 sm:mb-8">
               <!-- Card 01 -->
-              <article data-testimonial-card="0" data-deck-state="active" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="0" data-deck-state="active" class="testimonial-deck-card w-full min-w-full shrink-0 snap-center sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -1496,7 +1501,7 @@
               </article>
 
               <!-- Card 02 -->
-              <article data-testimonial-card="1" data-deck-state="next" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="1" data-deck-state="next" class="testimonial-deck-card w-full min-w-full shrink-0 snap-center sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -1519,7 +1524,7 @@
               </article>
 
               <!-- Card 03 -->
-              <article data-testimonial-card="2" data-deck-state="behind" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="2" data-deck-state="behind" class="testimonial-deck-card w-full min-w-full shrink-0 snap-center sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -1542,7 +1547,7 @@
               </article>
 
               <!-- Card 04 -->
-              <article data-testimonial-card="3" data-deck-state="prev" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="3" data-deck-state="prev" class="testimonial-deck-card w-full min-w-full shrink-0 snap-center sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -3059,9 +3064,19 @@
 
         const total = cards.length;
         if (testimonialActiveIdx >= total) testimonialActiveIdx = 0;
-        const INTERVAL_MS = 5200;
+        const INTERVAL_MS = 3000;
 
-        function updateDeck(newIndex) {
+        function updateDotsOnly(activeIdx) {
+          dots.forEach((dot, idx) => {
+            const isActive = idx === activeIdx;
+            dot.setAttribute("aria-selected", isActive ? "true" : "false");
+            dot.className = isActive
+              ? "w-8 h-2.5 rounded-full bg-[#A01318] transition-all duration-300"
+              : "w-2.5 h-2.5 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300";
+          });
+        }
+
+        function updateDeck(newIndex, skipMobileScroll) {
           testimonialActiveIdx = ((newIndex % total) + total) % total;
 
           cards.forEach((card, idx) => {
@@ -3080,13 +3095,15 @@
             card.setAttribute("aria-hidden", offset === 0 ? "false" : "true");
           });
 
-          dots.forEach((dot, idx) => {
-            const isActive = idx === testimonialActiveIdx;
-            dot.setAttribute("aria-selected", isActive ? "true" : "false");
-            dot.className = isActive
-              ? "w-8 h-2.5 rounded-full bg-[#A01318] transition-all duration-300"
-              : "w-2.5 h-2.5 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300";
-          });
+          if (!skipMobileScroll && stageEl && window.innerWidth < 640) {
+            const targetCard = cards[testimonialActiveIdx];
+            if (targetCard) {
+              const leftPos = targetCard.offsetLeft - stageEl.offsetLeft;
+              stageEl.scrollTo({ left: leftPos, behavior: "smooth" });
+            }
+          }
+
+          updateDotsOnly(testimonialActiveIdx);
         }
 
         function nextSlide() {
@@ -3147,27 +3164,32 @@
 
         if (stageEl && !stageEl.dataset.swipeBound) {
           stageEl.dataset.swipeBound = "true";
-          let touchStartX = 0;
-          stageEl.addEventListener("touchstart", (e) => {
-            if (e.touches && e.touches[0]) touchStartX = e.touches[0].clientX;
-          }, { passive: true });
-          stageEl.addEventListener("touchend", (e) => {
-            if (!e.changedTouches || !e.changedTouches[0]) return;
-            const diffX = e.changedTouches[0].clientX - touchStartX;
-            if (Math.abs(diffX) > 40) {
-              if (diffX < 0) nextSlide();
-              else prevSlide();
-              startAutoPlay();
-            }
-          }, { passive: true });
+          stageEl.addEventListener(
+            "scroll",
+            () => {
+              if (window.innerWidth < 640 && cards[0]) {
+                const cardW = cards[0].offsetWidth + 24;
+                const scrolledIdx = Math.min(total - 1, Math.max(0, Math.round(stageEl.scrollLeft / cardW)));
+                if (scrolledIdx !== testimonialActiveIdx) {
+                  testimonialActiveIdx = scrolledIdx;
+                  updateDeck(scrolledIdx, true);
+                }
+              }
+            },
+            { passive: true }
+          );
+          stageEl.addEventListener("touchstart", stopAutoPlay, { passive: true });
+          stageEl.addEventListener("touchend", startAutoPlay, { passive: true });
         }
 
         if (sectionEl && !sectionEl.dataset.carouselBound) {
           sectionEl.dataset.carouselBound = "true";
-          sectionEl.addEventListener("mouseenter", stopAutoPlay);
-          sectionEl.addEventListener("mouseleave", startAutoPlay);
-          sectionEl.addEventListener("focusin", stopAutoPlay);
-          sectionEl.addEventListener("focusout", startAutoPlay);
+          sectionEl.addEventListener("mouseenter", () => {
+            if (window.innerWidth >= 640) stopAutoPlay();
+          });
+          sectionEl.addEventListener("mouseleave", () => {
+            if (window.innerWidth >= 640) startAutoPlay();
+          });
         }
 
         updateDeck(testimonialActiveIdx);
@@ -3190,7 +3212,7 @@
         const total = cards.length;
         if (!total) return;
 
-        const AUTO_INTERVAL_MS = 5000;
+        const AUTO_INTERVAL_MS = 3000;
 
         if (dotsWrap) {
           dotsWrap.innerHTML = cards
@@ -4028,7 +4050,7 @@
             const loc = t.location || "Higüey, RD";
 
             return `
-            <article data-testimonial-card="${idx}" data-deck-state="${idx === 0 ? "active" : "behind"}" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+            <article data-testimonial-card="${idx}" data-deck-state="${idx === 0 ? "active" : "behind"}" class="testimonial-deck-card w-full min-w-full shrink-0 snap-center sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
               <div>
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                   <div class="flex items-center gap-1.5 sm:gap-2">
