@@ -172,10 +172,21 @@
       min-height: 0;
       perspective: 1200px;
     }
+    @keyframes mobileTestimonialFade {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
     @media (max-width: 639px) {
-      .testimonial-deck-card {
-        display: none;
-        position: relative;
+      .testimonial-deck-card,
+      .testimonial-deck-card:not([data-deck-state="active"]) {
+        display: none !important;
+        position: relative !important;
         width: 100%;
         height: auto;
         background: transparent !important;
@@ -185,9 +196,10 @@
         border-radius: 0 !important;
       }
       .testimonial-deck-card[data-deck-state="active"] {
-        display: flex;
-        opacity: 1;
+        display: flex !important;
+        opacity: 1 !important;
         transform: none !important;
+        animation: mobileTestimonialFade 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
     }
     @media (min-width: 640px) {
@@ -3165,6 +3177,8 @@
       initTestimonialCarousel();
 
       // Mobile Horizontal Snap Gallery Controller for Industries (#industries-grid-container)
+      let industriesMobileTimer = null;
+
       function initIndustriesMobileCarousel() {
         const grid = document.getElementById("industries-grid-container");
         const prevBtn = document.getElementById("industries-prev-btn");
@@ -3175,6 +3189,8 @@
         const cards = Array.from(grid.querySelectorAll("a"));
         const total = cards.length;
         if (!total) return;
+
+        const AUTO_INTERVAL_MS = 5000;
 
         if (dotsWrap) {
           dotsWrap.innerHTML = cards
@@ -3213,20 +3229,43 @@
           updateDots(targetIdx);
         }
 
+        function stopIndustriesAutoPlay() {
+          if (industriesMobileTimer) {
+            window.clearInterval(industriesMobileTimer);
+            industriesMobileTimer = null;
+          }
+        }
+
+        function startIndustriesAutoPlay() {
+          stopIndustriesAutoPlay();
+          if (total > 1) {
+            industriesMobileTimer = window.setInterval(() => {
+              if (window.innerWidth < 1024) {
+                scrollToCard(getActiveIndex() + 1);
+              }
+            }, AUTO_INTERVAL_MS);
+          }
+        }
+
         if (prevBtn) {
           prevBtn.onclick = () => {
             scrollToCard(getActiveIndex() - 1);
+            startIndustriesAutoPlay();
           };
         }
 
         if (nextBtn) {
           nextBtn.onclick = () => {
             scrollToCard(getActiveIndex() + 1);
+            startIndustriesAutoPlay();
           };
         }
 
         dots.forEach((dot, i) => {
-          dot.onclick = () => scrollToCard(i);
+          dot.onclick = () => {
+            scrollToCard(i);
+            startIndustriesAutoPlay();
+          };
         });
 
         if (!grid.dataset.scrollBound) {
@@ -3238,7 +3277,11 @@
             },
             { passive: true }
           );
+          grid.addEventListener("touchstart", stopIndustriesAutoPlay, { passive: true });
+          grid.addEventListener("touchend", startIndustriesAutoPlay, { passive: true });
         }
+
+        startIndustriesAutoPlay();
       }
 
       initIndustriesMobileCarousel();
