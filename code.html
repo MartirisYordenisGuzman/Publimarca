@@ -173,6 +173,9 @@
       perspective: 1200px;
     }
     @media (max-width: 639px) {
+      #hero-video-container video {
+        object-position: 50% 18% !important;
+      }
       .testimonial-deck-stage {
         display: flex !important;
         flex-direction: row !important;
@@ -522,7 +525,7 @@
             <div id="hero-video-container" class="relative w-full h-[420px] sm:h-[520px] lg:h-[620px] rounded-3xl overflow-hidden bg-[#ECECE7] shadow-xl border border-[#E5E5DF] group cursor-pointer">
               <video
                 id="hero-video"
-                class="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                class="w-full h-full object-cover object-[50%_18%] sm:object-center transition-all duration-700 group-hover:scale-105"
                 autoplay
                 loop
                 playsinline
@@ -3369,7 +3372,7 @@
           <div class="w-full h-full shrink-0 relative overflow-hidden select-none" data-hv-slide="${idx}">
             <video
               data-hv-video="${idx}"
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              class="w-full h-full object-cover object-[50%_18%] sm:object-center transition-transform duration-700 group-hover:scale-105"
               ${idx === 0 ? "autoplay" : ""}
               ${total === 1 ? "loop" : ""}
               muted
