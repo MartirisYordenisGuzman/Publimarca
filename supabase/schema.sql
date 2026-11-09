@@ -448,3 +448,26 @@ on conflict (id) do update set
   role_en = excluded.role_en,
   location = excluded.location,
   updated_at = now();
+
+-- =============================================================================
+-- 12. SUPABASE STORAGE BUCKET PARA MEDIOS OPTIMIZADOS (IMÁGENES WEBP Y VIDEOS HD)
+-- =============================================================================
+insert into storage.buckets (id, name, public)
+values ('publimarca-media', 'publimarca-media', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "Allow public read publimarca-media" on storage.objects;
+create policy "Allow public read publimarca-media"
+  on storage.objects for select
+  using (bucket_id = 'publimarca-media');
+
+drop policy if exists "Allow public upload publimarca-media" on storage.objects;
+create policy "Allow public upload publimarca-media"
+  on storage.objects for insert
+  with check (bucket_id = 'publimarca-media');
+
+drop policy if exists "Allow public update publimarca-media" on storage.objects;
+create policy "Allow public update publimarca-media"
+  on storage.objects for update
+  using (bucket_id = 'publimarca-media');
+

@@ -738,7 +738,7 @@
         setTimeout(() => toast.classList.add("hidden"), 3500);
       }
 
-      // File Uploader Helper
+      // High-Quality Media Compression & Supabase Storage Uploader Pipeline
       const fileInput = document.getElementById("global-file-uploader");
       function triggerFileUpload(accept, callback) {
         pendingUploadCallback = callback;
@@ -747,38 +747,321 @@
         fileInput.click();
       }
 
-      fileInput.addEventListener("change", () => {
-        const file = fileInput.files && fileInput.files[0];
-        if (!file || !pendingUploadCallback) return;
-        const reader = new FileReader();
-        showToast("Subiendo archivo " + file.name + "...");
-        reader.onload = async () => {
-          try {
-            const res = await fetch("/api/upload", {
-              method: "POST",
-              headers: getAuthHeaders(),
-              body: JSON.stringify({
-                filename: file.name,
-                dataUrl: reader.result
-              })
-            });
-            if (res.status === 401) {
-              clearAuthToken();
-              showLoginScreen();
+      function formatBytes(bytes) {
+        if (!bytes || bytes <= 0) return "0 KB";
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+        return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+      }
+
+      function blobToDataURL(blob) {
+        return new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onload = () => resolve(r.result);
+          r.onerror = reject;
+          r.readAsDataURL(blob);
+        });
+      }
+
+      async function compressImageHighQuality(file) {
+        // Keep SVGs intact as vector graphics
+        if (file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg")) {
+          return { blob: file, filename: file.name, mimeType: "image/svg+xml" };
+        }
+
+        return new Promise((resolve) => {
+          const img = new Image();
+          const objectUrl = URL.createObjectURL(file);
+          img.onload = () => {
+            URL.revokeObjectURL(objectUrl);
+            const MAX_DIM = 2048; // 2K / Full HD+ editorial crispness
+            let w = img.naturalWidth || img.width;
+            let h = img.naturalHeight || img.height;
+
+            if (w > MAX_DIM || h > MAX_DIM) {
+              if (w >= h) {
+                h = Math.round((h * MAX_DIM) / w);
+                w = MAX_DIM;
+              } else {
+                w = Math.round((w * MAX_DIM) / h);
+                h = MAX_DIM;
+              }
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
+            ctx.drawImage(img, 0, 0, w, h);
+
+            // Encode as high-quality WebP (0.86 preserves alpha transparency + sharp details while reducing weight 65-90%)
+            canvas.toBlob(
+              (webpBlob) => {
+                if (webpBlob && webpBlob.size < file.size) {
+                  const baseName = file.name.replace(/\.[^/.]+$/, "");
+                  resolve({
+                    blob: webpBlob,
+                    filename: baseName + ".webp",
+                    mimeType: "image/webp"
+                  });
+                } else {
+                  resolve({
+                    blob: file,
+                    filename: file.name,
+                    mimeType: file.type || "image/png"
+                  });
+                }
+              },
+              "image/webp",
+              0.86
+            );
+          };
+          img.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            resolve({ blob: file, filename: file.name, mimeType: file.type || "image/jpeg" });
+          };
+          img.src = objectUrl;
+        });
+      }
+
+      async function compressVideoHighQualityClient(file, onProgress) {
+        // Only run client-side browser transcoding if video is > 18 MB and MediaRecorder + captureStream are supported
+        if (
+          file.size <= 18 * 1024 * 1024 ||
+          typeof MediaRecorder === "undefined" ||
+          !HTMLCanvasElement.prototype.captureStream
+        ) {
+          return { blob: file, filename: file.name, mimeType: file.type || "video/mp4" };
+        }
+
+        const supportedMime = [
+          "video/webm;codecs=vp9,opus",
+          "video/webm;codecs=vp8,opus",
+          "video/webm",
+          "video/mp4"
+        ].find((m) => MediaRecorder.isTypeSupported(m));
+
+        if (!supportedMime) {
+          return { blob: file, filename: file.name, mimeType: file.type || "video/mp4" };
+        }
+
+        return new Promise((resolve) => {
+          const video = document.createElement("video");
+          const url = URL.createObjectURL(file);
+          video.src = url;
+          video.muted = true;
+          video.playsInline = true;
+          video.preload = "auto";
+
+          video.onloadedmetadata = () => {
+            // If video is longer than 90s, skip real-time canvas transcode and upload directly to Supabase Storage
+            if (!video.duration || video.duration > 90 || !isFinite(video.duration)) {
+              URL.revokeObjectURL(url);
+              resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
               return;
             }
-            const data = await res.json();
-            if (data && data.ok && data.url) {
-              pendingUploadCallback(data.url);
-              showToast("Archivo subido correctamente: " + data.url);
-            } else {
-              showToast("Error al subir archivo.");
+
+            const MAX_W = 1920;
+            const MAX_H = 1080;
+            let w = video.videoWidth || 1280;
+            let h = video.videoHeight || 720;
+            if (w > MAX_W || h > MAX_H) {
+              const ratio = Math.min(MAX_W / w, MAX_H / h);
+              w = Math.round(w * ratio) & ~1;
+              h = Math.round(h * ratio) & ~1;
             }
-          } catch (e) {
-            showToast("Error de red al subir archivo.");
+
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
+
+            const stream = canvas.captureStream(30);
+            const chunks = [];
+            let recorder;
+            try {
+              recorder = new MediaRecorder(stream, {
+                mimeType: supportedMime,
+                videoBitsPerSecond: 5500000 // 5.5 Mbps High Quality 1080p HD
+              });
+            } catch (e) {
+              URL.revokeObjectURL(url);
+              resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
+              return;
+            }
+
+            recorder.ondataavailable = (ev) => {
+              if (ev.data && ev.data.size > 0) chunks.push(ev.data);
+            };
+
+            recorder.onstop = () => {
+              URL.revokeObjectURL(url);
+              const ext = supportedMime.includes("mp4") ? ".mp4" : ".webm";
+              const outMime = supportedMime.split(";")[0];
+              const outBlob = new Blob(chunks, { type: outMime });
+              if (outBlob.size > 0 && outBlob.size < file.size) {
+                const baseName = file.name.replace(/\.[^/.]+$/, "");
+                resolve({ blob: outBlob, filename: baseName + ext, mimeType: outMime });
+              } else {
+                resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
+              }
+            };
+
+            function drawFrame() {
+              if (!video.paused && !video.ended) {
+                ctx.drawImage(video, 0, 0, w, h);
+                if (onProgress && video.duration) {
+                  const pct = Math.min(99, Math.round((video.currentTime / video.duration) * 100));
+                  onProgress(pct);
+                }
+                requestAnimationFrame(drawFrame);
+              }
+            }
+
+            video.onplay = () => {
+              recorder.start(250);
+              drawFrame();
+            };
+
+            video.onended = () => {
+              if (recorder.state !== "inactive") recorder.stop();
+            };
+
+            video.onerror = () => {
+              URL.revokeObjectURL(url);
+              resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
+            };
+
+            video.play().catch(() => {
+              URL.revokeObjectURL(url);
+              resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
+            });
+          };
+
+          video.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
+          };
+        });
+      }
+
+      async function uploadDirectToSupabaseStorage(blob, filename, mimeType) {
+        try {
+          const cfgRes = await fetch("/api/storage/config", { headers: getAuthHeaders() });
+          if (!cfgRes.ok) return null;
+          const cfg = await cfgRes.json();
+          if (!cfg.ok || !cfg.url || !cfg.key) return null;
+
+          const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, "_");
+          const folder = mimeType.startsWith("video/") ? "videos" : "images";
+          const objectPath = `${folder}/${Date.now()}_${safeName}`;
+          const endpoint = `${cfg.url}/storage/v1/object/${cfg.bucket}/${objectPath}`;
+
+          const upRes = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              apikey: cfg.key,
+              Authorization: "Bearer " + cfg.key,
+              "Content-Type": mimeType,
+              "x-upsert": "true"
+            },
+            body: blob
+          });
+
+          if (upRes.ok) {
+            return `${cfg.url}/storage/v1/object/public/${cfg.bucket}/${objectPath}`;
           }
-        };
-        reader.readAsDataURL(file);
+        } catch (_) {}
+        return null;
+      }
+
+      fileInput.addEventListener("change", async () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file || !pendingUploadCallback) return;
+
+        const originalSize = file.size;
+        const isImage = file.type.startsWith("image/");
+        const isVideo = file.type.startsWith("video/");
+
+        try {
+          let optimized = { blob: file, filename: file.name, mimeType: file.type || "application/octet-stream" };
+
+          if (isImage) {
+            showToast(`Optimizando imagen en Alta Calidad (${formatBytes(originalSize)})...`);
+            optimized = await compressImageHighQuality(file);
+          } else if (isVideo) {
+            showToast(`Optimizando video HD (${formatBytes(originalSize)})...`);
+            optimized = await compressVideoHighQualityClient(file, (pct) => {
+              showToast(`Comprimiendo video en Alta Calidad HD: ${pct}%...`);
+            });
+          }
+
+          const compressedSize = optimized.blob.size;
+          const savedPct =
+            originalSize > 0 && compressedSize < originalSize
+              ? Math.round(((originalSize - compressedSize) / originalSize) * 100)
+              : 0;
+
+          // If file is > 3.2 MB (e.g. HD video on Vercel), upload directly to Supabase Storage first
+          if (compressedSize > 3.2 * 1024 * 1024 && window.location.hostname !== "localhost") {
+            showToast(`Subiendo a Supabase Storage (${formatBytes(compressedSize)})...`);
+            const directSbUrl = await uploadDirectToSupabaseStorage(
+              optimized.blob,
+              optimized.filename,
+              optimized.mimeType
+            );
+            if (directSbUrl) {
+              pendingUploadCallback(directSbUrl);
+              const statsMsg =
+                savedPct > 0
+                  ? `${formatBytes(originalSize)} → ${formatBytes(compressedSize)} (-${savedPct}%)`
+                  : formatBytes(compressedSize);
+              showToast(`¡Listo! Optimizado (${statsMsg}) y guardado en Supabase Storage.`);
+              return;
+            }
+          }
+
+          showToast(`Subiendo archivo optimizado (${formatBytes(compressedSize)}) a Supabase...`);
+          const dataUrl = await blobToDataURL(optimized.blob);
+          const res = await fetch("/api/upload", {
+            method: "POST",
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+              filename: optimized.filename,
+              mimeType: optimized.mimeType,
+              originalBytes: originalSize,
+              dataUrl: dataUrl
+            })
+          });
+
+          if (res.status === 401) {
+            clearAuthToken();
+            showLoginScreen();
+            return;
+          }
+
+          const data = await res.json();
+          if (data && data.ok && data.url) {
+            pendingUploadCallback(data.url);
+            const finalBytes = data.compressedBytes || compressedSize;
+            const totalSavedPct =
+              originalSize > 0 && finalBytes < originalSize
+                ? Math.round(((originalSize - finalBytes) / originalSize) * 100)
+                : savedPct;
+            const statsNote =
+              totalSavedPct > 0
+                ? `${formatBytes(originalSize)} → ${formatBytes(finalBytes)} (-${totalSavedPct}% peso, Alta Calidad)`
+                : `${formatBytes(finalBytes)} (Alta Calidad)`;
+            showToast(`¡Archivo optimizado y subido! ${statsNote}`);
+          } else {
+            showToast("Error al subir archivo.");
+          }
+        } catch (e) {
+          showToast("Error al procesar o subir el archivo.");
+        }
       });
 
       // Tab Navigation

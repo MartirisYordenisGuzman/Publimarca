@@ -22,6 +22,8 @@ import secrets
 import shutil
 import smtplib
 import ssl
+import subprocess
+import tempfile
 import urllib.parse
 import urllib.request
 import uuid
@@ -214,6 +216,96 @@ def _supabase_select(url: str, key: str, table: str, query: str = "select=*"):
             return json.loads(resp.read().decode("utf-8"))
     except Exception:
         return None
+
+
+def _ensure_supabase_storage_bucket(url: str, key: str, bucket: str = "publimarca-media") -> bool:
+    if not url or not key:
+        return False
+    try:
+        endpoint = f"{url}/storage/v1/bucket"
+        payload = json.dumps({"id": bucket, "name": bucket, "public": True}).encode("utf-8")
+        req = urllib.request.Request(
+            endpoint,
+            data=payload,
+            method="POST",
+            headers={
+                "apikey": key,
+                "Authorization": f"Bearer {key}",
+                "Content-Type": "application/json",
+            },
+        )
+        urllib.request.urlopen(req, timeout=5)
+        return True
+    except Exception:
+        # Bucket may already exist
+        return True
+
+
+def _upload_bytes_to_supabase_storage(
+    url: str,
+    key: str,
+    object_path: str,
+    content_type: str,
+    data_bytes: bytes,
+    bucket: str = "publimarca-media",
+):
+    if not url or not key:
+        return None
+    _ensure_supabase_storage_bucket(url, key, bucket)
+    try:
+        encoded_path = "/".join(urllib.parse.quote(part) for part in object_path.split("/"))
+        endpoint = f"{url}/storage/v1/object/{bucket}/{encoded_path}"
+        req = urllib.request.Request(
+            endpoint,
+            data=data_bytes,
+            method="POST",
+            headers={
+                "apikey": key,
+                "Authorization": f"Bearer {key}",
+                "Content-Type": content_type,
+                "x-upsert": "true",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=25) as resp:
+            if 200 <= resp.status < 300:
+                return f"{url}/storage/v1/object/public/{bucket}/{encoded_path}"
+    except Exception:
+        pass
+    return None
+
+
+def _compress_video_server_side(binary_data: bytes, ext: str) -> tuple:
+    """
+    If running on macOS with /usr/bin/avconvert available, compresses the video
+    using hardware H.264 high-quality 1080p/720p fast-start preset when it reduces weight.
+    """
+    avconvert_bin = "/usr/bin/avconvert"
+    if not os.path.isfile(avconvert_bin) or len(binary_data) < 1_500_000:
+        return binary_data, ext
+
+    try:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            in_path = os.path.join(tmpdir, f"input{ext or '.mp4'}")
+            out_path = os.path.join(tmpdir, "output.mp4")
+            with open(in_path, "wb") as f:
+                f.write(binary_data)
+
+            preset = "Preset1920x1080" if len(binary_data) < 45_000_000 else "Preset1280x720"
+            subprocess.run(
+                [avconvert_bin, "--source", in_path, "--preset", preset, "--output", out_path, "--replace"],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=45,
+            )
+            if os.path.isfile(out_path):
+                with open(out_path, "rb") as f:
+                    compressed = f.read()
+                if 0 < len(compressed) < len(binary_data):
+                    return compressed, ".mp4"
+    except Exception:
+        pass
+    return binary_data, ext
 
 
 def _supabase_upsert_and_prune(
@@ -892,6 +984,20 @@ class PublimarcaHandler(SimpleHTTPRequestHandler):
                 self._send_json(200, {"authenticated": False})
             return
 
+        if path == "/api/storage/config":
+            user = self._get_authenticated_user()
+            if not user:
+                self._send_json(401, {"ok": False, "error": "No autorizado"})
+                return
+            store = read_local_cms_store()
+            url, key = _get_supabase_creds(store.get("supabase") or {})
+            if url and key:
+                _ensure_supabase_storage_bucket(url, key, "publimarca-media")
+                self._send_json(200, {"ok": True, "url": url, "key": key, "bucket": "publimarca-media"})
+            else:
+                self._send_json(200, {"ok": False})
+            return
+
         if path == "/api/cms":
             store = fetch_cms_from_supabase_or_local()
             # Never expose admin password hash in /api/cms response
@@ -1093,31 +1199,67 @@ class PublimarcaHandler(SimpleHTTPRequestHandler):
                 body = json.loads(raw)
                 filename = os.path.basename(body.get("filename", "asset.bin"))
                 safe_name = re.sub(r"[^a-zA-Z0-9._-]", "_", filename)
+                ext = os.path.splitext(safe_name)[1].lower()
                 ts = int(datetime.now(timezone.utc).timestamp())
-                final_name = f"{ts}_{safe_name}"
 
                 data_url = body.get("dataUrl", "")
+                mime_type = body.get("mimeType") or "application/octet-stream"
                 if "," in data_url:
-                    _, b64_part = data_url.split(",", 1)
+                    header_part, b64_part = data_url.split(",", 1)
+                    if "data:" in header_part and ";base64" in header_part:
+                        mime_type = header_part.split("data:", 1)[1].split(";base64", 1)[0]
                 else:
                     b64_part = data_url
                 binary_data = base64.b64decode(b64_part)
+                original_bytes = body.get("originalBytes") or len(binary_data)
 
+                # Server-side HD compression for videos when avconvert is available
+                if mime_type.startswith("video/") or ext in (".mp4", ".mov", ".m4v"):
+                    binary_data, new_ext = _compress_video_server_side(binary_data, ext)
+                    if new_ext != ext:
+                        safe_name = os.path.splitext(safe_name)[0] + new_ext
+                        mime_type = "video/mp4"
+
+                final_name = f"{ts}_{safe_name}"
+                folder = "videos" if mime_type.startswith("video/") else "images"
+
+                # 1. Upload optimized binary directly to Supabase Storage (publimarca-media bucket)
+                store = read_local_cms_store()
+                sb_url, sb_key = _get_supabase_creds(store.get("supabase") or {})
+                supabase_public_url = _upload_bytes_to_supabase_storage(
+                    sb_url,
+                    sb_key,
+                    f"{folder}/{final_name}",
+                    mime_type,
+                    binary_data,
+                    "publimarca-media",
+                )
+
+                # 2. Also save local copy when filesystem is writable
+                local_public_url = None
                 try:
                     os.makedirs(UPLOADS_DIR, exist_ok=True)
                     os.makedirs(PUBLIC_UPLOADS_DIR, exist_ok=True)
-
                     dest_path = os.path.join(UPLOADS_DIR, final_name)
                     pub_path = os.path.join(PUBLIC_UPLOADS_DIR, final_name)
                     with open(dest_path, "wb") as f:
                         f.write(binary_data)
                     shutil.copy2(dest_path, pub_path)
-
-                    public_url = f"/uploads/{final_name}"
-                    self._send_json(200, {"ok": True, "url": public_url})
+                    local_public_url = f"/uploads/{final_name}"
                 except OSError:
-                    # Fallback for read-only serverless environments (e.g., Vercel)
-                    self._send_json(200, {"ok": True, "url": data_url})
+                    pass
+
+                final_url = supabase_public_url or local_public_url or data_url
+                self._send_json(
+                    200,
+                    {
+                        "ok": True,
+                        "url": final_url,
+                        "storedIn": "supabase_storage" if supabase_public_url else "local",
+                        "originalBytes": original_bytes,
+                        "compressedBytes": len(binary_data),
+                    },
+                )
             except Exception as e:
                 self._send_json(400, {"ok": False, "error": str(e)})
             return
