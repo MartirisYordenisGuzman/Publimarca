@@ -243,10 +243,20 @@
 
     <!-- Right Content Panels -->
     <main class="lg:col-span-9 space-y-6">
-      <!-- Toast Alert -->
-      <div id="admin-toast" class="hidden p-4 rounded-2xl bg-[#101014] text-white text-xs font-semibold uppercase tracking-wider flex items-center justify-between shadow-lg">
-        <span id="admin-toast-text">Cambios guardados y sincronizados.</span>
-        <span class="material-symbols-outlined text-[#30B4D7] text-[18px]">check_circle</span>
+      <!-- Toast & Upload Progress Alert -->
+      <div id="admin-toast" class="hidden sticky top-20 z-50 p-4 rounded-2xl bg-[#101014] text-white text-xs font-semibold uppercase tracking-wider shadow-xl border border-white/15 space-y-2.5 transition-colors">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span id="admin-toast-icon" class="material-symbols-outlined text-[#30B4D7] text-[19px]">check_circle</span>
+            <span id="admin-toast-text">Cambios guardados y sincronizados.</span>
+          </div>
+          <button type="button" id="admin-toast-close" class="text-white/70 hover:text-white p-1 rounded-lg" title="Cerrar aviso">
+            <span class="material-symbols-outlined text-[16px]">close</span>
+          </button>
+        </div>
+        <div id="admin-toast-progress-wrap" class="hidden w-full h-2 bg-white/15 rounded-full overflow-hidden">
+          <div id="admin-toast-progress-bar" class="h-full bg-[#30B4D7] transition-all duration-150" style="width: 0%"></div>
+        </div>
       </div>
 
       <!-- TAB 0: VISIBILITY OVERVIEW -->
@@ -291,6 +301,21 @@
               </button>
             </div>
           </div>
+
+          <!-- Persistent Upload Progress & Confirmation Banner inside Hero Videos Panel -->
+          <div id="hero-upload-status-box" class="hidden mb-6 p-4 rounded-2xl border border-[#00758C]/30 bg-[#F4F9FA] space-y-2.5">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5">
+                <span id="hero-upload-status-icon" class="material-symbols-outlined text-[#00758C] text-[20px]">cloud_upload</span>
+                <span id="hero-upload-status-text" class="text-xs font-bold uppercase tracking-wider text-[#101014]">Procesando video...</span>
+              </div>
+              <span id="hero-upload-status-pct" class="font-mono text-xs font-bold text-[#00758C]">0%</span>
+            </div>
+            <div class="w-full h-2.5 bg-[#E5E5DF] rounded-full overflow-hidden">
+              <div id="hero-upload-status-bar" class="h-full bg-[#00758C] transition-all duration-150" style="width: 0%"></div>
+            </div>
+          </div>
+
           <div id="hero-videos-editor-list" class="space-y-5"></div>
         </div>
       </section>
@@ -729,13 +754,120 @@
         { id: "print", label: "Impresión (print)" }
       ];
 
-      function showToast(msg) {
+      let toastHideTimer = null;
+
+      function updateHeroUploadBanner(msg, pct, state) {
+        const box = document.getElementById("hero-upload-status-box");
+        const icon = document.getElementById("hero-upload-status-icon");
+        const text = document.getElementById("hero-upload-status-text");
+        const pctEl = document.getElementById("hero-upload-status-pct");
+        const bar = document.getElementById("hero-upload-status-bar");
+        if (!box || !text || !bar) return;
+
+        if (!msg) {
+          box.classList.add("hidden");
+          return;
+        }
+
+        box.classList.remove("hidden");
+        text.textContent = msg;
+        const safePct = typeof pct === "number" ? Math.max(0, Math.min(100, pct)) : 100;
+        if (pctEl) pctEl.textContent = safePct + "%";
+        bar.style.width = safePct + "%";
+
+        if (state === "success") {
+          box.className = "mb-6 p-4 rounded-2xl border border-emerald-500/40 bg-emerald-50 space-y-2.5";
+          if (icon) {
+            icon.textContent = "check_circle";
+            icon.className = "material-symbols-outlined text-emerald-700 text-[20px]";
+          }
+          if (pctEl) pctEl.className = "font-mono text-xs font-bold text-emerald-700";
+          bar.className = "h-full bg-emerald-600 transition-all duration-150";
+        } else if (state === "error") {
+          box.className = "mb-6 p-4 rounded-2xl border border-[#A01318]/40 bg-red-50 space-y-2.5";
+          if (icon) {
+            icon.textContent = "error";
+            icon.className = "material-symbols-outlined text-[#A01318] text-[20px]";
+          }
+          if (pctEl) pctEl.className = "font-mono text-xs font-bold text-[#A01318]";
+          bar.className = "h-full bg-[#A01318] transition-all duration-150";
+        } else {
+          box.className = "mb-6 p-4 rounded-2xl border border-[#00758C]/35 bg-[#F4F9FA] space-y-2.5";
+          if (icon) {
+            icon.textContent = "cloud_upload";
+            icon.className = "material-symbols-outlined text-[#00758C] text-[20px]";
+          }
+          if (pctEl) pctEl.className = "font-mono text-xs font-bold text-[#00758C]";
+          bar.className = "h-full bg-[#00758C] transition-all duration-150";
+        }
+      }
+
+      function showToast(msg, opts) {
+        const options = opts || {};
         const toast = document.getElementById("admin-toast");
         const text = document.getElementById("admin-toast-text");
+        const icon = document.getElementById("admin-toast-icon");
+        const progWrap = document.getElementById("admin-toast-progress-wrap");
+        const progBar = document.getElementById("admin-toast-progress-bar");
         if (!toast || !text) return;
+
+        // Always clear any previous timer so the toast NEVER blinks or hides prematurely during progress updates
+        if (toastHideTimer) {
+          clearTimeout(toastHideTimer);
+          toastHideTimer = null;
+        }
+
         text.textContent = msg;
         toast.classList.remove("hidden");
-        setTimeout(() => toast.classList.add("hidden"), 3500);
+
+        if (options.status === "error") {
+          toast.className = "sticky top-20 z-50 p-4 rounded-2xl bg-[#A01318] text-white text-xs font-semibold uppercase tracking-wider shadow-xl border border-white/20 space-y-2.5";
+          if (icon) {
+            icon.textContent = "error";
+            icon.className = "material-symbols-outlined text-white text-[19px]";
+          }
+        } else if (options.status === "success") {
+          toast.className = "sticky top-20 z-50 p-4 rounded-2xl bg-emerald-900 text-white text-xs font-semibold uppercase tracking-wider shadow-xl border border-emerald-400/30 space-y-2.5";
+          if (icon) {
+            icon.textContent = "check_circle";
+            icon.className = "material-symbols-outlined text-emerald-300 text-[19px]";
+          }
+        } else {
+          toast.className = "sticky top-20 z-50 p-4 rounded-2xl bg-[#101014] text-white text-xs font-semibold uppercase tracking-wider shadow-xl border border-white/15 space-y-2.5";
+          if (icon) {
+            icon.textContent = options.persistent ? "sync" : "check_circle";
+            icon.className = "material-symbols-outlined text-[#30B4D7] text-[19px]";
+          }
+        }
+
+        if (progWrap && progBar) {
+          if (typeof options.progress === "number") {
+            progWrap.classList.remove("hidden");
+            progBar.style.width = Math.max(0, Math.min(100, options.progress)) + "%";
+          } else {
+            progWrap.classList.add("hidden");
+          }
+        }
+
+        if (!options.persistent) {
+          const duration = options.duration || 8000;
+          toastHideTimer = setTimeout(() => {
+            toast.classList.add("hidden");
+            toastHideTimer = null;
+          }, duration);
+        }
+      }
+
+      const toastCloseBtn = document.getElementById("admin-toast-close");
+      if (toastCloseBtn) {
+        toastCloseBtn.addEventListener("click", () => {
+          if (toastHideTimer) {
+            clearTimeout(toastHideTimer);
+            toastHideTimer = null;
+          }
+          const toast = document.getElementById("admin-toast");
+          if (toast) toast.classList.add("hidden");
+        });
       }
 
       // High-Quality Media Compression & Supabase Storage Uploader Pipeline
@@ -744,7 +876,7 @@
 
       function triggerFileUpload(accept, callback) {
         if (isUploadingMedia) {
-          showToast("Espera unos segundos a que termine la subida en curso...");
+          showToast("Espera unos segundos a que termine la subida en curso...", { persistent: true });
           return;
         }
         pendingUploadCallback = callback;
@@ -832,17 +964,19 @@
       }
 
       async function compressVideoHighQualityClient(file, onProgress) {
-        // Never convert MP4/MOV to WebM (WebM from MediaRecorder lacks seek cues & fails on Safari/iOS).
-        // Only run client-side transcode if file > 42 MB AND native H.264 MP4 MediaRecorder is supported.
-        const mp4Mime = [
+        // Compress any video > 20 MB in the browser so it stays well below Supabase's 50 MB limit
+        const supportedMime = [
           "video/mp4;codecs=avc1.42E01E,mp4a.40.2",
           "video/mp4;codecs=avc1",
-          "video/mp4"
+          "video/mp4",
+          "video/webm;codecs=vp9,opus",
+          "video/webm;codecs=vp8,opus",
+          "video/webm"
         ].find((m) => typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(m));
 
         if (
-          file.size <= 42 * 1024 * 1024 ||
-          !mp4Mime ||
+          file.size <= 20 * 1024 * 1024 ||
+          !supportedMime ||
           !HTMLCanvasElement.prototype.captureStream
         ) {
           return { blob: file, filename: file.name, mimeType: file.type || "video/mp4" };
@@ -850,15 +984,23 @@
 
         return new Promise((resolve) => {
           const video = document.createElement("video");
+          video.style.cssText = "position:fixed;left:-9999px;top:-9999px;width:4px;height:4px;opacity:0;pointer-events:none;";
+          document.body.appendChild(video);
+
           const url = URL.createObjectURL(file);
           video.src = url;
           video.muted = true;
           video.playsInline = true;
           video.preload = "auto";
 
+          function cleanup() {
+            URL.revokeObjectURL(url);
+            if (video.parentNode) video.parentNode.removeChild(video);
+          }
+
           video.onloadedmetadata = () => {
-            if (!video.duration || video.duration > 35 || !isFinite(video.duration)) {
-              URL.revokeObjectURL(url);
+            if (!video.duration || video.duration > 300 || !isFinite(video.duration)) {
+              cleanup();
               resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
               return;
             }
@@ -880,16 +1022,21 @@
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = "high";
 
+            // Calculate adaptive HD bitrate so output is guaranteed <= 26 MB (well under Supabase 50 MB limit)
+            const maxTargetBytes = 26 * 1024 * 1024;
+            const adaptiveBps = Math.floor((maxTargetBytes * 8) / Math.max(8, video.duration));
+            const targetBps = Math.max(1200000, Math.min(2800000, adaptiveBps));
+
             const stream = canvas.captureStream(30);
             const chunks = [];
             let recorder;
             try {
               recorder = new MediaRecorder(stream, {
-                mimeType: mp4Mime,
-                videoBitsPerSecond: 2600000 // 2.6 Mbps High Quality 1080p MP4
+                mimeType: supportedMime,
+                videoBitsPerSecond: targetBps
               });
             } catch (e) {
-              URL.revokeObjectURL(url);
+              cleanup();
               resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
               return;
             }
@@ -899,11 +1046,14 @@
             };
 
             recorder.onstop = () => {
-              URL.revokeObjectURL(url);
-              const outBlob = new Blob(chunks, { type: "video/mp4" });
-              if (outBlob.size > 0 && outBlob.size < file.size * 0.85) {
+              cleanup();
+              const isMp4 = supportedMime.includes("mp4");
+              const ext = isMp4 ? ".mp4" : ".webm";
+              const outMime = isMp4 ? "video/mp4" : "video/webm";
+              const outBlob = new Blob(chunks, { type: outMime });
+              if (outBlob.size > 0 && outBlob.size < file.size) {
                 const baseName = file.name.replace(/\.[^/.]+$/, "");
-                resolve({ blob: outBlob, filename: baseName + ".mp4", mimeType: "video/mp4" });
+                resolve({ blob: outBlob, filename: baseName + ext, mimeType: outMime });
               } else {
                 resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
               }
@@ -930,18 +1080,18 @@
             };
 
             video.onerror = () => {
-              URL.revokeObjectURL(url);
+              cleanup();
               resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
             };
 
             video.play().catch(() => {
-              URL.revokeObjectURL(url);
+              cleanup();
               resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
             });
           };
 
           video.onerror = () => {
-            URL.revokeObjectURL(url);
+            cleanup();
             resolve({ blob: file, filename: file.name, mimeType: file.type || "video/mp4" });
           };
         });
@@ -950,9 +1100,9 @@
       async function uploadDirectToSupabaseStorage(blob, filename, mimeType, onProgress) {
         try {
           const cfgRes = await fetch("/api/storage/config", { headers: getAuthHeaders() });
-          if (!cfgRes.ok) return null;
+          if (!cfgRes.ok) return { url: null, error: "No se pudo obtener la configuración de Supabase Storage" };
           const cfg = await cfgRes.json();
-          if (!cfg.ok || !cfg.url || !cfg.key) return null;
+          if (!cfg.ok || !cfg.url || !cfg.key) return { url: null, error: "Credenciales de Supabase no configuradas" };
 
           const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, "_") || "media.mp4";
           const folder = mimeType.startsWith("video/") ? "videos" : "images";
@@ -980,16 +1130,22 @@
 
             xhr.onload = () => {
               if (xhr.status >= 200 && xhr.status < 300) {
-                resolve(publicUrl);
+                resolve({ url: publicUrl, error: null });
               } else {
-                resolve(null);
+                let errMsg = `HTTP ${xhr.status}`;
+                try {
+                  const parsed = JSON.parse(xhr.responseText || "{}");
+                  if (parsed.message) errMsg = parsed.message;
+                } catch (_) {}
+                resolve({ url: null, error: errMsg });
               }
             };
-            xhr.onerror = () => resolve(null);
+            xhr.onerror = () => resolve({ url: null, error: "Error de red al conectar con Supabase Storage" });
             xhr.send(blob);
           });
-        } catch (_) {}
-        return null;
+        } catch (err) {
+          return { url: null, error: String(err) };
+        }
       }
 
       async function uploadBinaryToLocalServer(blob, filename, mimeType, originalSize, onProgress) {
@@ -1046,12 +1202,17 @@
           };
 
           if (isImage) {
-            showToast(`Optimizando imagen en Alta Calidad (${formatBytes(originalSize)})...`);
+            showToast(`Optimizando imagen en Alta Calidad (${formatBytes(originalSize)})...`, { persistent: true, progress: 15 });
             optimized = await compressImageHighQuality(file);
           } else if (isVideo) {
-            showToast(`Preparando video HD (${formatBytes(originalSize)})...`);
+            const initMsg = `Preparando video HD (${formatBytes(originalSize)})...`;
+            showToast(initMsg, { persistent: true, progress: 2 });
+            updateHeroUploadBanner(initMsg, 2, "loading");
+
             optimized = await compressVideoHighQualityClient(file, (pct) => {
-              showToast(`Optimizando video HD en Alta Calidad: ${pct}%...`);
+              const compMsg = `Paso 1/2 — Comprimiendo video en Alta Calidad HD: ${pct}%`;
+              showToast(compMsg, { persistent: true, progress: pct });
+              updateHeroUploadBanner(compMsg, pct, "loading");
             });
           }
 
@@ -1069,11 +1230,11 @@
               optimized.mimeType,
               originalSize,
               (pct) => {
-                showToast(
-                  isVideo
-                    ? `Comprimiendo en HD y subiendo a Supabase Storage: ${pct}%...`
-                    : `Subiendo imagen optimizada a Supabase Storage: ${pct}%...`
-                );
+                const msg = isVideo
+                  ? `Subiendo y optimizando video en Supabase Storage: ${pct}%`
+                  : `Subiendo imagen optimizada a Supabase Storage: ${pct}%`;
+                showToast(msg, { persistent: true, progress: pct });
+                if (isVideo) updateHeroUploadBanner(msg, pct, "loading");
               }
             );
             if (binResult && binResult.url) {
@@ -1086,6 +1247,9 @@
                 totalSavedPct > 0
                   ? `${formatBytes(originalSize)} → ${formatBytes(finalBytes)} (-${totalSavedPct}% peso, Alta Calidad)`
                   : `${formatBytes(finalBytes)} (Alta Calidad)`;
+              if (isVideo) {
+                updateHeroUploadBanner(`¡Completado! Video subido y guardado en Supabase (${statsNote})`, 100, "success");
+              }
               await callbackToRun(binResult.url, optimized.filename, statsNote);
               return;
             }
@@ -1093,27 +1257,41 @@
 
           // 2. Direct binary upload from browser to Supabase Storage (bypasses Vercel 4.5 MB limit for ALL videos & large images)
           if (isVideo || compressedSize > 2.2 * 1024 * 1024) {
-            showToast(`Subiendo a Supabase Storage (${formatBytes(compressedSize)})...`);
-            const directSbUrl = await uploadDirectToSupabaseStorage(
+            const startUpMsg = `Paso 2/2 — Subiendo a Supabase Storage (${formatBytes(compressedSize)})...`;
+            showToast(startUpMsg, { persistent: true, progress: 1 });
+            if (isVideo) updateHeroUploadBanner(startUpMsg, 1, "loading");
+
+            const directResult = await uploadDirectToSupabaseStorage(
               optimized.blob,
               optimized.filename,
               optimized.mimeType,
               (pct) => {
-                showToast(`Subiendo a Supabase Storage (${formatBytes(compressedSize)}): ${pct}%...`);
+                const upMsg = `Paso 2/2 — Subiendo a Supabase Storage (${formatBytes(compressedSize)}): ${pct}%`;
+                showToast(upMsg, { persistent: true, progress: pct });
+                if (isVideo) updateHeroUploadBanner(upMsg, pct, "loading");
               }
             );
-            if (directSbUrl) {
+            if (directResult && directResult.url) {
               const statsNote =
                 savedPct > 0
                   ? `${formatBytes(originalSize)} → ${formatBytes(compressedSize)} (-${savedPct}% peso, Alta Calidad)`
                   : `${formatBytes(compressedSize)} (Alta Calidad HD)`;
-              await callbackToRun(directSbUrl, optimized.filename, statsNote);
+              if (isVideo) {
+                updateHeroUploadBanner(`¡Completado al 100%! Video subido y publicado en Supabase (${statsNote})`, 100, "success");
+              }
+              await callbackToRun(directResult.url, optimized.filename, statsNote);
+              return;
+            } else if (isVideo) {
+              const errDetail = (directResult && directResult.error) || "Verifica el tamaño del archivo (máx. 50 MB en Supabase Free)";
+              const failMsg = `No se pudo subir a Supabase Storage: ${errDetail}`;
+              updateHeroUploadBanner(failMsg, 100, "error");
+              showToast(failMsg, { status: "error", duration: 12000 });
               return;
             }
           }
 
           // 3. Fallback JSON upload for small images
-          showToast(`Subiendo archivo optimizado (${formatBytes(compressedSize)}) a Supabase...`);
+          showToast(`Subiendo archivo optimizado (${formatBytes(compressedSize)}) a Supabase...`, { persistent: true, progress: 50 });
           const dataUrl = await blobToDataURL(optimized.blob);
           const res = await fetch("/api/upload", {
             method: "POST",
@@ -1145,10 +1323,11 @@
                 : `${formatBytes(finalBytes)} (Alta Calidad)`;
             await callbackToRun(data.url, optimized.filename, statsNote);
           } else {
-            showToast("Error al subir archivo.");
+            showToast("Error al subir archivo.", { status: "error", duration: 9000 });
           }
         } catch (e) {
-          showToast("Error al procesar o subir el archivo.");
+          showToast("Error al procesar o subir el archivo.", { status: "error", duration: 9000 });
+          if (isVideo) updateHeroUploadBanner("Error al procesar o subir el video.", 100, "error");
         } finally {
           isUploadingMedia = false;
         }
@@ -1226,7 +1405,7 @@
 
       async function saveCMS(sectionMessage, skipInputCollect) {
         if (isUploadingMedia && !skipInputCollect) {
-          showToast("Espera unos segundos a que termine de subirse el archivo actual antes de guardar...");
+          showToast("Espera unos segundos a que termine de subirse el archivo actual antes de guardar...", { persistent: true });
           return;
         }
         if (!skipInputCollect) {
@@ -1244,13 +1423,16 @@
         if (res.status === 401) {
           clearAuthToken();
           showLoginScreen();
-          showToast("Tu sesión ha expirado. Inicia sesión nuevamente.");
+          showToast("Tu sesión ha expirado. Inicia sesión nuevamente.", { status: "error", duration: 9000 });
           return;
         }
         if (res.ok) {
           const out = await res.json();
           const sbNote = out.supabase && out.supabase.synced ? " (Sincronizado con Supabase)" : "";
-          showToast((sectionMessage || "Cambios guardados y publicados en el sitio.") + sbNote);
+          showToast((sectionMessage || "Cambios guardados y publicados en el sitio.") + sbNote, {
+            status: "success",
+            duration: 10000
+          });
           renderAll();
         }
       }
@@ -1386,6 +1568,20 @@
               try {
                 vidEl.currentTime = 0.15;
               } catch (_) {}
+              // For WebM streams without seek cues, briefly play muted for 160ms and pause to paint the first frame
+              if ((vidEl.getAttribute("src") || "").includes(".webm")) {
+                vidEl.muted = true;
+                vidEl
+                  .play()
+                  .then(() => {
+                    setTimeout(() => {
+                      try {
+                        vidEl.pause();
+                      } catch (_) {}
+                    }, 160);
+                  })
+                  .catch(() => {});
+              }
             }
           };
           vidEl.addEventListener("loadedmetadata", seekThumb, { once: true });
