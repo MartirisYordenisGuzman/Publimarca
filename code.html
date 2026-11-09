@@ -172,42 +172,45 @@
       min-height: 0;
       perspective: 1200px;
     }
+    @keyframes mobileTestimonialSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
     @media (max-width: 639px) {
       #hero-video-container video {
         object-position: 50% 18% !important;
       }
       .testimonial-deck-stage {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto !important;
-        scroll-snap-type: x mandatory;
-        scroll-behavior: smooth;
-        gap: 1.5rem;
-        min-height: 0 !important;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
+        display: block !important;
+        overflow: hidden !important;
+        min-height: 240px !important;
       }
-      .testimonial-deck-stage::-webkit-scrollbar {
-        display: none;
-      }
-      .testimonial-deck-card {
-        display: flex !important;
+      .testimonial-deck-card,
+      .testimonial-deck-card:not([data-deck-state="active"]) {
+        display: none !important;
         position: relative !important;
-        flex: 0 0 100% !important;
         width: 100% !important;
         min-width: 100% !important;
         max-width: 100% !important;
         height: auto !important;
-        scroll-snap-align: center;
-        opacity: 1 !important;
-        transform: none !important;
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
         padding: 0 !important;
         border-radius: 0 !important;
+      }
+      .testimonial-deck-card[data-deck-state="active"] {
+        display: flex !important;
+        opacity: 1 !important;
+        transform: none !important;
         pointer-events: auto !important;
+        animation: mobileTestimonialSlideIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
     }
     @media (min-width: 640px) {
@@ -1478,10 +1481,10 @@
               <span class="material-symbols-outlined text-[20px]" aria-hidden="true">arrow_back</span>
             </button>
 
-            <!-- Stacked Cards Stage (Horizontal Snap Carousel on Mobile, 3D Stacked Deck on Desktop) -->
-            <div id="testimonial-carousel-stage" class="testimonial-deck-stage flex sm:block overflow-x-auto sm:overflow-visible snap-x snap-mandatory scroll-smooth no-scrollbar gap-6 sm:gap-0 w-full max-w-4xl mb-5 sm:mb-8">
+            <!-- Stacked Cards Stage (Borderless Single-Card Slide on Mobile, 3D Stacked Deck on Desktop) -->
+            <div id="testimonial-carousel-stage" class="testimonial-deck-stage w-full max-w-4xl mb-5 sm:mb-8">
               <!-- Card 01 -->
-              <article data-testimonial-card="0" data-deck-state="active" class="testimonial-deck-card w-full min-w-full shrink-0 snap-center sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="0" data-deck-state="active" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -1504,7 +1507,7 @@
               </article>
 
               <!-- Card 02 -->
-              <article data-testimonial-card="1" data-deck-state="next" class="testimonial-deck-card w-full min-w-full shrink-0 snap-center sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="1" data-deck-state="next" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -1527,7 +1530,7 @@
               </article>
 
               <!-- Card 03 -->
-              <article data-testimonial-card="2" data-deck-state="behind" class="testimonial-deck-card w-full min-w-full shrink-0 snap-center sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="2" data-deck-state="behind" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -1550,7 +1553,7 @@
               </article>
 
               <!-- Card 04 -->
-              <article data-testimonial-card="3" data-deck-state="prev" class="testimonial-deck-card w-full min-w-full shrink-0 snap-center sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="3" data-deck-state="prev" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -1595,10 +1598,10 @@
               <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
             </button>
             <div class="flex items-center justify-center gap-2.5" role="tablist" aria-label="Selector de comentarios">
-              <button type="button" data-testimonial-dot="0" aria-label="Ir al comentario 1" class="w-8 h-1.5 rounded-full bg-[#A01318] transition-all duration-300"></button>
-              <button type="button" data-testimonial-dot="1" aria-label="Ir al comentario 2" class="w-2.5 h-1.5 rounded-full bg-[#D1D1C7] hover:bg-[#8A8A93] transition-all duration-300"></button>
-              <button type="button" data-testimonial-dot="2" aria-label="Ir al comentario 3" class="w-2.5 h-1.5 rounded-full bg-[#D1D1C7] hover:bg-[#8A8A93] transition-all duration-300"></button>
-              <button type="button" data-testimonial-dot="3" aria-label="Ir al comentario 4" class="w-2.5 h-1.5 rounded-full bg-[#D1D1C7] hover:bg-[#8A8A93] transition-all duration-300"></button>
+              <button type="button" data-testimonial-dot="0" aria-label="Ir al comentario 1" class="w-8 h-2 rounded-full bg-[#A01318] transition-all duration-300"></button>
+              <button type="button" data-testimonial-dot="1" aria-label="Ir al comentario 2" class="w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300"></button>
+              <button type="button" data-testimonial-dot="2" aria-label="Ir al comentario 3" class="w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300"></button>
+              <button type="button" data-testimonial-dot="3" aria-label="Ir al comentario 4" class="w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300"></button>
             </div>
             <button
               type="button"
@@ -3057,29 +3060,26 @@
       function initTestimonialCarousel() {
         const sectionEl = document.getElementById("testimonials");
         const stageEl = document.getElementById("testimonial-carousel-stage");
-        const cards = Array.from(document.querySelectorAll("[data-testimonial-card]"));
-        const dots = Array.from(document.querySelectorAll("[data-testimonial-dot]"));
         const prevBtn = document.getElementById("testimonial-prev-btn");
         const nextBtn = document.getElementById("testimonial-next-btn");
         const mobilePrevBtn = document.getElementById("testimonial-mobile-prev-btn");
         const mobileNextBtn = document.getElementById("testimonial-mobile-next-btn");
-        if (!cards.length) return;
+        if (!sectionEl || !stageEl) return;
 
-        const total = cards.length;
-        if (testimonialActiveIdx >= total) testimonialActiveIdx = 0;
+        const getCards = () => Array.from(stageEl.querySelectorAll("[data-testimonial-card]"));
+        const getDots = () => Array.from(sectionEl.querySelectorAll("[data-testimonial-dot]"));
+
+        const initialCards = getCards();
+        if (!initialCards.length) return;
+        if (testimonialActiveIdx >= initialCards.length) testimonialActiveIdx = 0;
         const INTERVAL_MS = 3000;
 
-        function updateDotsOnly(activeIdx) {
-          dots.forEach((dot, idx) => {
-            const isActive = idx === activeIdx;
-            dot.setAttribute("aria-selected", isActive ? "true" : "false");
-            dot.className = isActive
-              ? "w-8 h-2.5 rounded-full bg-[#A01318] transition-all duration-300"
-              : "w-2.5 h-2.5 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300";
-          });
-        }
+        function updateDeck(newIndex) {
+          const cards = getCards();
+          const dots = getDots();
+          const total = cards.length;
+          if (!total) return;
 
-        function updateDeck(newIndex, skipMobileScroll) {
           testimonialActiveIdx = ((newIndex % total) + total) % total;
 
           cards.forEach((card, idx) => {
@@ -3098,15 +3098,13 @@
             card.setAttribute("aria-hidden", offset === 0 ? "false" : "true");
           });
 
-          if (!skipMobileScroll && stageEl && window.innerWidth < 640) {
-            const targetCard = cards[testimonialActiveIdx];
-            if (targetCard) {
-              const leftPos = targetCard.offsetLeft - stageEl.offsetLeft;
-              stageEl.scrollTo({ left: leftPos, behavior: "smooth" });
-            }
-          }
-
-          updateDotsOnly(testimonialActiveIdx);
+          dots.forEach((dot, idx) => {
+            const isActive = idx === testimonialActiveIdx;
+            dot.setAttribute("aria-selected", isActive ? "true" : "false");
+            dot.className = isActive
+              ? "w-8 h-2 rounded-full bg-[#A01318] transition-all duration-300"
+              : "w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300";
+          });
         }
 
         function nextSlide() {
@@ -3117,13 +3115,6 @@
           updateDeck(testimonialActiveIdx - 1);
         }
 
-        function startAutoPlay() {
-          stopAutoPlay();
-          if (total > 1) {
-            testimonialTimer = window.setInterval(nextSlide, INTERVAL_MS);
-          }
-        }
-
         function stopAutoPlay() {
           if (testimonialTimer) {
             window.clearInterval(testimonialTimer);
@@ -3131,9 +3122,17 @@
           }
         }
 
+        function startAutoPlay() {
+          stopAutoPlay();
+          if (getCards().length > 1) {
+            testimonialTimer = window.setInterval(nextSlide, INTERVAL_MS);
+          }
+        }
+
         [prevBtn, mobilePrevBtn].forEach((btn) => {
           if (btn) {
-            btn.onclick = () => {
+            btn.onclick = (e) => {
+              e.preventDefault();
               prevSlide();
               startAutoPlay();
             };
@@ -3142,21 +3141,23 @@
 
         [nextBtn, mobileNextBtn].forEach((btn) => {
           if (btn) {
-            btn.onclick = () => {
+            btn.onclick = (e) => {
+              e.preventDefault();
               nextSlide();
               startAutoPlay();
             };
           }
         });
 
-        dots.forEach((dot, idx) => {
-          dot.onclick = () => {
+        getDots().forEach((dot, idx) => {
+          dot.onclick = (e) => {
+            e.preventDefault();
             updateDeck(idx);
             startAutoPlay();
           };
         });
 
-        cards.forEach((card, idx) => {
+        getCards().forEach((card, idx) => {
           card.onclick = () => {
             if (idx !== testimonialActiveIdx) {
               updateDeck(idx);
@@ -3165,35 +3166,30 @@
           };
         });
 
-        if (stageEl && !stageEl.dataset.swipeBound) {
-          stageEl.dataset.swipeBound = "true";
-          stageEl.addEventListener(
-            "scroll",
-            () => {
-              if (window.innerWidth < 640 && cards[0]) {
-                const cardW = cards[0].offsetWidth + 24;
-                const scrolledIdx = Math.min(total - 1, Math.max(0, Math.round(stageEl.scrollLeft / cardW)));
-                if (scrolledIdx !== testimonialActiveIdx) {
-                  testimonialActiveIdx = scrolledIdx;
-                  updateDeck(scrolledIdx, true);
-                }
-              }
-            },
-            { passive: true }
-          );
-          stageEl.addEventListener("touchstart", stopAutoPlay, { passive: true });
-          stageEl.addEventListener("touchend", startAutoPlay, { passive: true });
-        }
+        let touchStartX = 0;
+        stageEl.ontouchstart = (e) => {
+          if (e.touches && e.touches[0]) {
+            touchStartX = e.touches[0].clientX;
+          }
+          stopAutoPlay();
+        };
+        stageEl.ontouchend = (e) => {
+          if (e.changedTouches && e.changedTouches[0]) {
+            const diffX = e.changedTouches[0].clientX - touchStartX;
+            if (Math.abs(diffX) > 35) {
+              if (diffX < 0) nextSlide();
+              else prevSlide();
+            }
+          }
+          startAutoPlay();
+        };
 
-        if (sectionEl && !sectionEl.dataset.carouselBound) {
-          sectionEl.dataset.carouselBound = "true";
-          sectionEl.addEventListener("mouseenter", () => {
-            if (window.innerWidth >= 640) stopAutoPlay();
-          });
-          sectionEl.addEventListener("mouseleave", () => {
-            if (window.innerWidth >= 640) startAutoPlay();
-          });
-        }
+        sectionEl.onmouseenter = () => {
+          if (window.innerWidth >= 640) stopAutoPlay();
+        };
+        sectionEl.onmouseleave = () => {
+          if (window.innerWidth >= 640) startAutoPlay();
+        };
 
         updateDeck(testimonialActiveIdx);
         startAutoPlay();
@@ -4053,7 +4049,7 @@
             const loc = t.location || "Higüey, RD";
 
             return `
-            <article data-testimonial-card="${idx}" data-deck-state="${idx === 0 ? "active" : "behind"}" class="testimonial-deck-card w-full min-w-full shrink-0 snap-center sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+            <article data-testimonial-card="${idx}" data-deck-state="${idx === 0 ? "active" : "behind"}" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
               <div>
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                   <div class="flex items-center gap-1.5 sm:gap-2">
@@ -4087,8 +4083,8 @@
                 idx + 1
               }" class="${
                 idx === 0
-                  ? "w-8 h-2.5 rounded-full bg-[#A01318]"
-                  : "w-2.5 h-2.5 rounded-full bg-[#D1D1C7] hover:bg-[#52525B]"
+                  ? "w-8 h-2 rounded-full bg-[#A01318]"
+                  : "w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B]"
               } transition-all duration-300"></button>
           `
             )
