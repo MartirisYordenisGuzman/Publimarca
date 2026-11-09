@@ -23,23 +23,25 @@ export function ServicesSection() {
   return (
     <section
       id="services"
-      className="w-full bg-[#F4F4F0] px-margin md:px-margin-tablet lg:px-margin-desktop py-20 scroll-mt-24"
+      className="w-full bg-[#F4F4F0] px-margin md:px-margin-tablet lg:px-margin-desktop py-6 sm:py-20 scroll-mt-20 sm:scroll-mt-24"
     >
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-4 sm:mb-12 gap-1.5 sm:gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-[#00758C] block mb-2">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#00758C] block mb-1 sm:mb-2">
               {t("kicker")}
             </span>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold uppercase text-[#101014] tracking-tight">
+            <h2 className="font-display text-2xl sm:text-4xl font-bold uppercase text-[#101014] tracking-tight leading-none">
               {t("title")}
             </h2>
           </div>
-          <p className="text-base text-[#52525B] max-w-md">{t("subtitle")}</p>
+          <p className="text-xs sm:text-base text-[#52525B] max-w-md leading-snug sm:leading-normal line-clamp-2 sm:line-clamp-none">
+            {t("subtitle")}
+          </p>
         </div>
 
         {/* Rounded Interactive Service Cards */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2.5 sm:gap-4">
           {SERVICE_KEYS.map((key, index) => {
             const capabilityKey = t(`items.${key}.capabilityKey`);
             return (
@@ -51,35 +53,35 @@ export function ServicesSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.35, delay: index * 0.06 }}
-                className="group p-6 sm:p-8 bg-white hover:bg-[#FFFFFF] rounded-3xl border border-[#E5E5DF] hover:border-[#A01318]/40 shadow-editorial hover:shadow-editorial-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318] transition-all block"
+                className="group p-3.5 sm:p-8 bg-white hover:bg-[#FFFFFF] rounded-2xl sm:rounded-3xl border border-[#E5E5DF] hover:border-[#A01318]/40 shadow-editorial hover:shadow-editorial-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318] transition-all block"
               >
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                <div className="grid grid-cols-12 gap-x-2.5 gap-y-1.5 lg:gap-4 items-center">
                   <div
-                    className="lg:col-span-1 font-mono text-sm font-bold text-[#00758C]"
+                    className="col-span-2 lg:col-span-1 font-mono text-xs sm:text-sm font-bold text-[#00758C] self-start lg:self-center pt-0.5 lg:pt-0"
                     translate="no"
                   >
                     {t(`items.${key}.number`)}
                   </div>
-                  <div className="lg:col-span-5">
-                    <h3 className="font-display text-xl font-bold uppercase text-[#101014] group-hover:text-[#A01318] transition-colors">
+                  <div className="col-span-8 lg:col-span-5 min-w-0">
+                    <h3 className="font-display text-sm sm:text-xl font-bold uppercase leading-tight text-[#101014] group-hover:text-[#A01318] transition-colors">
                       {t(`items.${key}.title`)}
                     </h3>
-                    <span className="text-xs uppercase text-[#52525B] font-mono font-medium">
+                    <span className="block text-[10px] sm:text-xs uppercase text-[#52525B] font-mono font-medium truncate sm:whitespace-normal mt-0.5">
                       {t(`items.${key}.tags`)}
                     </span>
                   </div>
-                  <div className="lg:col-span-5">
-                    <p className="text-sm text-[#52525B] leading-relaxed">
-                      {t(`items.${key}.description`)}
-                    </p>
-                  </div>
-                  <div className="lg:col-span-1 flex justify-start lg:justify-end">
+                  <div className="col-span-2 lg:col-span-1 lg:order-4 flex justify-end self-start lg:self-center">
                     <span
-                      className="w-11 h-11 rounded-full bg-[#F4F4F0] flex items-center justify-center text-[#101014] group-hover:bg-[#A01318] group-hover:text-white transition-all shadow-sm"
+                      className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-[#F4F4F0] flex items-center justify-center text-[#101014] group-hover:bg-[#A01318] group-hover:text-white transition-all shadow-sm shrink-0"
                       aria-hidden="true"
                     >
-                      <ArrowUpRight className="w-5 h-5" />
+                      <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
                     </span>
+                  </div>
+                  <div className="col-span-12 lg:col-span-5 lg:order-3">
+                    <p className="text-[11px] sm:text-sm text-[#52525B] leading-snug sm:leading-relaxed line-clamp-2 lg:line-clamp-none">
+                      {t(`items.${key}.description`)}
+                    </p>
                   </div>
                 </div>
               </motion.a>
