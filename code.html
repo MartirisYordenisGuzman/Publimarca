@@ -189,7 +189,7 @@
       .testimonial-deck-stage {
         display: block !important;
         overflow: hidden !important;
-        min-height: 240px !important;
+        min-height: 295px !important;
       }
       .testimonial-deck-card,
       .testimonial-deck-card:not([data-deck-state="active"]) {
@@ -199,6 +199,7 @@
         min-width: 100% !important;
         max-width: 100% !important;
         height: auto !important;
+        min-height: 295px !important;
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
@@ -207,10 +208,13 @@
       }
       .testimonial-deck-card[data-deck-state="active"] {
         display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        min-height: 295px !important;
         opacity: 1 !important;
         transform: none !important;
         pointer-events: auto !important;
-        animation: mobileTestimonialSlideIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation: mobileTestimonialSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
     }
     @media (min-width: 640px) {
@@ -1588,28 +1592,36 @@
           </div>
 
           <!-- Slide Progress Dots & Mobile Controls -->
-          <div class="flex items-center justify-between sm:justify-center gap-4 mt-2 sm:mt-4">
+          <div class="flex items-center justify-between sm:justify-center gap-3 sm:gap-4 mt-2 sm:mt-4 relative z-20">
             <button
               type="button"
               id="testimonial-mobile-prev-btn"
               aria-label="Comentario anterior"
-              class="flex sm:hidden w-9 h-9 rounded-full bg-white border border-[#E5E5DF] text-[#101014] active:bg-[#A01318] active:text-white shadow-sm items-center justify-center shrink-0"
+              class="flex sm:hidden w-11 h-11 rounded-full bg-white border border-[#E5E5DF] text-[#101014] active:bg-[#A01318] active:text-white shadow-sm items-center justify-center shrink-0 active:scale-95 transition-all select-none touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]"
             >
-              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
+              <span class="material-symbols-outlined text-[20px] pointer-events-none" aria-hidden="true">arrow_back</span>
             </button>
-            <div class="flex items-center justify-center gap-2.5" role="tablist" aria-label="Selector de comentarios">
-              <button type="button" data-testimonial-dot="0" aria-label="Ir al comentario 1" class="w-8 h-2 rounded-full bg-[#A01318] transition-all duration-300"></button>
-              <button type="button" data-testimonial-dot="1" aria-label="Ir al comentario 2" class="w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300"></button>
-              <button type="button" data-testimonial-dot="2" aria-label="Ir al comentario 3" class="w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300"></button>
-              <button type="button" data-testimonial-dot="3" aria-label="Ir al comentario 4" class="w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300"></button>
+            <div class="flex items-center justify-center gap-1 sm:gap-2" role="tablist" aria-label="Selector de comentarios">
+              <button type="button" data-testimonial-dot="0" role="tab" aria-selected="true" aria-label="Ir al comentario 1" class="relative p-2.5 flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318] touch-manipulation">
+                <span class="block w-8 h-2 rounded-full bg-[#A01318] transition-all duration-300 pointer-events-none"></span>
+              </button>
+              <button type="button" data-testimonial-dot="1" role="tab" aria-selected="false" aria-label="Ir al comentario 2" class="relative p-2.5 flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318] touch-manipulation">
+                <span class="block w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300 pointer-events-none"></span>
+              </button>
+              <button type="button" data-testimonial-dot="2" role="tab" aria-selected="false" aria-label="Ir al comentario 3" class="relative p-2.5 flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318] touch-manipulation">
+                <span class="block w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300 pointer-events-none"></span>
+              </button>
+              <button type="button" data-testimonial-dot="3" role="tab" aria-selected="false" aria-label="Ir al comentario 4" class="relative p-2.5 flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318] touch-manipulation">
+                <span class="block w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300 pointer-events-none"></span>
+              </button>
             </div>
             <button
               type="button"
               id="testimonial-mobile-next-btn"
               aria-label="Siguiente comentario"
-              class="flex sm:hidden w-9 h-9 rounded-full bg-[#A01318] border border-[#A01318] text-white shadow-sm items-center justify-center shrink-0"
+              class="flex sm:hidden w-11 h-11 rounded-full bg-[#A01318] border border-[#A01318] text-white shadow-sm items-center justify-center shrink-0 active:scale-95 transition-all select-none touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318]"
             >
-              <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
+              <span class="material-symbols-outlined text-[20px] pointer-events-none" aria-hidden="true">arrow_forward</span>
             </button>
           </div>
         </div>
@@ -3101,9 +3113,10 @@
           dots.forEach((dot, idx) => {
             const isActive = idx === testimonialActiveIdx;
             dot.setAttribute("aria-selected", isActive ? "true" : "false");
-            dot.className = isActive
-              ? "w-8 h-2 rounded-full bg-[#A01318] transition-all duration-300"
-              : "w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300";
+            const pill = dot.querySelector("span") || dot;
+            pill.className = isActive
+              ? "block w-8 h-2 rounded-full bg-[#A01318] transition-all duration-300 pointer-events-none"
+              : "block w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B] transition-all duration-300 pointer-events-none";
           });
         }
 
@@ -3129,37 +3142,41 @@
           }
         }
 
+        function bindAction(el, actionFn) {
+          if (!el) return;
+          el.onclick = (e) => {
+            if (e) {
+              if (e.cancelable) e.preventDefault();
+              e.stopPropagation();
+            }
+            actionFn();
+          };
+        }
+
         [prevBtn, mobilePrevBtn].forEach((btn) => {
-          if (btn) {
-            btn.onclick = (e) => {
-              e.preventDefault();
-              prevSlide();
-              startAutoPlay();
-            };
-          }
+          bindAction(btn, () => {
+            prevSlide();
+            startAutoPlay();
+          });
         });
 
         [nextBtn, mobileNextBtn].forEach((btn) => {
-          if (btn) {
-            btn.onclick = (e) => {
-              e.preventDefault();
-              nextSlide();
-              startAutoPlay();
-            };
-          }
+          bindAction(btn, () => {
+            nextSlide();
+            startAutoPlay();
+          });
         });
 
         getDots().forEach((dot, idx) => {
-          dot.onclick = (e) => {
-            e.preventDefault();
+          bindAction(dot, () => {
             updateDeck(idx);
             startAutoPlay();
-          };
+          });
         });
 
         getCards().forEach((card, idx) => {
           card.onclick = () => {
-            if (idx !== testimonialActiveIdx) {
+            if (window.innerWidth >= 640 && idx !== testimonialActiveIdx) {
               updateDeck(idx);
               startAutoPlay();
             }
@@ -3167,16 +3184,24 @@
         });
 
         let touchStartX = 0;
+        let touchStartY = 0;
+        let touchStartTime = 0;
+
         stageEl.ontouchstart = (e) => {
           if (e.touches && e.touches[0]) {
             touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchStartTime = Date.now();
           }
           stopAutoPlay();
         };
+
         stageEl.ontouchend = (e) => {
           if (e.changedTouches && e.changedTouches[0]) {
             const diffX = e.changedTouches[0].clientX - touchStartX;
-            if (Math.abs(diffX) > 35) {
+            const diffY = e.changedTouches[0].clientY - touchStartY;
+            const elapsed = Date.now() - touchStartTime;
+            if (Math.abs(diffX) > 30 && Math.abs(diffX) > Math.abs(diffY) * 1.1 && elapsed < 800) {
               if (diffX < 0) nextSlide();
               else prevSlide();
             }
@@ -4079,13 +4104,15 @@
           dotsWrap.innerHTML = items
             .map(
               (_, idx) => `
-            <button type="button" data-testimonial-dot="${idx}" role="tab" aria-selected="${idx === 0}" aria-label="Comentario ${
+            <button type="button" data-testimonial-dot="${idx}" role="tab" aria-selected="${idx === testimonialActiveIdx}" aria-label="Comentario ${
                 idx + 1
-              }" class="${
-                idx === 0
-                  ? "w-8 h-2 rounded-full bg-[#A01318]"
-                  : "w-2.5 h-2 rounded-full bg-[#D1D1C7] hover:bg-[#52525B]"
-              } transition-all duration-300"></button>
+              }" class="relative p-2.5 flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318] touch-manipulation">
+              <span class="block ${
+                idx === testimonialActiveIdx
+                  ? "w-8 bg-[#A01318]"
+                  : "w-2.5 bg-[#D1D1C7] hover:bg-[#52525B]"
+              } h-2 rounded-full transition-all duration-300 pointer-events-none"></span>
+            </button>
           `
             )
             .join("");

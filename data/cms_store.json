@@ -19,7 +19,7 @@
     "hero_video_url": "/video_hero_publimarca.mp4",
     "hero_live_badge_es": "Set en Vivo • Cámara A",
     "hero_live_badge_en": "Live Stage • A-Cam Roll",
-    "hero_subheadline_es": "Atelier creativo independiente que opera en el punto exacto entre la gravedad cultural del Caribe y la precisión editorial global. Diseñamos narrativas cinematográficas, estética espacial e identidades gráficas inmutables.",
+    "hero_subheadline_es": "Taller creativo independiente que opera en el punto exacto entre la gravedad cultural del Caribe y la precisión editorial global. Diseñamos narrativas cinematográficas, estética espacial e identidades gráficas inmutables.",
     "hero_subheadline_en": "Independent creative atelier operating at the precise friction point between Caribbean cultural gravity and global editorial precision. We engineer cinematic narratives, spatial aesthetics, and immutable graphic identities.",
     "manifesto_quote_es": "«No somos una agencia de plantillas. Somos un santuario de oficio, valentía estratégica y narrativa visual de alto impacto construido desde la médula cultural de la República Dominicana.»",
     "manifesto_quote_en": "“Not an agency of templates. A sanctuary of craft, strategic courage, and high-impact visual storytelling built from the cultural marrow of the Dominican Republic.”",
@@ -162,7 +162,7 @@
       "tag_en": "01 // Architecture & Development",
       "sub_es": "",
       "sub_en": "",
-      "image_url": "https://images.unsplash.com/photo-1541888946425-d09bb18086f6?auto=format&fit=crop&w=1200&q=85",
+      "image_url": "https://xdrfhluwpuavqpfbbowg.supabase.co/storage/v1/object/public/publimarca-media/images/1794219705_Screenshot_2026-09-04_at_12.40.48_AM__2_.webp",
       "layout": "feature-dark"
     },
     {
