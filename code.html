@@ -219,8 +219,25 @@
     }
     @media (min-width: 640px) {
       .testimonial-deck-stage {
-        min-height: 340px;
+        min-height: 480px;
       }
+    }
+    @media (min-width: 768px) {
+      .testimonial-deck-stage {
+        min-height: 440px;
+      }
+    }
+    @media (min-width: 1024px) {
+      .testimonial-deck-stage {
+        min-height: 410px;
+      }
+    }
+    @media (min-width: 1280px) {
+      .testimonial-deck-stage {
+        min-height: 395px;
+      }
+    }
+    @media (min-width: 640px) {
       .testimonial-deck-card {
         position: absolute;
         inset: 0;
@@ -1488,7 +1505,7 @@
             <!-- Stacked Cards Stage (Borderless Single-Card Slide on Mobile, 3D Stacked Deck on Desktop) -->
             <div id="testimonial-carousel-stage" class="testimonial-deck-stage w-full max-w-4xl mb-5 sm:mb-8">
               <!-- Card 01 -->
-              <article data-testimonial-card="0" data-deck-state="active" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="0" data-deck-state="active" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:pb-12 md:pb-14 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -1511,7 +1528,7 @@
               </article>
 
               <!-- Card 02 -->
-              <article data-testimonial-card="1" data-deck-state="next" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="1" data-deck-state="next" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:pb-12 md:pb-14 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -1534,7 +1551,7 @@
               </article>
 
               <!-- Card 03 -->
-              <article data-testimonial-card="2" data-deck-state="behind" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="2" data-deck-state="behind" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:pb-12 md:pb-14 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -1557,7 +1574,7 @@
               </article>
 
               <!-- Card 04 -->
-              <article data-testimonial-card="3" data-deck-state="prev" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+              <article data-testimonial-card="3" data-deck-state="prev" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:pb-12 md:pb-14 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                     <div class="flex items-center gap-1.5 sm:gap-2">
@@ -3216,7 +3233,29 @@
           if (window.innerWidth >= 640) startAutoPlay();
         };
 
+        function syncDeckHeight() {
+          if (window.innerWidth < 640) {
+            stageEl.style.minHeight = "";
+            return;
+          }
+          const cards = getCards();
+          let maxContentH = 0;
+          cards.forEach((c) => {
+            const divs = Array.from(c.children);
+            if (divs.length >= 2) {
+              const h = divs[0].offsetHeight + divs[1].offsetHeight;
+              if (h > maxContentH) maxContentH = h;
+            }
+          });
+          if (maxContentH > 0) {
+            const baseMin = window.innerWidth >= 1280 ? 415 : (window.innerWidth >= 1024 ? 430 : (window.innerWidth >= 768 ? 460 : 500));
+            stageEl.style.minHeight = Math.max(maxContentH + 130, baseMin) + "px";
+          }
+        }
+
         updateDeck(testimonialActiveIdx);
+        syncDeckHeight();
+        window.addEventListener("resize", syncDeckHeight, { passive: true });
         startAutoPlay();
       }
 
@@ -4074,7 +4113,7 @@
             const loc = t.location || "Higüey, RD";
 
             return `
-            <article data-testimonial-card="${idx}" data-deck-state="${idx === 0 ? "active" : "behind"}" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
+            <article data-testimonial-card="${idx}" data-deck-state="${idx === 0 ? "active" : "behind"}" class="testimonial-deck-card sm:rounded-3xl sm:p-10 md:p-12 sm:pb-12 md:pb-14 sm:border sm:border-[#E5E5DF] sm:shadow-editorial flex flex-col justify-between">
               <div>
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5 text-[#00758C]">
                   <div class="flex items-center gap-1.5 sm:gap-2">
