@@ -22,6 +22,24 @@
       }
     };
   </script>
+  <style>
+    @keyframes preloader-sheen-sweep {
+      0% {
+        transform: translate3d(-130%, 0, 0) skewX(-20deg);
+        opacity: 0;
+      }
+      18% {
+        opacity: 1;
+      }
+      65% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate3d(250%, 0, 0) skewX(-20deg);
+        opacity: 0;
+      }
+    }
+  </style>
 </head>
 <body class="bg-[#FBFBF9] text-[#101014] font-sans antialiased min-h-screen flex flex-col">
   <!-- Hidden global file input for uploading images/videos -->
@@ -158,6 +176,14 @@
         </span>
       </button>
 
+      <button type="button" data-tab="brandlogos" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
+        <span class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[18px] text-[#A01318]">verified</span>
+          <span>Logos de la Marca (Nav &amp; Carga)</span>
+        </span>
+        <span class="px-2 py-0.5 rounded-full bg-[#A01318]/10 text-[#A01318] text-[10px] font-mono font-bold">2 LOGOS</span>
+      </button>
+
       <button type="button" data-tab="herovideo" class="admin-tab w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white hover:bg-[#F4F4F0] text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-all">
         <span class="flex items-center gap-2.5">
           <span class="material-symbols-outlined text-[18px]">smart_display</span>
@@ -276,6 +302,152 @@
             </button>
           </div>
           <div id="visibility-toggles-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+      </section>
+
+      <!-- TAB: BRAND LOGOS (NAV, FOOTER & PRELOADER) -->
+      <section id="panel-brandlogos" class="admin-panel hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E5DF] shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#A01318] block mb-1">Identidad Visual &amp; Marcas Oficiales</span>
+              <h2 class="font-display text-2xl font-bold uppercase">Logos de la Marca (Nav, Footer y Pantalla de Carga)</h2>
+              <p class="text-xs text-[#52525B] mt-1 max-w-2xl">
+                Carga y modifica de forma independiente el logo que se muestra en la navegación fija superior y pie de página (footer), y el logo que protagoniza la animación con destello de luz en la pantalla de carga (preloader).
+              </p>
+            </div>
+            <button type="button" id="save-brandlogos-btn" class="px-6 py-2.5 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px]">save</span>
+              <span>Guardar Logos</span>
+            </button>
+          </div>
+
+          <!-- Helpful Advice Banner -->
+          <div class="mb-6 p-4 rounded-2xl bg-[#F8F8F5] border border-[#E5E5DF] flex items-start gap-3">
+            <span class="material-symbols-outlined text-[#00758C] text-[20px] mt-0.5">info</span>
+            <div class="text-xs text-[#52525B] space-y-1">
+              <p class="font-bold text-[#101014] uppercase tracking-wider text-[11px]">Recomendaciones de Formato:</p>
+              <p>Recomendamos subir archivos <strong>PNG con fondo transparente</strong> o formato <strong>SVG / WEBP</strong> con buena resolución. El logo de pantalla de carga utiliza su silueta transparente para proyectar el barrido de luz metálica (specular sheen).</p>
+            </div>
+          </div>
+
+          <!-- Two Main Cards Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Card 1: Logo Nav & Footer -->
+            <div class="p-6 rounded-3xl border border-[#E5E5DF] bg-[#FAFAF8] flex flex-col justify-between space-y-5">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[#A01318] text-[20px]">web</span>
+                    <h3 class="font-display text-base font-bold uppercase tracking-wider text-[#101014]">Logo de Navegación &amp; Footer</h3>
+                  </div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-[#A01318]/10 text-[#A01318] text-[10px] font-mono font-bold uppercase">Header &amp; Pie</span>
+                </div>
+                <p class="text-xs text-[#52525B] leading-relaxed mb-4">
+                  Aparece fijado en la barra superior izquierda (tanto en versión de escritorio como en móvil y tablet) y como isotipo de cierre en el pie de página.
+                </p>
+
+                <!-- Stage Preview -->
+                <div class="relative w-full h-36 rounded-2xl bg-white border border-[#E5E5DF] flex items-center justify-center p-4 overflow-hidden shadow-inner group">
+                  <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#101014_1px,transparent_1px)] [background-size:12px_12px] pointer-events-none"></div>
+                  <img
+                    id="nav-logo-preview"
+                    src="/logo%202.png"
+                    alt="Vista previa Logo Nav"
+                    class="max-h-16 max-w-[85%] w-auto object-contain relative z-10 transition-transform duration-200 group-hover:scale-105"
+                  />
+                  <div class="absolute bottom-2 right-2 text-[9px] font-mono text-[#8A8A93] bg-white/80 px-2 py-0.5 rounded-md border border-[#E5E5DF]/60">
+                    Preview en Vivo
+                  </div>
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <div class="space-y-3 pt-2 border-t border-[#EAEAE5]">
+                <div class="flex flex-wrap items-center gap-2">
+                  <button type="button" id="btn-upload-nav-logo" class="flex-1 py-2.5 px-4 rounded-xl bg-[#00758C] hover:bg-[#005e70] text-white text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center justify-center gap-2 shadow-sm">
+                    <span class="material-symbols-outlined text-[17px]">cloud_upload</span>
+                    <span>Subir Nuevo Logo</span>
+                  </button>
+                  <button type="button" id="btn-reset-nav-logo" class="py-2.5 px-3.5 rounded-xl bg-white hover:bg-[#F4F4F0] text-[#52525B] hover:text-[#A01318] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-1.5" title="Restablecer logo predeterminado">
+                    <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                    <span>Reset</span>
+                  </button>
+                </div>
+
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-[#52525B] mb-1">Ruta o URL Directa del Logo</label>
+                  <input
+                    type="text"
+                    id="brand-nav-logo-url"
+                    class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono py-2 px-3 bg-white focus:ring-2 focus:ring-[#A01318]"
+                    placeholder="/logo 2.png o https://..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Logo Preloader -->
+            <div class="p-6 rounded-3xl border border-[#E5E5DF] bg-[#FAFAF8] flex flex-col justify-between space-y-5">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[#00758C] text-[20px]">hourglass_top</span>
+                    <h3 class="font-display text-base font-bold uppercase tracking-wider text-[#101014]">Logo de Pantalla de Carga (Preloader)</h3>
+                  </div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-[#00758C]/10 text-[#00758C] text-[10px] font-mono font-bold uppercase">Preloader Stage</span>
+                </div>
+                <p class="text-xs text-[#52525B] leading-relaxed mb-4">
+                  Es el isotipo central animado con destello y revelación de color que da la bienvenida a tus clientes al cargar la página por primera vez.
+                </p>
+
+                <!-- Stage Preview (With Specular Sheen) -->
+                <div class="relative w-full h-36 rounded-2xl bg-[#FBFBF9] border border-[#E5E5DF] flex items-center justify-center p-4 overflow-hidden shadow-inner group">
+                  <div class="relative flex items-center justify-center">
+                    <img
+                      id="preloader-logo-preview"
+                      src="/logo%202.png"
+                      alt="Vista previa Logo Preloader"
+                      class="max-h-16 max-w-[85%] w-auto object-contain relative z-10 transition-transform duration-200 group-hover:scale-105"
+                    />
+                    <!-- Dynamic Mask Preview for Specular Sheen -->
+                    <div id="preloader-preview-mask" class="absolute inset-0 z-20 pointer-events-none overflow-hidden" style="-webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center;">
+                      <div id="preloader-preview-beam" class="w-[70%] h-[180%] top-[-40%] left-0 absolute bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none" style="filter: drop-shadow(0 0 10px rgba(48,180,215,0.7)); animation: preloader-sheen-sweep 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;"></div>
+                    </div>
+                  </div>
+                  <div class="absolute bottom-2 right-2 text-[9px] font-mono text-[#8A8A93] bg-white/80 px-2 py-0.5 rounded-md border border-[#E5E5DF]/60">
+                    Animación Sheen Activa
+                  </div>
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <div class="space-y-3 pt-2 border-t border-[#EAEAE5]">
+                <div class="flex flex-wrap items-center gap-2">
+                  <button type="button" id="btn-upload-preloader-logo" class="flex-1 py-2.5 px-4 rounded-xl bg-[#00758C] hover:bg-[#005e70] text-white text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center justify-center gap-2 shadow-sm">
+                    <span class="material-symbols-outlined text-[17px]">cloud_upload</span>
+                    <span>Subir Logo de Carga</span>
+                  </button>
+                  <button type="button" id="btn-reset-preloader-logo" class="py-2.5 px-3.5 rounded-xl bg-white hover:bg-[#F4F4F0] text-[#52525B] hover:text-[#A01318] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-1.5" title="Restablecer logo predeterminado">
+                    <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                    <span>Reset</span>
+                  </button>
+                </div>
+
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-[#52525B] mb-1">Ruta o URL Directa del Preloader</label>
+                  <input
+                    type="text"
+                    id="brand-preloader-logo-url"
+                    class="w-full rounded-xl border-[#E0E0D8] text-xs font-mono py-2 px-3 bg-white focus:ring-2 focus:ring-[#00758C]"
+                    placeholder="/logo 2.png o https://..."
+                  />
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -533,6 +705,21 @@
             <button type="button" id="save-settings-btn" class="px-6 py-3 rounded-full bg-[#A01318] hover:bg-[#800F13] text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all flex items-center gap-2">
               <span class="material-symbols-outlined text-[16px]">save</span>
               <span>Guardar Configuración</span>
+            </button>
+          </div>
+
+          <!-- Shortcut banner to Official Brand Logos -->
+          <div class="mb-6 p-4 rounded-2xl bg-[#FAFAF8] border border-[#E5E5DF] flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-[#A01318] text-[22px]">verified</span>
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-[#101014]">Logos Oficiales (Navegación &amp; Pantalla de Carga)</h4>
+                <p class="text-[11px] text-[#52525B]">Personaliza y sube los logos independientes para el navbar, footer y preloader.</p>
+              </div>
+            </div>
+            <button type="button" data-goto-tab="brandlogos" class="px-4 py-2 rounded-full bg-white hover:bg-[#101014] hover:text-white text-[#101014] border border-[#E5E5DF] text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-1.5 shrink-0">
+              <span>Gestionar Logos</span>
+              <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
             </button>
           </div>
 
@@ -1401,6 +1588,9 @@
         if (!Array.isArray(cmsState.projects)) cmsState.projects = [];
         if (!Array.isArray(cmsState.process_steps)) cmsState.process_steps = [];
         if (!Array.isArray(cmsState.testimonials)) cmsState.testimonials = [];
+        if (!cmsState.site_settings) cmsState.site_settings = {};
+        if (!cmsState.site_settings.nav_logo_url) cmsState.site_settings.nav_logo_url = "/logo 2.png";
+        if (!cmsState.site_settings.preloader_logo_url) cmsState.site_settings.preloader_logo_url = "/logo 2.png";
       }
 
       async function saveCMS(sectionMessage, skipInputCollect) {
@@ -1485,9 +1675,44 @@
           });
         });
 
-        grid.querySelectorAll("[data-goto-tab]").forEach((btn) => {
+        document.querySelectorAll("[data-goto-tab]").forEach((btn) => {
           btn.addEventListener("click", () => switchTab(btn.getAttribute("data-goto-tab")));
         });
+      }
+
+      // 0.5 Render Brand Logos (Nav, Footer & Preloader)
+      function renderBrandLogos() {
+        if (!cmsState || !cmsState.site_settings) return;
+        const s = cmsState.site_settings;
+        const navUrl = s.nav_logo_url || "/logo 2.png";
+        const preloaderUrl = s.preloader_logo_url || "/logo 2.png";
+
+        const navInput = document.getElementById("brand-nav-logo-url");
+        const navImg = document.getElementById("nav-logo-preview");
+        if (navInput) navInput.value = navUrl;
+        if (navImg) {
+          navImg.src = navUrl;
+          navImg.onerror = () => { navImg.src = "/logo 2.png"; };
+        }
+
+        const preInput = document.getElementById("brand-preloader-logo-url");
+        const preImg = document.getElementById("preloader-logo-preview");
+        const preMask = document.getElementById("preloader-preview-mask");
+        if (preInput) preInput.value = preloaderUrl;
+        if (preImg) {
+          preImg.src = preloaderUrl;
+          preImg.onerror = () => { preImg.src = "/logo 2.png"; };
+        }
+        if (preMask) {
+          preMask.style.webkitMaskImage = `url('${preloaderUrl}')`;
+          preMask.style.maskImage = `url('${preloaderUrl}')`;
+        }
+
+        // Keep admin panel header logo synced
+        const adminHeaderLogo = document.querySelector("header img[alt='Publimarca']");
+        if (adminHeaderLogo && navUrl) {
+          adminHeaderLogo.src = navUrl;
+        }
       }
 
       // 1. Render Hero Videos Playlist
@@ -2437,9 +2662,13 @@
           }
         });
 
-        // Settings
+        // Settings & Brand Logos
         if (cmsState.site_settings) {
           const s = cmsState.site_settings;
+          const navLogoEl = document.getElementById("brand-nav-logo-url");
+          const preLogoEl = document.getElementById("brand-preloader-logo-url");
+          if (navLogoEl && navLogoEl.value.trim()) s.nav_logo_url = navLogoEl.value.trim();
+          if (preLogoEl && preLogoEl.value.trim()) s.preloader_logo_url = preLogoEl.value.trim();
           const subEl = document.getElementById("set-hero-sub-es");
           const manEl = document.getElementById("set-manifesto-es");
           const addrEl = document.getElementById("set-contact-address");
@@ -2475,6 +2704,7 @@
 
       function renderAll() {
         renderVisibility();
+        renderBrandLogos();
         renderHeroVideos();
         renderLogos();
         renderServices();
@@ -2653,6 +2883,78 @@
       // Save Buttons
       document.getElementById("global-save-btn").addEventListener("click", () => saveCMS("Todos los cambios fueron guardados y sincronizados."));
       document.getElementById("save-visibility-btn").addEventListener("click", () => saveCMS("Visibilidad de secciones actualizada."));
+      const saveBrandLogosBtn = document.getElementById("save-brandlogos-btn");
+      if (saveBrandLogosBtn) {
+        saveBrandLogosBtn.addEventListener("click", () => saveCMS("Logos de marca (Navegación y Pantalla de Carga) actualizados."));
+      }
+
+      // Brand Logos (Nav & Footer / Preloader) Event Listeners
+      const btnUploadNavLogo = document.getElementById("btn-upload-nav-logo");
+      if (btnUploadNavLogo) {
+        btnUploadNavLogo.addEventListener("click", () => {
+          triggerFileUpload("image/png,image/svg+xml,image/webp,image/jpeg", async (uploadedUrl, filename, statsNote) => {
+            cmsState.site_settings = cmsState.site_settings || {};
+            cmsState.site_settings.nav_logo_url = uploadedUrl;
+            renderBrandLogos();
+            await saveCMS(`¡Logo de Navegación y Footer actualizado! ${statsNote ? "(" + statsNote + ")" : ""}`, true);
+          });
+        });
+      }
+
+      const btnResetNavLogo = document.getElementById("btn-reset-nav-logo");
+      if (btnResetNavLogo) {
+        btnResetNavLogo.addEventListener("click", async () => {
+          cmsState.site_settings = cmsState.site_settings || {};
+          cmsState.site_settings.nav_logo_url = "/logo 2.png";
+          renderBrandLogos();
+          await saveCMS("Logo de Navegación y Footer restaurado al logo por defecto (/logo 2.png).", true);
+        });
+      }
+
+      const brandNavInput = document.getElementById("brand-nav-logo-url");
+      if (brandNavInput) {
+        brandNavInput.addEventListener("input", (e) => {
+          const val = e.target.value.trim() || "/logo 2.png";
+          const navImg = document.getElementById("nav-logo-preview");
+          if (navImg) navImg.src = val;
+        });
+      }
+
+      const btnUploadPreLogo = document.getElementById("btn-upload-preloader-logo");
+      if (btnUploadPreLogo) {
+        btnUploadPreLogo.addEventListener("click", () => {
+          triggerFileUpload("image/png,image/svg+xml,image/webp,image/jpeg", async (uploadedUrl, filename, statsNote) => {
+            cmsState.site_settings = cmsState.site_settings || {};
+            cmsState.site_settings.preloader_logo_url = uploadedUrl;
+            renderBrandLogos();
+            await saveCMS(`¡Logo de Pantalla de Carga (Preloader) actualizado! ${statsNote ? "(" + statsNote + ")" : ""}`, true);
+          });
+        });
+      }
+
+      const btnResetPreLogo = document.getElementById("btn-reset-preloader-logo");
+      if (btnResetPreLogo) {
+        btnResetPreLogo.addEventListener("click", async () => {
+          cmsState.site_settings = cmsState.site_settings || {};
+          cmsState.site_settings.preloader_logo_url = "/logo 2.png";
+          renderBrandLogos();
+          await saveCMS("Logo de Pantalla de Carga restaurado al logo por defecto (/logo 2.png).", true);
+        });
+      }
+
+      const brandPreInput = document.getElementById("brand-preloader-logo-url");
+      if (brandPreInput) {
+        brandPreInput.addEventListener("input", (e) => {
+          const val = e.target.value.trim() || "/logo 2.png";
+          const preImg = document.getElementById("preloader-logo-preview");
+          const preMask = document.getElementById("preloader-preview-mask");
+          if (preImg) preImg.src = val;
+          if (preMask) {
+            preMask.style.webkitMaskImage = `url('${val}')`;
+            preMask.style.maskImage = `url('${val}')`;
+          }
+        });
+      }
       document.getElementById("save-herovideo-btn").addEventListener("click", () => saveCMS("Secuencia de videos del Hero actualizada."));
       document.getElementById("save-logos-btn").addEventListener("click", () => saveCMS("Barra de logos y enlaces actualizada."));
       document.getElementById("save-services-btn").addEventListener("click", () => saveCMS("Directorio de servicios actualizado."));

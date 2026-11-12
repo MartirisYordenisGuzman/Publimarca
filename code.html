@@ -336,9 +336,12 @@
                   opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
                   transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
     }
+    :root {
+      --preloader-logo-url: url('/logo%202.png');
+    }
     .preloader-light-mask {
-      -webkit-mask-image: url('/logo%202.png');
-      mask-image: url('/logo%202.png');
+      -webkit-mask-image: var(--preloader-logo-url, url('/logo%202.png'));
+      mask-image: var(--preloader-logo-url, url('/logo%202.png'));
       -webkit-mask-size: contain;
       mask-size: contain;
       -webkit-mask-repeat: no-repeat;
@@ -399,18 +402,32 @@
 </head>
 
 <body class="bg-[#FBFBF9] font-sans text-[#101014] antialiased selection:bg-[#A01318] selection:text-white">
+  <!-- Instant Studio Logo Hydration (Avoids FOUC on reload) -->
+  <script>
+    (function() {
+      try {
+        var cachedNavLogo = localStorage.getItem("publimarca_nav_logo");
+        var cachedPreLogo = localStorage.getItem("publimarca_preloader_logo");
+        if (cachedPreLogo) {
+          document.documentElement.style.setProperty("--preloader-logo-url", 'url("' + cachedPreLogo + '")');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- Studio Loading Screen (Grayish Logo + Light Reflection -> Color Reveal -> Page) -->
   <div id="studio-preloader" class="fixed inset-0 z-[9999] bg-[#FBFBF9] flex flex-col items-center justify-center select-none overflow-hidden" role="status" aria-live="polite" aria-label="Cargando Publimarca Studio">
     <div class="relative flex items-center justify-center px-10 py-8 overflow-hidden rounded-3xl">
       <!-- Base Logo (Starts Grayish, Transitions to Full Color) -->
       <img
+        id="preloader-brand-logo"
         src="/logo%202.png"
         onerror="this.onerror=null;this.src='logo%202.png';"
         alt="Publimarca Studio"
         class="preloader-logo-img h-20 sm:h-24 md:h-28 w-auto object-contain relative z-10"
       />
       <!-- Masked Specular Light Reflection Passing Directly Over the Logo Silhouette -->
-      <div class="preloader-light-mask absolute inset-0 z-20 pointer-events-none overflow-hidden" aria-hidden="true">
+      <div id="preloader-light-mask" class="preloader-light-mask absolute inset-0 z-20 pointer-events-none overflow-hidden" aria-hidden="true">
         <div class="preloader-light-beam absolute"></div>
       </div>
       <!-- Soft Ambient Light Sweep Across the Center Stage -->
@@ -424,6 +441,16 @@
       <div class="preloader-progress-Thumb w-1/2 h-full bg-gradient-to-r from-[#8A8A93] via-[#30B4D7] to-[#A01318] rounded-full"></div>
     </div>
   </div>
+
+  <script>
+    (function() {
+      try {
+        var cachedPreLogo = localStorage.getItem("publimarca_preloader_logo");
+        var pImg = document.getElementById("preloader-brand-logo");
+        if (cachedPreLogo && pImg) pImg.src = cachedPreLogo;
+      } catch (e) {}
+    })();
+  </script>
 
   <!-- Skip Link for Keyboard Accessibility -->
   <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-5 focus:py-2.5 focus:bg-[#101014] focus:text-white focus:rounded-full focus:text-xs focus:font-bold focus:uppercase focus:tracking-wider focus:shadow-lg">
@@ -439,10 +466,11 @@
         <div class="flex items-center gap-4">
           <a class="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A01318] rounded-lg" href="#" aria-label="Publimarca Studio Home">
             <img
+              id="nav-brand-logo"
               src="/logo%202.png"
               onerror="this.onerror=null;this.src='logo%202.png';"
               alt="Publimarca — Diseño, Impresión & Publicidad en General"
-              class="h-11 sm:h-12 w-auto object-contain"
+              class="nav-brand-logo h-11 sm:h-12 w-auto object-contain"
             />
           </a>
         </div>
@@ -1882,10 +1910,11 @@
             <div class="mb-6">
               <div class="flex items-center gap-3 mb-4">
                 <img
+                  id="footer-brand-logo"
                   src="/logo%202.png"
                   onerror="this.onerror=null;this.src='logo%202.png';"
                   alt="Publimarca — Diseño, Impresión & Publicidad en General"
-                  class="h-10 sm:h-11 w-auto object-contain"
+                  class="footer-brand-logo h-10 sm:h-11 w-auto object-contain"
                 />
               </div>
               <p class="text-sm text-[#52525B] max-w-sm leading-relaxed" data-i18n="footer.summary">
@@ -4259,6 +4288,40 @@
         }
       }
 
+      // Apply Brand Logos (Nav, Footer, Preloader)
+      function applyBrandLogos(navLogoUrl, preloaderLogoUrl) {
+        if (navLogoUrl) {
+          try { localStorage.setItem("publimarca_nav_logo", navLogoUrl); } catch (_) {}
+          const navImg = document.getElementById("nav-brand-logo");
+          if (navImg && navImg.getAttribute("src") !== navLogoUrl) {
+            navImg.src = navLogoUrl;
+          }
+          const footerImg = document.getElementById("footer-brand-logo");
+          if (footerImg && footerImg.getAttribute("src") !== navLogoUrl) {
+            footerImg.src = navLogoUrl;
+          }
+        }
+        if (preloaderLogoUrl) {
+          try { localStorage.setItem("publimarca_preloader_logo", preloaderLogoUrl); } catch (_) {}
+          document.documentElement.style.setProperty("--preloader-logo-url", 'url("' + preloaderLogoUrl + '")');
+          const preImg = document.getElementById("preloader-brand-logo");
+          if (preImg && preImg.getAttribute("src") !== preloaderLogoUrl) {
+            preImg.src = preloaderLogoUrl;
+          }
+          const mask = document.getElementById("preloader-light-mask");
+          if (mask) {
+            mask.style.webkitMaskImage = 'url("' + preloaderLogoUrl + '")';
+            mask.style.maskImage = 'url("' + preloaderLogoUrl + '")';
+          }
+        }
+      }
+
+      try {
+        const cachedNav = localStorage.getItem("publimarca_nav_logo");
+        const cachedPre = localStorage.getItem("publimarca_preloader_logo");
+        if (cachedNav || cachedPre) applyBrandLogos(cachedNav, cachedPre);
+      } catch (_) {}
+
       // Re-render dynamic sections when user switches language
       document.querySelectorAll("[data-lang-switch]").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -4273,6 +4336,9 @@
           if (!cms) return;
           latestCMSData = cms;
           const s = cms.site_settings || {};
+          if (s.nav_logo_url || s.preloader_logo_url) {
+            applyBrandLogos(s.nav_logo_url, s.preloader_logo_url);
+          }
           if (s.hero_live_badge_es) translations.es["hero.liveStage"] = s.hero_live_badge_es;
           if (s.hero_live_badge_en) translations.en["hero.liveStage"] = s.hero_live_badge_en;
           if (s.hero_subheadline_es) translations.es["hero.subheadline"] = s.hero_subheadline_es;

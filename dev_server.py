@@ -384,29 +384,29 @@ def sync_cms_to_supabase(cms: dict) -> dict:
 
     # 2. Site Settings
     s = cms.get("site_settings") or {}
-    if _supabase_upsert_and_prune(
-        url,
-        key,
-        "site_settings",
-        [
-            {
-                "id": "default",
-                "section_visibility": cms.get("section_visibility", {}),
-                "hero_video_url": s.get("hero_video_url", "/video_hero_publimarca.mp4"),
-                "hero_live_badge_es": s.get("hero_live_badge_es", "Set en Vivo • Cámara A"),
-                "hero_live_badge_en": s.get("hero_live_badge_en", "Live Stage • A-Cam Roll"),
-                "hero_subheadline_es": s.get("hero_subheadline_es", ""),
-                "hero_subheadline_en": s.get("hero_subheadline_en", ""),
-                "manifesto_quote_es": s.get("manifesto_quote_es", ""),
-                "manifesto_quote_en": s.get("manifesto_quote_en", ""),
-                "contact_address_es": s.get("contact_address_es", ""),
-                "contact_address_en": s.get("contact_address_en", ""),
-                "contact_email": s.get("contact_email", ""),
-                "contact_phone": s.get("contact_phone", ""),
-                "updated_at": now_iso,
-            }
-        ],
-    ):
+    base_settings_row = {
+        "id": "default",
+        "section_visibility": cms.get("section_visibility", {}),
+        "hero_video_url": s.get("hero_video_url", "/video_hero_publimarca.mp4"),
+        "hero_live_badge_es": s.get("hero_live_badge_es", "Set en Vivo • Cámara A"),
+        "hero_live_badge_en": s.get("hero_live_badge_en", "Live Stage • A-Cam Roll"),
+        "hero_subheadline_es": s.get("hero_subheadline_es", ""),
+        "hero_subheadline_en": s.get("hero_subheadline_en", ""),
+        "manifesto_quote_es": s.get("manifesto_quote_es", ""),
+        "manifesto_quote_en": s.get("manifesto_quote_en", ""),
+        "contact_address_es": s.get("contact_address_es", ""),
+        "contact_address_en": s.get("contact_address_en", ""),
+        "contact_email": s.get("contact_email", ""),
+        "contact_phone": s.get("contact_phone", ""),
+        "updated_at": now_iso,
+    }
+    settings_with_logos = dict(base_settings_row)
+    settings_with_logos["nav_logo_url"] = s.get("nav_logo_url", "/logo 2.png")
+    settings_with_logos["preloader_logo_url"] = s.get("preloader_logo_url", "/logo 2.png")
+
+    if _supabase_upsert_and_prune(url, key, "site_settings", [settings_with_logos]):
+        synced_tables.append("site_settings")
+    elif _supabase_upsert_and_prune(url, key, "site_settings", [base_settings_row]):
         synced_tables.append("site_settings")
 
     # 3. Hero Videos
@@ -647,6 +647,8 @@ def fetch_cms_from_supabase_or_local() -> dict:
             "contact_address_en": s_row.get("contact_address_en", ""),
             "contact_email": s_row.get("contact_email", ""),
             "contact_phone": s_row.get("contact_phone", ""),
+            "nav_logo_url": s_row.get("nav_logo_url") or (local_store.get("site_settings") or {}).get("nav_logo_url", "/logo 2.png"),
+            "preloader_logo_url": s_row.get("preloader_logo_url") or (local_store.get("site_settings") or {}).get("preloader_logo_url", "/logo 2.png"),
             "smtp_host": (local_store.get("site_settings") or {}).get("smtp_host", "smtp.gmail.com"),
             "smtp_port": (local_store.get("site_settings") or {}).get("smtp_port", "465"),
             "smtp_user": (local_store.get("site_settings") or {}).get("smtp_user", ""),

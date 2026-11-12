@@ -34,8 +34,14 @@ create table if not exists public.site_settings (
   contact_address_en text not null default 'Higüey, La Altagracia, Dominican Republic',
   contact_email text not null default 'dispatch@publimarca.do',
   contact_phone text not null default '+1 (809) 554-2040',
+  nav_logo_url text not null default '/logo 2.png',
+  preloader_logo_url text not null default '/logo 2.png',
   updated_at timestamptz not null default now()
 );
+
+-- Idempotent migrations for existing deployments
+alter table public.site_settings add column if not exists nav_logo_url text default '/logo 2.png';
+alter table public.site_settings add column if not exists preloader_logo_url text default '/logo 2.png';
 
 -- -----------------------------------------------------------------------------
 -- 2. VIDEOS DEL HERO (Secuencia de reproducción y slider horizontal)
@@ -265,7 +271,8 @@ create policy "Allow all cms_state" on public.cms_state for all using (true) wit
 insert into public.site_settings (
   id, section_visibility, hero_video_url, hero_live_badge_es, hero_live_badge_en,
   hero_subheadline_es, hero_subheadline_en, manifesto_quote_es, manifesto_quote_en,
-  contact_address_es, contact_address_en, contact_email, contact_phone
+  contact_address_es, contact_address_en, contact_email, contact_phone,
+  nav_logo_url, preloader_logo_url
 ) values (
   'default',
   '{"hero_video":true,"client_logos":true,"manifesto":true,"services":true,"industries":true,"projects":true,"process":true,"testimonials":true}'::jsonb,
@@ -279,7 +286,9 @@ insert into public.site_settings (
   'Higüey, La Altagracia, República Dominicana',
   'Higüey, La Altagracia, Dominican Republic',
   'dispatch@publimarca.do',
-  '+1 (809) 554-2040'
+  '+1 (809) 554-2040',
+  '/logo 2.png',
+  '/logo 2.png'
 ) on conflict (id) do update set
   section_visibility = excluded.section_visibility,
   hero_video_url = excluded.hero_video_url,
@@ -293,6 +302,8 @@ insert into public.site_settings (
   contact_address_en = excluded.contact_address_en,
   contact_email = excluded.contact_email,
   contact_phone = excluded.contact_phone,
+  nav_logo_url = coalesce(excluded.nav_logo_url, site_settings.nav_logo_url, '/logo 2.png'),
+  preloader_logo_url = coalesce(excluded.preloader_logo_url, site_settings.preloader_logo_url, '/logo 2.png'),
   updated_at = now();
 
 -- 2. Video del Hero por defecto
